@@ -1,48 +1,29 @@
 {
-  "name": "anime-bundle",
-  "description": "A platform to watch animes right on your desktop.",
-  "private": false,
-  "author": {
-    "name": "dark1zinn",
-    "email": "edilsonjuininho154@gmail.com"
-  },
-  "publisher": "dark1zinn",
-  "license": "MIT",
-  "version": "0.0.0-dev",
+  "name": "anime-pack",
+  "private": true,
+  "version": "0.1.0",
   "type": "module",
-  "main": "dist-electron/main.js",
+  "author": {
+    "name": "dark1zinn"
+  },
   "scripts": {
-    "dev": "npm-run-all --parallel dev:react dev:electron",
-    "dev:react": "vite",
-    "dev:electron": "npm run transpile:electron && cross-env NODE_ENV=development electron .",
+    "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
-    "clean": "rmdir dist && rmdir dist-electron && rmdir dist-react",
-    "transpile:electron": "tsc --project src/electron/tsconfig.json",
-    "dist:mac": "npm run transpile:electron && npm run build && electron-builder --mac --arm64",
-    "dist:win": "npm run transpile:electron && npm run build && electron-builder --win --x64",
-    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64"
+    "tauri": "tauri"
   },
   "dependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
-    "@types/react": "^18.3.12",
+    "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "cross-env": "^7.0.3",
-    "electron": "^33.2.0",
-    "electron-builder": "^25.1.8",
-    "eslint": "^9.15.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "globals": "^15.12.0",
-    "npm-run-all": "^4.1.5",
     "typescript": "~5.6.2",
-    "typescript-eslint": "^8.15.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.3",
+    "@tauri-apps/cli": "^2"
   }
 }
