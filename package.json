@@ -6,6 +6,10 @@
   "author": {
     "name": "dark1zinn"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dark1zinn/anime-pack.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
