@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Gamepad2 } from "lucide-react"
+import { Gamepad2, User } from "lucide-react"
+import { Link } from "react-router"
 
 export function LoginForm({
   className,
@@ -41,6 +42,12 @@ export function LoginForm({
                   </svg>
                   Login with Google
                 </Button>
+                <Link to="/main">
+                  <Button variant="outline" className="w-full">
+                    <User className="size-5" />
+                    Login as Guest
+                  </Button>
+                </Link>
               </div>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
@@ -84,7 +91,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        By continuing, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </div>
     </div>
