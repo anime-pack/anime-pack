@@ -14,9 +14,33 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Titlebar from "@/titlebar"
-import { Outlet } from "react-router"
+import { useEffect, useState } from "react"
+import { Link, Outlet, useLocation } from "react-router"
 
 export default function MainPage() {
+  let location = useLocation();
+  let [breadcrumbs, setBreadcrumbs] = useState<string[]>([]);
+
+  const pathMap: Record<string, string> = {
+    home: "/",
+    settings: "/settings",
+    login: "/login",
+  }
+
+  useEffect(() => {
+    let updatedBreadcrumbs = location.pathname.split("/").filter((crumb) => crumb !== "");
+    switch (updatedBreadcrumbs[0]) {
+      case "settings":
+        updatedBreadcrumbs;
+        break;
+      default:
+        updatedBreadcrumbs = ["home"].concat(updatedBreadcrumbs);
+        break;
+    };
+
+    setBreadcrumbs(updatedBreadcrumbs);
+  }, [location.pathname]);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -28,15 +52,49 @@ export default function MainPage() {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Home
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage> Search </BreadcrumbPage>
-                </BreadcrumbItem>
+                {breadcrumbs.map((crumb, index) => {
+                  if (index === 0) {
+                    return (
+                      <BreadcrumbItem key={crumb}>
+                        {!(index > 0) ?
+                          <BreadcrumbPage>
+                            {crumb.at(0)?.toUpperCase() + crumb.slice(1)}
+                          </BreadcrumbPage>
+                        :
+                        <BreadcrumbLink href="#">
+                          <Link to={pathMap[crumb] || `/${crumb}`}>
+                            {crumb.at(0)?.toUpperCase() + crumb.slice(1)}
+                          </Link>
+                        </BreadcrumbLink>
+                        }
+                      </BreadcrumbItem>
+                    )
+                  };
+                  if (index === breadcrumbs.length - 1 && breadcrumbs.length > 0) {
+                    return (
+                      <>
+                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>
+                            {crumb.at(0)?.toUpperCase() + crumb.slice(1)}
+                          </BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </>
+                    )
+                  };
+                  return (
+                    <>
+                      <BreadcrumbSeparator className="hidden md:block" />
+                      <BreadcrumbItem key={crumb}>
+                        <BreadcrumbLink href="#">
+                          <Link to={pathMap[crumb] || `/${crumb}`}>
+                            {crumb.at(0)?.toUpperCase() + crumb.slice(1)}
+                          </Link>
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                    </>
+                  );
+                })}
               </BreadcrumbList>
             </Breadcrumb>
           </div>

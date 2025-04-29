@@ -3,6 +3,7 @@ import {
   BookMarked,
   PackageOpen,
   Settings2,
+  TvMinimalPlay,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -43,6 +44,18 @@ const data = {
   ],
   navMain: [
     {
+      title: "Home",
+      url: "/",
+      icon: TvMinimalPlay,
+      isActive: false,
+      items: [
+        {
+          title: "Search",
+          url: "/",
+        }
+      ]
+  },
+    {
       title: "My Library",
       url: "#",
       icon: BookMarked,
@@ -62,7 +75,7 @@ const data = {
   projects: [
     {
       name: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings2,
     },
   ],

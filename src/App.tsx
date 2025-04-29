@@ -8,25 +8,25 @@ import {
 import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import "./index.css";
 import LoginPage from "@/app/login/page";
-import SplashScreen from "@/app/splash-screen";
 import Home from "./app/home/home";
+import Settings from "./app/settings/settings";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <SplashScreen />,
-  },
-  {
-    path: "/main",
     element: <MainPage />,
     children: [
-      { index: true, element: <Home />}
+      { index: true, element: <Home /> },
+      {
+        path: "/settings",
+        element: <Settings />
+      },
     ]
   },
   {
     path: "/login",
     element: <LoginPage />,
-  }
+  },
 ]);
 
 function App() {

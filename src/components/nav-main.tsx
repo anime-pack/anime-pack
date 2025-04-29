@@ -33,7 +33,7 @@ export function NavMain({
     }[]
   }[]
   }) {
-  const { state, toggleSidebar } = useSidebar()
+  const { open, toggleSidebar } = useSidebar()
   
   return (
     <SidebarGroup>
@@ -47,7 +47,7 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <CollapsibleTrigger asChild onClick={() => { if (state == "collapsed") toggleSidebar() }}>
+              <CollapsibleTrigger asChild onClick={() => { if (!open) { toggleSidebar() } }}>
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
