@@ -34,11 +34,11 @@ pub fn run() {
                 println!("Discord client connected!");
 
                 let activity = Activity::new()
-                    .state("On menu")
+                    .state("All your animes, in one pack!")
                     .kind(ActivityType::Watching)
-                    .details("All your animes, in one pack!")
+                    .details("Anime Pack")
                     .assets(Assets::new()
-                        .large_image("https://media.istockphoto.com/id/1302508567/vector/closed-cardboard-box-shipping-box-vector-illustration.jpg?s=612x612&w=0&k=20&c=aXX6EP43kX0FMO5OT6q66MFyuEJ3Xw0zrSdWyNuv3jc=", Some("Anime Pack"))
+                        .large_image("https://media.istockphoto.com/id/1302508567/vector/closed-cardboard-box-shipping-box-vector-illustration.jpg?s=612x612&w=0&k=20&c=aXX6EP43kX0FMO5OT6q66MFyuEJ3Xw0zrSdWyNuv3jc=", Some("Idling"))
                         .small_image("https://media.istockphoto.com/id/1302508567/vector/closed-cardboard-box-shipping-box-vector-illustration.jpg?s=612x612&w=0&k=20&c=aXX6EP43kX0FMO5OT6q66MFyuEJ3Xw0zrSdWyNuv3jc=", Some("Anime Pack"))
                     )
                     .timestamps(Timestamps::new().start_now())
