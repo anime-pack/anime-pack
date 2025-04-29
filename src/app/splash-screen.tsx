@@ -1,4 +1,5 @@
 // import { invoke } from "@tauri-apps/api/core";
+import Titlebar from "@/titlebar";
 import { PackageOpen } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -14,11 +15,14 @@ export default function SplashScreen() {
   });
 
   return (  // TODO: make bg image on spalsh screen work
+    <>
+      <Titlebar />
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10" style={{ backgroundImage: `url("../assets/splash-screen.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}>
         <PackageOpen className="size-40" />
       <h1>      
         Anime Pack
       </h1>
     </div>
+    </>
   );
 }

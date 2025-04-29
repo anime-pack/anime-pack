@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import "./index.css";
 import LoginPage from "@/app/login/page";
 import SplashScreen from "@/app/splash-screen";
+import Home from "./app/home/home";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,9 @@ const router = createBrowserRouter([
   {
     path: "/main",
     element: <MainPage />,
+    children: [
+      { index: true, element: <Home />}
+    ]
   },
   {
     path: "/login",

@@ -12,9 +12,12 @@
   "app": {
     "windows": [
       {
-        "title": "anime-pack",
-        "width": 800,
-        "height": 600
+        "title": "Anime Pack",
+        "width": 1300,
+        "height": 840,
+        "minWidth": 1000,
+        "minHeight": 640,
+        "decorations": false
       }
     ],
     "security": {

@@ -16,6 +16,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 export function NavMain({
@@ -31,7 +32,9 @@ export function NavMain({
       url: string
     }[]
   }[]
-}) {
+  }) {
+  const { state, toggleSidebar } = useSidebar()
+  
   return (
     <SidebarGroup>
       <SidebarGroupLabel>My Content</SidebarGroupLabel>
@@ -44,7 +47,7 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
+              <CollapsibleTrigger asChild onClick={() => { if (state == "collapsed") toggleSidebar() }}>
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
