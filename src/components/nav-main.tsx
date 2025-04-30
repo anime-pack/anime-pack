@@ -44,6 +44,7 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
+            open={!open ? false : undefined}
             defaultOpen={item.isActive} // TODO: must make so when siderbar closes this becomes false
             className="group/collapsible"
           >
