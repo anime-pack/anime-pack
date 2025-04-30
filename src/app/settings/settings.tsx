@@ -1,17 +1,19 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link, Outlet } from "react-router";
+import { useEffect } from "react";
+import { Link, Outlet, useLocation } from "react-router";
 
 export default function Settings() {
+    const location = useLocation();
+    const [defaultView] = location.pathname.split("/").slice(-1);
+
+    useEffect(() => {}, [defaultView]); // TODO: bug when already at the defaultView parent path that doesnt render the sibling child, occurs only when navigating to a child path, again, via the sidebar
 
     return (
-        <Tabs defaultValue="appearence" className="w-[97%] self-center">
+        <Tabs defaultValue={defaultView} className="w-[97%] self-center">
       <TabsList className="grid w-full grid-cols-3 gap-0.5">
-        <Link to="/settings">
+        <Link to="appearence">
             <TabsTrigger value="appearence" className="size-full">Appearence</TabsTrigger>
         </Link>
-        {/* <Link to="#">
-            <TabsTrigger value="account" className="size-full">Account</TabsTrigger>
-        </Link> */}
         <Link to="desktop">
             <TabsTrigger value="desktop" className="size-full">Desktop</TabsTrigger>
         </Link>

@@ -16,8 +16,12 @@ export default function SettingsAbout() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
-                        <Label>Socials</Label>
-                        <GithubIcon onClick={() => {invoke('open_url', { url: "https://github.com/dark1zinn/anime-pack" })}} className="size-7" />
+              <Label>Socials</Label>
+              <GithubIcon onClick={
+                () => {
+                    invoke('open_url', { url: "https://github.com/dark1zinn/anime-pack" })
+                }
+              } className="size-7" />
               <h3>Github</h3>
             </div>
           </CardContent>

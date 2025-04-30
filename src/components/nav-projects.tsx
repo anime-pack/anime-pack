@@ -48,7 +48,7 @@ export function NavProjects({
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger >
                 <SidebarMenuAction showOnHover>
                   <MoreHorizontal />
                   <span className="sr-only">More</span>
@@ -56,8 +56,9 @@ export function NavProjects({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-48 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+                sideOffset={235}
+                side={isMobile ? "bottom" : "left"}
+                align={isMobile ? "end" : "center"}
               >
                 <DropdownMenuItem>
                   <Folder className="text-muted-foreground" />

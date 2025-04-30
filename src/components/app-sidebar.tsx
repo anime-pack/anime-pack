@@ -1,5 +1,6 @@
 import * as React from "react"
 import {
+  AlignJustify,
   BookMarked,
   PackageOpen,
   Settings2,
@@ -44,17 +45,17 @@ const data = {
   ],
   navMain: [
     {
-      title: "Home",
-      url: "/",
+      title: "Content",
+      url: "#",
       icon: TvMinimalPlay,
       isActive: false,
       items: [
         {
-          title: "Search",
+          title: "Home",
           url: "/",
         }
       ]
-  },
+    },
     {
       title: "My Library",
       url: "#",
@@ -63,20 +64,40 @@ const data = {
       items: [
         {
           title: "Liked",
-          url: "#",
+          url: "/library/liked",
         },
         {
           title: "History",
-          url: "#",
+          url: "/library/history",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings2,
+      isActive: false,
+      items: [
+        {
+          title: "Appearence",
+          url: "/settings/appearence",
+        },
+        {
+          title: "Desktop",
+          url: "/settings/desktop",
+        },
+        {
+          title: "About",
+          url: "/settings/about",
         },
       ],
     },
   ],
   projects: [
     {
-      name: "Settings",
-      url: "/settings",
-      icon: Settings2,
+      name: "Other...",
+      url: "#",
+      icon: AlignJustify,
     },
   ],
 }

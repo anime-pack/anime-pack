@@ -24,8 +24,9 @@ export default function MainPage() {
 
   const pathMap: Record<string, string> = {
     home: "/",
-    settings: "/settings",
+    settings: "#",
     login: "/login",
+    library: "#",
   }
 
   useEffect(() => {

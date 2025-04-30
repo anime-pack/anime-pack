@@ -8,7 +8,7 @@ export default function SearchBar() {
     useEffect(() => {}, [searchValue]);
     
     return (
-        <div id="search-bar" className="flex relative items-center justify-center max-w-[63%] min-w-[107px] w-[10%] focus-within:w-full focus-within:h-[65%] ease-in-out transition-all duration-500 right-4 has-[input:not(:placeholder-shown)]:w-full">
+        <div id="search-bar" className="flex relative items-center justify-center max-w-[64%] min-w-[107px] w-[10%] focus-within:w-full focus-within:h-[65%] ease-in-out transition-all duration-500 right-4 has-[input:not(:placeholder-shown)]:w-full">
             <Input
                 value={searchValue}
                 placeholder="Ctrl + K"

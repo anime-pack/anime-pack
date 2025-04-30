@@ -13,6 +13,9 @@ import Settings from "./app/settings/settings";
 import SettingsAppearence from "./app/settings/appearence";
 import SettingsDesktop from "./app/settings/desktop";
 import SettingsAbout from "./app/settings/about";
+import HomeLibrary from "./app/library/librabry";
+import LibraryLiked from "./app/library/liked";
+import LibraryHistory from "./app/library/history";
 
 const router = createBrowserRouter([
   {
@@ -21,12 +24,26 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       {
+        path: "/library",
+        element: <HomeLibrary />,
+        children: [
+          {
+            path: "/library/liked",
+            element: <LibraryLiked />,
+          },
+          {
+            path: "/library/history",
+            element: <LibraryHistory />,
+          },
+        ],
+      },
+      {
         path: "/settings",
         element: <Settings />,
         children: [
           { 
-            index: true,
-            // path: "/settings/appearence",
+            // index: true,
+            path: "/settings/appearence",
             element: <SettingsAppearence />,
           },
           {
