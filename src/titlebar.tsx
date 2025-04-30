@@ -21,7 +21,7 @@ export default function Titlebar() {
             setIsMaximized(maximized);
         };
       const updateClasses = () => {
-            let newClasses = "widith-full sticky top-0 z-10 flex h-7 gap-3 items-center bg-zinc-900";
+            let newClasses = "widith-full sticky top-0 z-10 flex h-7 gap-3 items-center bg-muted/50";
             
             if (absoluteTitlebarPaths.includes(location.pathname)) {
                 newClasses += " absolute left-0 right-0";

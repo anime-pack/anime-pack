@@ -16,6 +16,7 @@ import {
 import Titlebar from "@/titlebar"
 import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router"
+import SearchBar from "./searchBar"
 
 export default function MainPage() {
   let location = useLocation();
@@ -31,7 +32,9 @@ export default function MainPage() {
     let updatedBreadcrumbs = location.pathname.split("/").filter((crumb) => crumb !== "");
     switch (updatedBreadcrumbs[0]) {
       case "settings":
-        updatedBreadcrumbs;
+        if (updatedBreadcrumbs.length < 2) {
+          updatedBreadcrumbs = updatedBreadcrumbs.concat(["appearence"]);
+        }
         break;
       default:
         updatedBreadcrumbs = ["home"].concat(updatedBreadcrumbs);
@@ -44,9 +47,9 @@ export default function MainPage() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="">
       <Titlebar />
-        <header className="flex h-13 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="flex relative h-13 shrink-0 items-center gap-2 justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -56,7 +59,7 @@ export default function MainPage() {
                   if (index === 0) {
                     return (
                       <BreadcrumbItem key={crumb}>
-                        {!(index > 0) ?
+                        {!(breadcrumbs.length > 1) ?
                           <BreadcrumbPage>
                             {crumb.at(0)?.toUpperCase() + crumb.slice(1)}
                           </BreadcrumbPage>
@@ -98,6 +101,7 @@ export default function MainPage() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
+          <SearchBar />
         </header>
         <Outlet />
       </SidebarInset>

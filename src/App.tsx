@@ -10,6 +10,9 @@ import "./index.css";
 import LoginPage from "@/app/login/page";
 import Home from "./app/home/home";
 import Settings from "./app/settings/settings";
+import SettingsAppearence from "./app/settings/appearence";
+import SettingsDesktop from "./app/settings/desktop";
+import SettingsAbout from "./app/settings/about";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +22,22 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       {
         path: "/settings",
-        element: <Settings />
+        element: <Settings />,
+        children: [
+          { 
+            index: true,
+            // path: "/settings/appearence",
+            element: <SettingsAppearence />,
+          },
+          {
+            path: "/settings/desktop",
+            element: <SettingsDesktop />,
+          },
+          {
+            path: "/settings/about",
+            element: <SettingsAbout />,
+          }
+        ]
       },
     ]
   },
