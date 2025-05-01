@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
 
 use discordipc::{
@@ -7,10 +8,18 @@ use discordipc::{
     Client,
 };
 
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
+    let window = app.get_webview_window(window_label).unwrap();
+    if action == "minimize" {
+        window.minimize().unwrap();
+    } else if action == "maximize" {
+        window.maximize().unwrap();
+    } else if action == "unmaximize" {
+        window.unmaximize().unwrap();
+    } else if action == "close" {
+        window.close().unwrap();
+    }
 }
 
 #[tauri::command]
@@ -31,7 +40,7 @@ fn open_path(app_handle: tauri::AppHandle, path: &str) {
 pub fn run() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, open_url, open_path])
+        .invoke_handler(tauri::generate_handler![open_url, open_path, window_mmc])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");
 
