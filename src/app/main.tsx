@@ -27,6 +27,7 @@ export default function MainPage() {
     settings: "#",
     login: "/login",
     library: "#",
+    anime: "#",
   }
 
   useEffect(() => {
@@ -48,9 +49,9 @@ export default function MainPage() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="">
+      <SidebarInset className="h-screen overflow-hidden">
       <Titlebar />
-        <header className="flex relative h-13 shrink-0 items-center gap-2 justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="flex sticky h-13 shrink-0 items-center gap-2 justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -104,7 +105,10 @@ export default function MainPage() {
           </div>
           <SearchBar />
         </header>
-        <Outlet />
+        <hr />
+        <div className="flex-1 w-full min-h-0 overflow-y-auto">
+          <Outlet />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )

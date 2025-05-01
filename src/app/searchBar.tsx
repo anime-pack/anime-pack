@@ -1,9 +1,11 @@
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function SearchBar() {
     const [searchValue, setSearchValue] = useState('');
+    let navigate = useNavigate()
 
     useEffect(() => {}, [searchValue]);
     
@@ -12,6 +14,14 @@ export default function SearchBar() {
             <Input
                 value={searchValue}
                 placeholder="Ctrl + K"
+                onKeyDown={(e) => {
+                    if (e.key == "Enter") {
+                        e.preventDefault();
+                        if (e.currentTarget.value !== '') {
+                            navigate(`/search?s=${e.currentTarget.value}`)
+                        }
+                    }
+                }}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="peer w-full ease-in-out transition-all duration-400 h-full placeholder:text-center placeholder:font-semibold placeholder:ease-in-out placeholder:duration-400 focus:placeholder:opacity-0" />
             <Search className="size-4 stroke-3 opacity-50 absolute left-2 ease-in-out transition-all duration-300 peer-focus:opacity-0 peer-[:not(:placeholder-shown)]:opacity-0" />

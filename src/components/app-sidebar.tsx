@@ -2,6 +2,7 @@ import * as React from "react"
 import {
   AlignJustify,
   BookMarked,
+  Package,
   PackageOpen,
   Settings2,
   TvMinimalPlay,
@@ -95,9 +96,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Other...",
+      name: "Pack",
       url: "#",
-      icon: AlignJustify,
+      icon: Package,
     },
   ],
 }

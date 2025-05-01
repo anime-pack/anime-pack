@@ -8,8 +8,9 @@ export default function HomeLibrary() {
 
     useEffect(() => {}); // TODO: bug when already at the defaultView parent path that doesnt render the sibling child, occurs only when navigating to a child path, again, via the sidebar
 
-    return (
-        <Tabs defaultValue={defaultView} className="w-[97%] self-center">
+  return (
+      <div className="flex flex-1 justify-center px-4">
+        <Tabs defaultValue={defaultView} className="w-full align-top">
       <TabsList className="grid w-full grid-cols-2 gap-0.5">
         <Link to="liked">
             <TabsTrigger value="liked" className="size-full">Liked</TabsTrigger>
@@ -20,5 +21,6 @@ export default function HomeLibrary() {
       </TabsList>
       <Outlet />
     </Tabs>
+      </div>
     )
 }

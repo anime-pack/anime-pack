@@ -15,6 +15,8 @@ import SettingsAbout from "./app/settings/about";
 import HomeLibrary from "./app/library/librabry";
 import LibraryLiked from "./app/library/liked";
 import LibraryHistory from "./app/library/history";
+import HomeAnime from "./app/home/anime";
+import HomeSearch from "./app/home/search";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,14 @@ const router = createBrowserRouter([
             element: <SettingsAbout />,
           }
         ]
+      },
+      {
+        path: "/anime/:id",
+        element: <HomeAnime />,
+      },
+      {
+        path: "/search",
+        element: <HomeSearch />,
       },
     ]
   },
