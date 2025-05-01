@@ -1,4 +1,3 @@
-// import { invoke } from "@tauri-apps/api/core";
 import { PackageOpen } from "lucide-react";
 import { LoginForm } from "@/components/login-form";
 import Titlebar from "@/titlebar";
