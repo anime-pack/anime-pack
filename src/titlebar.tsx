@@ -43,7 +43,7 @@ export default function Titlebar() {
 
   return (
     <div data-tauri-drag-region id="titlebar" className={titlebarClasses}>
-      {!open && <span className="hover:text-blue-500 font-bold transition-colors px-1.5 animate-in fade-in-5"><Link to="/">Anime Pack</Link></span>}
+      {!open && <span className="hover:text-blue-500 font-bold transition-colors slide-in-from-left duration-300 px-1.5 animate-in fade-in-5"><Link to="/">Anime Pack</Link></span>}
       <div className="flex items-center h-full">
         <div id="titlebar-minimize" className="fit-content hover:bg-zinc-700 h-full aspect-1/1 items-center flex justify-center" onClick={() => invoke('window_mmc', { windowLabel: appWindow.label, action: "minimize"})}>
           <Minus className="size-4"/>
