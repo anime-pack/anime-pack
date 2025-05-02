@@ -1,6 +1,5 @@
 import * as React from "react"
 import {
-  AlignJustify,
   BookMarked,
   Package,
   PackageOpen,

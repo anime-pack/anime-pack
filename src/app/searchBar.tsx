@@ -18,7 +18,7 @@ export default function SearchBar() {
                     if (e.key == "Enter") {
                         e.preventDefault();
                         if (e.currentTarget.value !== '') {
-                            navigate(`/search?s=${e.currentTarget.value}`)
+                            navigate(`/search?query=${e.currentTarget.value}`)
                         }
                     }
                 }}

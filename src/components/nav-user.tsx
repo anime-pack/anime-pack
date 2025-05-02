@@ -3,9 +3,10 @@
 import {
   BadgeCheck,
   Bell,
-  ChevronsUpDown,
   CreditCard,
   LogOut,
+  Settings,
+  Settings2,
   Sparkles,
 } from "lucide-react"
 
@@ -29,6 +30,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Link } from "react-router"
 
 export function NavUser({
   user,
@@ -56,9 +58,10 @@ export function NavUser({
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <Link to="/settings/desktop" className="size-4.5 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-300">
+                <Settings className="size-full" />
+              </Link>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -71,7 +74,7 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{ (user.name[0].toUpperCase() + (user.name[1].toUpperCase() || '')) }</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>

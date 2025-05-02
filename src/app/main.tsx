@@ -40,6 +40,9 @@ export default function MainPage() {
         break;
       default:
         updatedBreadcrumbs = ["home"].concat(updatedBreadcrumbs);
+        if (updatedBreadcrumbs.includes("anime")) {
+          updatedBreadcrumbs = updatedBreadcrumbs.slice(0, 2)
+        }
         break;
     };
 
