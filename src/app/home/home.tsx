@@ -1,14 +1,23 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from 'embla-carousel-autoplay'
-
-import { testData } from './data.test.ts'
 import { Label } from "@/components/ui/label.tsx";
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge.tsx";
+import { AnimeData } from "@/types/types.js";
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function Home() {
-    const { data } = testData
+    const [animes, setAnimes] = useState<AnimeData>()
+    
+    useEffect(() => {
+        const getSearch = async () => {
+            setAnimes(await invoke("jikan_api_airing", {}))
+        }
+
+        getSearch()
+    })
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-3 h-fit pb-4">
@@ -27,17 +36,13 @@ export default function Home() {
         className="w-full max-h-[240px] min-h-[190px] h-auto ml-[20px]"
     >
       <CarouselContent className="hover:cursor-grab active:cursor-grabbing snap-center snap-mandatory h-full w-full -ml-1">
-        {data.map((ani, index) => (
+        {animes?.data.map((ani, index) => (
           <CarouselItem key={index} className="md:basis-1/1 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4 h-full aspect-video p-1">
             <div className="px-1 select-none w-full h-full">
                 <Card className="h-full p-0 group bg-no-repeat bg-cover bg-center border-0" style={{
                     backgroundImage: `url("${ani.trailer.images.large_image_url || ani.images.webp.large_image_url}")`,
                 }}>
                         <CardContent className="aspect-auto p-0 h-full w-full rounded-xl bg-linear-to-b from-black/90 via-black/70 to-black/0 fade-in group-hover:bg-primary-700/50 backdrop-opacity-70 transition-all duration-600 group-hover:backdrop-blur">
-                            {/* <div className="opacity-60 font-semibold size-fit fixed top-[40%] left-[40%]">
-                            <PackageX className="size-15" />
-                            <h3>No Image</h3>
-                            </div> */}
                             <Link to={`/anime/${ani.title.replace(/[:]/g, "").replace(/[\s]/g, "-").toLowerCase()}?id=${ani.mal_id}`} className="active:cursor-grabbing">
                                 <div className="w-full h-full pl-3">
                         <Label className="ml-2 mt-3.5">{ani.title}</Label>
