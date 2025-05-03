@@ -38,7 +38,7 @@ export function NavProjects({
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Packs</SidebarGroupLabel>
-      <SidebarMenu>
+      {/* <SidebarMenu> */}
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
@@ -48,7 +48,7 @@ export function NavProjects({
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>
-              <DropdownMenuTrigger >
+              <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
                   <MoreHorizontal />
                   <span className="sr-only">More</span>
@@ -56,9 +56,9 @@ export function NavProjects({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-48 rounded-lg"
-                sideOffset={237}
-                side={isMobile ? "bottom" : "left"}
-                align={isMobile ? "end" : "center"}
+                // sideOffset={237}
+                side={isMobile ? "bottom" : "right"}
+                align={isMobile ? "end" : "start"}
               >
                 <DropdownMenuItem>
                   <Folder className="text-muted-foreground" />
@@ -83,7 +83,7 @@ export function NavProjects({
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
-      </SidebarMenu>
+      {/* </SidebarMenu> */}
     </SidebarGroup>
   )
 }
