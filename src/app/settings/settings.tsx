@@ -9,14 +9,14 @@ export default function Settings() {
     useEffect(() => {}, [defaultView]); // TODO: bug when already at the defaultView parent path that doesnt render the sibling child, occurs only when navigating to a child path, again, via the sidebar
 
     return (
-        <div className="flex flex-1 justify-center px-4 pt-4">
+        <div className="flex flex-1 justify-center px-4">
         <Tabs defaultValue={defaultView} className="w-full align-top">
       <TabsList className="grid w-full grid-cols-3 gap-0.5">
-        <Link to="desktop">
-            <TabsTrigger value="desktop" className="size-full">Desktop</TabsTrigger>
-        </Link>
         <Link to="appearence">
             <TabsTrigger value="appearence" className="size-full">Appearence</TabsTrigger>
+        </Link>
+        <Link to="desktop">
+            <TabsTrigger value="desktop" className="size-full">Desktop</TabsTrigger>
         </Link>
         <Link to="About">
             <TabsTrigger value="about" className="size-full">About</TabsTrigger>

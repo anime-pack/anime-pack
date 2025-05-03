@@ -187,7 +187,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             app.manage(AppData {
-                drpc_client: Arc::new(DrpcClient::new("1100480933452333068")),
+                drpc_client: Arc::new(DrpcClient::new("771124766517755954")),
                 reqwest_client: reqwest::Client::new(),
             });
             Ok(())
