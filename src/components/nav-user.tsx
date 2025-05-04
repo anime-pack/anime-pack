@@ -51,8 +51,8 @@ export function NavUser({
                                     (user.name[1].toUpperCase() || '')}
                             </AvatarFallback>
                         </Avatar>
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium"> { /* //TODO: This flashes an x scrollbar when opening the sidebar */ }
+                        <div className="flex flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-medium transition-all duration-300 ease-in-out"> { /* //TODO: This flashes an x scrollbar when opening the sidebar */ }
                                 {user.name}
                             </span>
                         </div>
@@ -61,7 +61,7 @@ export function NavUser({
                 <Link
                     to="/settings/desktop"
                     className={cn(
-                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-300 absolute items-center flex justify-center rounded-full',
+                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-500 absolute items-center flex justify-center rounded-full',
                         `${open ? 'right-5' : 'bottom-11'}`
                     )}
                 >
