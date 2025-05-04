@@ -1,5 +1,4 @@
 use reqwest::{self};
-use serde::Deserialize;
 use std::sync::Arc;
 use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
@@ -71,6 +70,36 @@ async fn jikan_api_airing(
 
     let jk_res = reqwest_client
         .get(format!("{}anime?status=airing", base_url))
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    match jk_res.status() {
+        reqwest::StatusCode::OK => {
+            println!("Status OK");
+            jk_res.json::<serde_json::Value>()
+                .await
+                .map_err(|e| e.to_string())
+        },
+        _ => {
+            eprintln!("Status not OK");
+            Err("API request failed".to_string())
+        }
+    }
+}
+
+#[tauri::command]
+async fn jikan_api_fullid(
+    app: tauri::AppHandle,
+    id: &str
+) -> Result<serde_json::Value, String> {  // Mudança no tipo de retorno
+    let app_state = app.state::<AppData>();
+    let reqwest_client = app_state.reqwest_client.clone();
+
+    let base_url = String::from("https://api.jikan.moe/v4/");
+
+    let jk_res = reqwest_client
+        .get(format!("{}anime/{}/full", base_url, id))
         .send()
         .await
         .map_err(|e| e.to_string())?;
@@ -192,7 +221,7 @@ pub fn run() {
             });
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![open_url, open_path, window_mmc, jikan_api_search, jikan_api_airing])
+        .invoke_handler(tauri::generate_handler![open_url, open_path, window_mmc, jikan_api_search, jikan_api_airing, jikan_api_fullid])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");
 

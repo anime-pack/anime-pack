@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Gamepad2, User } from "lucide-react"
 import { Link } from "react-router"
+import DiscordLogo from "@/assets/DiscordLogo"
 
 export function LoginForm({
   className,
@@ -30,7 +31,7 @@ export function LoginForm({
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
-                  <Gamepad2 className="size-5" />
+                  <DiscordLogo className="size-5.5 stroke-0" />
                   Login with Discord
                 </Button>
                 <Button variant="outline" className="w-full">
@@ -42,14 +43,14 @@ export function LoginForm({
                   </svg>
                   Login with Google
                 </Button>
-                <Link to="/main">
+                <Link to="#">
                   <Button variant="outline" className="w-full">
                     <User className="size-5" />
-                    Login as Guest
+                    Continue as Guest
                   </Button>
                 </Link>
               </div>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+              {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
                   Or continue with
                 </span>
@@ -85,7 +86,7 @@ export function LoginForm({
                 <a href="#" className="underline underline-offset-4">
                   Sign up
                 </a>
-              </div>
+              </div> */}
             </div>
           </form>
         </CardContent>

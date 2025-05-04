@@ -19,11 +19,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-    SidebarMenuButton,
-    useSidebar,
-} from '@/components/ui/sidebar';
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { Link } from 'react-router';
+import { cn } from '@/lib/utils';
+import { LoginDialog, useLoginDialog } from './login-dialog';
 
 export function NavUser({
     user,
@@ -34,33 +33,37 @@ export function NavUser({
         avatar: string;
     };
 }) {
-    const { isMobile } = useSidebar();
+    const { isMobile, open } = useSidebar();
+    const { openDialog, isOpen, setIsOpen } = useLoginDialog()
 
     return (
         <DropdownMenu>
             <div className="flex flex-row items-center w-full">
-            <DropdownMenuTrigger className="w-full">
-                <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                    <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback className="rounded-lg">
-                            {user.name[0].toUpperCase() +
-                                (user.name[1].toUpperCase() || '')}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">
-                            {user.name}
-                        </span>
-                    </div>
-                </SidebarMenuButton>
-            </DropdownMenuTrigger>
+                <DropdownMenuTrigger className="w-full">
+                    <SidebarMenuButton
+                        size="lg"
+                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                    >
+                        <Avatar className="h-8 w-8 rounded-lg">
+                            <AvatarImage src={user.avatar} alt={user.name} />
+                            <AvatarFallback className="rounded-lg">
+                                {user.name[0].toUpperCase() +
+                                    (user.name[1].toUpperCase() || '')}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-medium"> { /* //TODO: This flashes an x scrollbar when opening the sidebar */ }
+                                {user.name}
+                            </span>
+                        </div>
+                    </SidebarMenuButton>
+                </DropdownMenuTrigger>
                 <Link
                     to="/settings/desktop"
-                    className="size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-300 absolute items-center flex justify-center right-5 rounded-xl"
+                    className={cn(
+                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-300 absolute items-center flex justify-center rounded-full',
+                        `${open ? 'right-5' : 'bottom-11'}`
+                    )}
                 >
                     <Settings className="size-5" />
                 </Link>
@@ -113,11 +116,12 @@ export function NavUser({
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    <LogOut />
-                    Log out
+                <DropdownMenuItem onSelect={openDialog}>
+                                <LogOut />
+                                Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>
+            <LoginDialog isOpen={isOpen} onOpenChange={setIsOpen} />
         </DropdownMenu>
     );
 }

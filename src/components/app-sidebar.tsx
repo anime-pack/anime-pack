@@ -3,7 +3,6 @@ import {
   BookMarked,
   Package,
   PackageOpen,
-  Settings2,
   TvMinimalPlay,
 } from "lucide-react"
 
@@ -45,6 +44,26 @@ const data = {
   ],
   navMain: [
     {
+      title: "Library",
+      url: "#",
+      icon: BookMarked,
+      isActive: true,
+      items: [
+        {
+          title: "Liked",
+          url: "/library/liked",
+        },
+        {
+          title: "History",
+          url: "/library/history",
+        },
+        {
+          title: "Packs",
+          url: "#",
+        },
+      ],
+    },
+    {
       title: "Content",
       url: "#",
       icon: TvMinimalPlay,
@@ -55,42 +74,6 @@ const data = {
           url: "/",
         }
       ]
-    },
-    {
-      title: "My Library",
-      url: "#",
-      icon: BookMarked,
-      isActive: false,
-      items: [
-        {
-          title: "Liked",
-          url: "/library/liked",
-        },
-        {
-          title: "History",
-          url: "/library/history",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      isActive: false,
-      items: [
-        {
-          title: "Appearence",
-          url: "/settings/appearence",
-        },
-        {
-          title: "Desktop",
-          url: "/settings/desktop",
-        },
-        {
-          title: "About",
-          url: "/settings/about",
-        },
-      ],
     },
   ],
   projects: [
@@ -110,7 +93,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* //TODO: fix its child style to uncomment <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
