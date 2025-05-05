@@ -5,7 +5,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimeItem } from '@/types/types';
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router';
+import {
+    // useParams,
+    useSearchParams
+} from 'react-router';
 
 export default function HomeAnime() {
     // const params = useParams();

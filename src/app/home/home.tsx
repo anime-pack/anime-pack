@@ -107,54 +107,49 @@ export default function Home() {
                     {/* TODO: make buttons appear on carousel intem hover */}
                 </Carousel>
             </div>
-            <div className="h-fit w-full p-2 rounded-xl bg-muted/50 md:min-h-min">
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
-                <p>nao</p>
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 w-full p-4 rounded-xl bg-muted/50">
+                {animes?.data.map((anime, index) => (
+                    <Link
+                        key={index}
+                        to={`/anime/${anime.title
+                            .replace(/[:]/g, '')
+                            .replace(/[\s]/g, '-')
+                            .toLowerCase()}?id=${anime.mal_id}`}
+                        className="group relative aspect-[3/4] overflow-hidden rounded-lg"
+                    >
+                        <div
+                            className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
+                            style={{
+                                backgroundImage: `url("${anime.images.webp.large_image_url}")`,
+                            }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            <div className="absolute bottom-0 p-4 space-y-2 w-full">
+                                <h3 className="text-white font-semibold line-clamp-2">
+                                    {anime.title}
+                                </h3>
+                                <div className="flex flex-wrap gap-1">
+                                    {anime.genres
+                                        .slice(0, 3)
+                                        .map((genre, idx) => (
+                                            <Badge
+                                                key={idx}
+                                                variant="outline"
+                                                className="bg-black/50 text-white border-white/20"
+                                            >
+                                                {genre.name}
+                                            </Badge>
+                                        ))}
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-white/80">
+                                    <span>Ep: {anime.episodes || '?'}</span>
+                                    <span>•</span>
+                                    <span>{anime.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                ))}
             </div>
         </div>
     );

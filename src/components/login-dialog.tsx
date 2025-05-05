@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogFooter, DialogHeader } from "./ui/dialog";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import {
+    Dialog,
+    DialogContent,
+    // DialogFooter,
+    // DialogHeader
+} from "./ui/dialog";
+// import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { LoginForm } from "./login-form";
 
 export function useLoginDialog() {
