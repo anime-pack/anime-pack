@@ -24,8 +24,8 @@ export default function HomeSearch() {
     useEffect(() => {
         const getSearch = async () => {
             setAnimes(
-                await invoke('jikan_api_search', {
-                    searchTerm: searchParams.get('query'),
+                await invoke('jikan_api', {
+                    urlParams: `anime?q=${searchParams.get("query")}`,
                 })
             );
         };

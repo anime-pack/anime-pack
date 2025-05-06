@@ -17,8 +17,8 @@ export default function HomeAnime() {
 
     useEffect(() => {
         const getAnidata = async () => {
-            const ani: { data: AnimeItem } = await invoke('jikan_api_fullid', {
-                id: searchParams.get('id'),
+            const ani: { data: AnimeItem } = await invoke('jikan_api', {
+                urlParams: `anime/${searchParams.get('id')}/full`,
             });
             setAnidata(ani.data);
         };

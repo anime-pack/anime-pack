@@ -16,11 +16,13 @@ export default function Home() {
     const [animes, setAnimes] = useState<AnimeData>();
 
     useEffect(() => {
-        const getSearch = async () => {
-            setAnimes(await invoke('jikan_api_airing', {}));
+        const getAnimesAiring = async () => {
+            setAnimes(
+                await invoke('jikan_api', { urlParams: `anime?status=airing` })
+            );
         };
 
-        getSearch();
+        getAnimesAiring();
     });
 
     return (
