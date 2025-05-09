@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import SearchBar from './searchBar';
 import { HotKeys } from "react-hotkeys"
+import { ScrollArea } from '@radix-ui/react-scroll-area';
 
 export default function MainPage() {
     let location = useLocation();
@@ -160,8 +161,11 @@ export default function MainPage() {
                     <SearchBar />   {/* //TODO: make searchbar focusable by the ctrl+k hotkey */}
                 </header>
                 <hr />
-                <div className="flex-1 w-full min-h-0 overflow-y-auto">
+                    <div className="flex-1 w-full min-h-0 overflow-y-auto">
+                        <ScrollArea className="w-full h-fit">
+
                     <Outlet />
+                        </ScrollArea>
                 </div>
             </SidebarInset>
             </HotKeys>

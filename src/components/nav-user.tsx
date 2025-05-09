@@ -33,7 +33,7 @@ export function NavUser({
     };
 }) {
     const { isMobile, open } = useSidebar();
-    const { openDialog, isOpen, setIsOpen } = useLoginDialog()
+    const { openDialog, isOpen, setIsOpen } = useLoginDialog();
 
     return (
         <DropdownMenu>
@@ -51,7 +51,9 @@ export function NavUser({
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium transition-all duration-300 ease-in-out"> { /* //TODO: This flashes an x scrollbar when opening the sidebar */ }
+                            <span className="truncate font-medium transition-all duration-300 ease-in-out">
+                                {' '}
+                                {/* //TODO: This flashes an x scrollbar when opening the sidebar */}
                                 {user.name}
                             </span>
                         </div>
@@ -86,34 +88,42 @@ export function NavUser({
                             <span className="truncate font-medium">
                                 {user.name}
                             </span>
-                            <span className="truncate text-xs">
+                            {/* <span className="truncate text-xs">
                                 {user.email}
-                            </span>
+                            </span> */}
                         </div>
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
+                        <Link to="#" className="flex gap-2 w-full">
                         <Sparkles />
                         Upgrade to Pro
+                        </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <BadgeCheck />
-                        Account
+                        <Link to="#" className="flex gap-2 w-full">
+                            <BadgeCheck />
+                            Account
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
+                        <Link to="#" className="flex gap-2 w-full">
                         <CreditCard />
                         Billing
+                        </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={openDialog}>
-                                <LogOut />
-                                Log out
+                <DropdownMenuItem>
+                    <Link to="/login" className="flex gap-2 w-full">
+                    <LogOut />
+                    Log out
+                    </Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
             <LoginDialog isOpen={isOpen} onOpenChange={setIsOpen} />

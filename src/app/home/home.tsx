@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge.tsx';
 import { AnimeData } from '@/types/types.js';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export default function Home() {
     const [animes, setAnimes] = useState<AnimeData>();
@@ -58,7 +59,7 @@ export default function Home() {
                                             }")`,
                                         }}
                                     >
-                                        <CardContent className="aspect-auto p-0 h-full w-full rounded-xl bg-linear-to-b from-black/90 via-black/70 to-black/0 fade-in group-hover:bg-primary-700/50 backdrop-opacity-70 transition-all duration-600 group-hover:backdrop-blur">
+                                        <CardContent className="aspect-auto p-0 h-full w-full rounded-xl bg-gradient-to-t from-black via-black/40 to-transparent">
                                             <Link
                                                 to={`/anime/${ani.title
                                                     .replace(/[:]/g, '')
@@ -68,34 +69,41 @@ export default function Home() {
                                                 }`}
                                                 className="active:cursor-grabbing"
                                             >
-                                                <div className="w-full h-full pl-3">
-                                                    <Label className="ml-2 mt-3.5 line-clamp-2">
-                                                        {ani.title}
-                                                    </Label>
-                                                    <div className="flex gap-1 w-full mt-2">
-                                                        {ani.genres
-                                                            .slice(0, 4)
-                                                            .map(
-                                                                (
-                                                                    genre,
-                                                                    index
-                                                                ) => (
-                                                                    <Badge
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        className="bg-muted/70 text-accent-foreground"
-                                                                    >
-                                                                        {
-                                                                            genre.name
-                                                                        }
-                                                                    </Badge>
-                                                                )
-                                                            )}
+                                                <div className="relative w-full h-full">
+                                                    {/* Container para gêneros e sinopse (aparece no hover) */}
+                                                    <div className="absolute bottom-0 w-full px-4 pb-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                        <div className="flex flex-wrap gap-1 w-full max-w-[90%] mb-2">
+                                                            {ani.genres
+                                                                .slice(0, 4)
+                                                                .map(
+                                                                    (
+                                                                        genre,
+                                                                        index
+                                                                    ) => (
+                                                                        <Badge
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            className="bg-black/50 text-white/90 border-white/10"
+                                                                        >
+                                                                            {
+                                                                                genre.name
+                                                                            }
+                                                                        </Badge>
+                                                                    )
+                                                                )}
+                                                        </div>
+                                                        <p className="text-sm text-white/80 line-clamp-2 max-w-[80%]">
+                                                            {ani.synopsis}
+                                                        </p>
                                                     </div>
-                                                    <p className="max-w-[64%] max-h-[72%] ml-2 mt-1.5 line-clamp-4 opacity-0 group-hover:opacity-100 fade-in duration-400">
-                                                        {ani.synopsis}
-                                                    </p>
+
+                                                    {/* Container do título (sempre visível) */}
+                                                    <div className="absolute bottom-3 w-full px-4 transition-all duration-300 group-hover:translate-y-[-0.5rem]">
+                                                        <Label className="text-white text-base font-medium line-clamp-2">
+                                                            {ani.title}
+                                                        </Label>
+                                                    </div>
                                                 </div>
                                             </Link>
                                         </CardContent>
@@ -109,49 +117,69 @@ export default function Home() {
                     {/* TODO: make buttons appear on carousel intem hover */}
                 </Carousel>
             </div>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 w-full p-4 rounded-xl bg-muted/50">
-                {animes?.data.map((anime, index) => (
-                    <Link
-                        key={index}
-                        to={`/anime/${anime.title
-                            .replace(/[:]/g, '')
-                            .replace(/[\s]/g, '-')
-                            .toLowerCase()}?id=${anime.mal_id}`}
-                        className="group relative aspect-[3/4] overflow-hidden rounded-lg"
-                    >
-                        <div
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
-                            style={{
-                                backgroundImage: `url("${anime.images.webp.large_image_url}")`,
-                            }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
-                            <div className="absolute bottom-0 p-4 space-y-2 w-full">
-                                <h3 className="text-white font-semibold line-clamp-2">
-                                    {anime.title}
-                                </h3>
-                                <div className="flex flex-wrap gap-1">
-                                    {anime.genres
-                                        .slice(0, 3)
-                                        .map((genre, idx) => (
-                                            <Badge
-                                                key={idx}
-                                                variant="outline"
-                                                className="bg-black/50 text-white border-white/20"
-                                            >
-                                                {genre.name}
-                                            </Badge>
-                                        ))}
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-white/80">
-                                    <span>Ep: {anime.episodes || '?'}</span>
-                                    <span>•</span>
-                                    <span>{anime.status}</span>
-                                </div>
+            <div className="space-y-8">
+                <section>
+                    <h2 className="text-2xl font-semibold mb-4 px-4">
+                        Em Exibição
+                    </h2>
+                    <div className="relative">
+                        <ScrollArea className="w-full">
+                            <div className="flex gap-3.5 px-4 pb-4">
+                                {animes?.data.map((anime, index) => (
+                                    <Link
+                                        key={index}
+                                        to={`/anime/${anime.title
+                                            .replace(/[:]/g, '')
+                                            .replace(/[\s]/g, '-')
+                                            .toLowerCase()}?id=${anime.mal_id}`}
+                                        className="flex-none w-[200px] group relative aspect-[3/4] overflow-hidden rounded-md"
+                                    >
+                                        <div
+                                            className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-105"
+                                            style={{
+                                                backgroundImage: `url("${anime.images.webp.large_image_url}")`,
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent">
+                                            {/* Container para informações extras (aparece no hover) */}
+                                            <div className="absolute bottom-0 w-full px-3 pb-14 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <div className="flex flex-wrap gap-1 mb-2">
+                                                    {anime.genres
+                                                        .slice(0, 2)
+                                                        .map((genre, idx) => (
+                                                            <Badge
+                                                                key={idx}
+                                                                variant="outline"
+                                                                className="bg-black/50 text-xs text-white/90 border-white/10"
+                                                            >
+                                                                {genre.name}
+                                                            </Badge>
+                                                        ))}
+                                                </div>
+                                                <div className="flex items-center gap-1.5 text-xs text-white/70">
+                                                    <span>
+                                                        Ep:{' '}
+                                                        {anime.episodes || '?'}
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>{anime.status}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Container do título (sempre visível) */}
+                                            <div className="absolute bottom-3 w-full px-3 transition-all duration-300 group-hover:translate-y-[-0.5rem]">
+                                                <h3 className="text-white font-medium text-sm line-clamp-2">
+                                                    {anime.title}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
                             </div>
-                        </div>
-                    </Link>
-                ))}
+                            <ScrollBar orientation="horizontal" />
+                        </ScrollArea>
+                    </div>
+                </section>
             </div>
         </div>
     );
