@@ -1,9 +1,7 @@
 use discordipc::{
     activity::{Activity, ActivityType, Assets, Button, Timestamps},
     packet::Packet,
-    Client as DrpcClient, InnerClient,
 };
-use std::sync::Arc;
 use tauri::Manager;
 
 pub fn setup_drpc(app: &tauri::AppHandle) {
