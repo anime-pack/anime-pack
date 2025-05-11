@@ -37,8 +37,12 @@ export function NavUser({
 
     return (
         <DropdownMenu>
-            <div className="flex flex-row items-center w-full">
-                <DropdownMenuTrigger className="w-full">
+            <div
+                className={cn(
+                    "flex gap-2 items-center w-full overflow-hidden",
+                    open ? `flex-row` : `flex-col-reverse`
+                )}>
+                <DropdownMenuTrigger className="grow">
                     <SidebarMenuButton
                         size="lg"
                         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -51,7 +55,10 @@ export function NavUser({
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium transition-all duration-300 ease-in-out">
+                            <span
+                                className={cn(
+                                    "truncate font-medium transition-all duration-300 ease-in-out",
+                                open ? `opacity-100` : `opacity-0`)}>
                                 {' '}
                                 {/* //TODO: This flashes an x scrollbar when opening the sidebar */}
                                 {user.name}
@@ -62,8 +69,7 @@ export function NavUser({
                 <Link
                     to="/settings/desktop"
                     className={cn(
-                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-500 absolute items-center flex justify-center rounded-full',
-                        `${open ? 'right-5' : 'bottom-11'}`
+                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-500 items-center flex justify-center rounded-full',
                     )}
                 >
                     <Settings className="size-5" />
