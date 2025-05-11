@@ -1,13 +1,11 @@
+use discord::{disconnect_drpc, setup_drpc};
+use discordipc::{Client, InnerClient};
 use reqwest::{self};
 use std::sync::Arc;
 use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
 
-use discordipc::{
-    activity::{Activity, ActivityType, Assets, Button, Timestamps},
-    packet::Packet,
-    Client as DrpcClient, InnerClient,
-};
+mod discord;
 
 #[tauri::command]
 fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
@@ -79,73 +77,6 @@ fn open_path(app_handle: tauri::AppHandle, path: &str) {
         });
 }
 
-fn setup_drpc(app: &tauri::AppHandle) {
-    let app_state = app.state::<AppData>();
-    let drpc_client = app_state.drpc_client.clone();
-    let drpc_client_clone = drpc_client.clone();
-
-    drpc_client.on("READY", move |_client, _packet| {
-        println!("Discord client connected!");
-
-        let activity = Activity::new()
-            .state("All your animes, in one pack!")
-            .kind(ActivityType::Watching)
-            .details("Anime Pack")
-            .assets(
-                Assets::new()
-            //         .large_image(
-            //             "https://i.pinimg.com/736x/2e/1a/a8/2e1aa8b650982b57e99d2907c1954409.jpg",
-            //             Some("Developing..."),
-            //         )
-                    .small_image(
-                        "app_icon",
-                        Some("Anime Pack"),
-                    ),
-            )
-            .timestamps(Timestamps::new().start_now())
-            .button(Button::new("Github", "https://github.com/dark1zinn"));
-
-        let nonce = Packet::generate_nonce();
-        let activity_packet = Packet::new_activity(Some(&activity), Some(&nonce));
-
-        drpc_client_clone.once(nonce, move |_client, packet| {
-            match packet.filter() {
-                Ok(_packet) => {
-                    println!("Activity has been set!");
-
-                    // following code clears activity after 3 secs
-
-                    // std::thread::sleep(std::time::Duration::from_secs(3));
-                    // if let Err(e) = client.send(Packet::new_activity(None, None)) {
-                    //     eprintln!("Couldn't send packet: {}", e);
-                    // };
-                    // println!("Activity cleared!");
-                }
-                Err(e) => {
-                    eprintln!("Couldn't set activity: {}", e);
-                }
-            }
-        });
-        if let Err(e) = _client.send(activity_packet) {
-            eprintln!("Couldn't send Packet: {}", e);
-        }
-    });
-
-    drpc_client.connect().unwrap_or_else(|e| {
-        eprintln!("Couldn't connect DRPC: {}", e);
-    })
-}
-
-fn disconnect_drpc(app: &tauri::AppHandle) {
-    let app_state = app.state::<AppData>();
-    let drpc_client = app_state.drpc_client.clone();
-
-    drpc_client
-        .disconnect()
-        .unwrap_or_else(|e| eprintln!("Couldn't disconnect DRPC: {}", e));
-    println!("Drpc client closed");
-}
-
 struct AppData {
     drpc_client: Arc<discordipc::Client<Arc<InnerClient>>>,
     reqwest_client: reqwest::Client,
@@ -157,7 +88,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             app.manage(AppData {
-                drpc_client: Arc::new(DrpcClient::new("1368098323558301759")),
+                drpc_client: Arc::new(Client::new("1368098323558301759")),
                 reqwest_client: reqwest::Client::new(),
             });
             Ok(())
