@@ -1,6 +1,7 @@
+use crate::types::*;
+use jikan_moe;
 use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
-use crate::types::*;
 
 #[tauri::command]
 pub fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
@@ -20,7 +21,8 @@ pub fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
 pub async fn jikan_api(
     app: tauri::AppHandle,
     url_params: &str,
-) -> Result<serde_json::Value, String> {  // Mudança no tipo de retorno
+) -> Result<serde_json::Value, String> {
+    // Mudança no tipo de retorno
     let app_state = app.state::<AppData>();
     let reqwest_client = app_state.reqwest_client.clone();
 
@@ -35,14 +37,37 @@ pub async fn jikan_api(
     match jk_res.status() {
         reqwest::StatusCode::OK => {
             println!("Status OK");
-            jk_res.json::<serde_json::Value>()
+            jk_res
+                .json::<serde_json::Value>()
                 .await
                 .map_err(|e| e.to_string())
-        },
+        }
         _ => {
             eprintln!("Status not OK");
             Err("API request failed".to_string())
         }
+    }
+}
+
+#[tauri::command]
+pub async fn top_animes(app: tauri::AppHandle) -> Result<Vec<jikan_moe::top::Anime>, String> {
+    let app_state = app.state::<AppData>();
+    let jikan_client = app_state.jikan_client.clone();
+
+    let top_anime = jikan_client
+        .get_top_anime(
+            jikan_moe::top::AnimeType::None,
+            jikan_moe::top::Filter::None,
+            jikan_moe::top::Rating::None,
+            None,
+            None,
+            None,
+        )
+        .await;
+    if top_anime.is_ok() {
+        Ok(top_anime.ok().expect("No json").data)
+    } else {
+        Err(String::from("Status not ok for top_animes"))
     }
 }
 

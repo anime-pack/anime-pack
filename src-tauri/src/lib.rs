@@ -1,14 +1,15 @@
+use crate::commands::*;
+use crate::types::*;
 use discord::{disconnect_drpc, setup_drpc};
 use discordipc::Client;
+use jikan_moe::JikanClient;
 use reqwest::{self};
 use std::sync::Arc;
 use tauri::Manager;
-use crate::types::*;
-use crate::commands::*;
 
-mod types;
 mod commands;
 mod discord;
+mod types;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,14 +19,12 @@ pub fn run() {
             app.manage(AppData {
                 drpc_client: Arc::new(Client::new("1368098323558301759")),
                 reqwest_client: reqwest::Client::new(),
+                jikan_client: Arc::new(JikanClient::new()),
             });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            open_url,
-            open_path,
-            window_mmc,
-            jikan_api
+            open_url, open_path, window_mmc, jikan_api, top_animes
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

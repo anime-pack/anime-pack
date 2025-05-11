@@ -8,18 +8,18 @@ import Autoplay from 'embla-carousel-autoplay';
 import { Label } from '@/components/ui/label.tsx';
 import { Link } from 'react-router';
 import { Badge } from '@/components/ui/badge.tsx';
-import { AnimeData } from '@/types/types.js';
+import { AnimeItem } from '@/types/types.js';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export default function Home() {
-    const [animes, setAnimes] = useState<AnimeData>();
+    const [animes, setAnimes] = useState<AnimeItem[]>();
 
     useEffect(() => {
         const getAnimesAiring = async () => {
             setAnimes(
-                await invoke('jikan_api', { urlParams: `anime?status=airing` })
+                await invoke('top_animes')
             );
         };
 
@@ -43,7 +43,7 @@ export default function Home() {
                     className="w-full max-h-[240px] min-h-[190px] h-auto ml-[20px]"
                 >
                     <CarouselContent className="hover:cursor-grab active:cursor-grabbing snap-center snap-mandatory h-full w-full -ml-1">
-                        {animes?.data.map((ani, index) => (
+                        {animes?.map((ani, index) => (
                             <CarouselItem
                                 key={index}
                                 className="md:basis-1/1 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4 h-full aspect-video p-1"
@@ -51,13 +51,13 @@ export default function Home() {
                                 <div className="px-1 select-none w-full h-full">
                                     <Card
                                         className="h-full p-0 group bg-no-repeat bg-cover bg-center border-0"
-                                        style={{
-                                            backgroundImage: `url("${
-                                                ani.trailer.images
-                                                    .large_image_url ||
-                                                ani.images.webp.large_image_url
-                                            }")`,
-                                        }}
+                                        // style={{     // TODO: images returning undefined
+                                        //     backgroundImage: `url("${
+                                        //         ani.trailer.images
+                                        //             .large_image_url ||
+                                        //         ani.images.webp.large_image_url || ani.images.jpg.large_image_url
+                                        //     }")`,
+                                        // }}
                                     >
                                         <CardContent className="aspect-auto p-0 h-full w-full rounded-xl bg-gradient-to-t from-black via-black/40 to-transparent">
                                             <Link
@@ -125,7 +125,7 @@ export default function Home() {
                     <div className="relative">
                         <ScrollArea className="w-full">
                             <div className="flex gap-3.5 px-4 pb-4">
-                                {animes?.data.map((anime, index) => (
+                                {animes?.map((anime, index) => (
                                     <Link
                                         key={index}
                                         to={`/anime/${anime.title
