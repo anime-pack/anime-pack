@@ -6,7 +6,7 @@ export default function Settings() {
     const location = useLocation();
     const [defaultView] = location.pathname.split("/").slice(-1);
 
-    useEffect(() => {}, [defaultView]); // TODO: bug when already at the defaultView parent path that doesnt render the sibling child, occurs only when navigating to a child path, again, via the sidebar
+    useEffect(() => {}, [defaultView]);
 
     return (
         <div className="flex flex-1 justify-center px-4 pt-4">

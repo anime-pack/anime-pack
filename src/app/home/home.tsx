@@ -51,13 +51,11 @@ export default function Home() {
                                 <div className="px-1 select-none w-full h-full">
                                     <Card
                                         className="h-full p-0 group bg-no-repeat bg-cover bg-center border-0"
-                                        // style={{     // TODO: images returning undefined
-                                        //     backgroundImage: `url("${
-                                        //         ani.trailer.images
-                                        //             .large_image_url ||
-                                        //         ani.images.webp.large_image_url || ani.images.jpg.large_image_url
-                                        //     }")`,
-                                        // }}
+                                        style={{
+                                            backgroundImage: `url("${
+                                                ani.images.webp.large_image_url || ani.images.jpg.large_image_url
+                                            }")`,
+                                        }}
                                     >
                                         <CardContent className="aspect-auto p-0 h-full w-full rounded-xl bg-gradient-to-t from-black via-black/40 to-transparent">
                                             <Link
@@ -137,7 +135,7 @@ export default function Home() {
                                         <div
                                             className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-105"
                                             style={{
-                                                backgroundImage: `url("${anime.images.webp.large_image_url}")`,
+                                                backgroundImage: `url("${anime.images.webp.large_image_url || anime.images.jpg.large_image_url || anime.images.webp.image_url || anime.images.jpg.image_url}")`,
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent">

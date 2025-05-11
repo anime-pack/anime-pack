@@ -45,7 +45,7 @@ export function NavMain({
             key={item.title}
             asChild
             open={!open ? false : undefined}
-            defaultOpen={item.isActive} // TODO: must make so when siderbar closes this becomes false
+            defaultOpen={item.isActive}
             className="group/collapsible"
           >
             <SidebarMenuItem>

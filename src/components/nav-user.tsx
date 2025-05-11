@@ -21,7 +21,6 @@ import {
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { Link } from 'react-router';
 import { cn } from '@/lib/utils';
-import { LoginDialog, useLoginDialog } from './login-dialog';
 
 export function NavUser({
     user,
@@ -33,7 +32,6 @@ export function NavUser({
     };
 }) {
     const { isMobile, open } = useSidebar();
-    const { openDialog, isOpen, setIsOpen } = useLoginDialog();
 
     return (
         <DropdownMenu>
@@ -60,7 +58,6 @@ export function NavUser({
                                     "truncate font-medium transition-all duration-300 ease-in-out",
                                 open ? `opacity-100` : `opacity-0`)}>
                                 {' '}
-                                {/* //TODO: This flashes an x scrollbar when opening the sidebar */}
                                 {user.name}
                             </span>
                         </div>
@@ -132,7 +129,6 @@ export function NavUser({
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
-            <LoginDialog isOpen={isOpen} onOpenChange={setIsOpen} />
         </DropdownMenu>
     );
 }
