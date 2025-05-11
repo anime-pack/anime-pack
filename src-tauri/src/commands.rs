@@ -49,6 +49,7 @@ pub async fn jikan_api(
     }
 }
 
+//* This command must be studyed to apply its params and other functionalityes from jikan_rs
 #[tauri::command]
 pub async fn top_animes(app: tauri::AppHandle) -> Result<Vec<jikan_moe::top::Anime>, String> {
     let app_state = app.state::<AppData>();
