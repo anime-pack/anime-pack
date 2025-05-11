@@ -3,9 +3,10 @@ use discordipc::{
     packet::Packet,
 };
 use tauri::Manager;
+use crate::types::*;
 
 pub fn setup_drpc(app: &tauri::AppHandle) {
-    let app_state = app.state::<crate::AppData>();
+    let app_state = app.state::<AppData>();
     let drpc_client = app_state.drpc_client.clone();
     let drpc_client_clone = drpc_client.clone();
 
@@ -50,7 +51,7 @@ pub fn setup_drpc(app: &tauri::AppHandle) {
 }
 
 pub fn disconnect_drpc(app: &tauri::AppHandle) {
-    let app_state = app.state::<crate::AppData>();
+    let app_state = app.state::<AppData>();
     let drpc_client = app_state.drpc_client.clone();
 
     drpc_client
