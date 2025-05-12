@@ -13,6 +13,7 @@ import { User } from 'lucide-react';
 import { Link } from 'react-router';
 import DiscordLogo from '@/assets/DiscordLogo';
 import GoogleLogo from '@/assets/GoogleLogo';
+import { toast } from 'sonner';
 
 export function LoginForm({
     className,
@@ -32,7 +33,15 @@ export function LoginForm({
                         <div className="grid gap-6">
                             <div className="flex flex-col gap-4">
                                 <Link
-                                    to="/"
+                                    to="/login"
+                                    onClick={() => {
+                                        toast.warning('Wait a second there!', {
+                                            description:
+                                                'The feature to login with Discord is still in development.',
+                                            duration: 5000,
+                                            closeButton: true,
+                                        });
+                                    }}
                                     className="bg-zinc-500/50 rounded-md"
                                 >
                                     <Button
@@ -44,7 +53,15 @@ export function LoginForm({
                                     </Button>
                                 </Link>
                                 <Link
-                                    to="/"
+                                    to="/login"
+                                    onClick={() => {
+                                        toast.warning('Wait a second there!', {
+                                            description:
+                                                'The feature to login with Google is still in development.',
+                                            duration: 5000,
+                                            closeButton: true,
+                                        });
+                                    }}
                                     className="bg-zinc-500/50 rounded-md"
                                 >
                                     <Button
@@ -109,8 +126,34 @@ export function LoginForm({
                     </form>
                     <div className="text-accent-foreground/60 mt-7 *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
                         By continuing, you agree to our{' '}
-                        <a href="#">Terms of Service</a> and{' '}
-                        <a href="#">Privacy Policy</a>.
+                        <a
+                            href="#"
+                            onClick={() => {
+                                toast.info('Hey!', {
+                                    description:
+                                        "We understand that you may want to read our Terms of Service, but it's not disponible yet.",
+                                    duration: 5000,
+                                    closeButton: true,
+                                });
+                            }}
+                        >
+                            Terms of Service
+                        </a>{' '}
+                        and{' '}
+                        <a
+                            href="#"
+                            onClick={() => {
+                                toast.info('Hey!', {
+                                    description:
+                                        "We understand that you may want to read our Privacy Policy, but it's not disponible yet.",
+                                    duration: 5000,
+                                    closeButton: true,
+                                });
+                            }}
+                        >
+                            Privacy Policy
+                        </a>
+                        .
                     </div>
                 </CardContent>
             </Card>
