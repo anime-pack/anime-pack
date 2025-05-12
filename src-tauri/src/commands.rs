@@ -1,5 +1,8 @@
 use crate::types::*;
-use jikan_moe::{anime::SearchParams, common::structs::anime::{Anime, AnimeExtended}};
+use jikan_moe::{
+    anime::SearchParams,
+    common::structs::anime::{Anime, AnimeExtended},
+};
 use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
 
@@ -18,10 +21,7 @@ pub fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
 }
 
 #[tauri::command]
-pub async fn search_animes(
-    app: tauri::AppHandle,
-    term: &str,
-) -> Result<Vec<Anime>, String> {
+pub async fn search_animes(app: tauri::AppHandle, term: &str) -> Result<Vec<Anime>, String> {
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
@@ -31,15 +31,12 @@ pub async fn search_animes(
         sfw: Some(true),
         ..Default::default()
     };
-    let anime_search = jikan_client
-    .get_anime_search(Some(params))
-    .await;
 
-    if anime_search.is_ok() {
-        Ok(anime_search.ok().expect("No json").data)
-    } else {
-        Err(String::from("Status not ok for top_animes"))
-    }
+    jikan_client
+        .get_anime_search(Some(params))
+        .await
+        .map(|response| response.data)
+        .map_err(|_| String::from("Status not ok for anime_full"))
 }
 
 //* This command must be studyed to apply its params and other functionalityes from jikan_rs
@@ -48,21 +45,23 @@ pub async fn top_animes(app: tauri::AppHandle) -> Result<Vec<AnimeExtended>, Str
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
-    let top_anime = jikan_client
-        .get_top_anime(
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        .await;
-    if top_anime.is_ok() {
-        Ok(top_anime.ok().expect("No json").data)
-    } else {
-        Err(String::from("Status not ok for top_animes"))
-    }
+    jikan_client
+        .get_top_anime(None, None, None, None, None, None)
+        .await
+        .map(|response| response.data)
+        .map_err(|_| String::from("Status not ok for anime_full"))
+}
+
+#[tauri::command]
+pub async fn anime_full(app: tauri::AppHandle, id: i32) -> Result<AnimeExtended, String> {
+    let app_state = app.state::<AppData>();
+    let jikan_client = app_state.jikan_client.clone();
+
+    jikan_client
+        .get_anime_full(id)
+        .await
+        .map(|response| response.data)
+        .map_err(|_| String::from("Status not ok for anime_full"))
 }
 
 #[tauri::command]

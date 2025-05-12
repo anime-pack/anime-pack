@@ -1900,9 +1900,9 @@ dependencies = [
 
 [[package]]
 name = "jikan_moe"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd9210b3a6f9848838342918c9ca08c664d623e887c99dc6841fc2bacce3c937"
+checksum = "3f54e2859309c1948cc5759e7b8e577e3f6c336e26a381fe9412016037755b03"
 dependencies = [
  "async-trait",
  "chrono",

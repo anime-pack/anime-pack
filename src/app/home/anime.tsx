@@ -13,14 +13,16 @@ import {
 export default function HomeAnime() {
     // const params = useParams();
     const [searchParams] = useSearchParams();
-    let [anidata, setAnidata] = useState<AnimeItem>();
+    let [anime, setAnime] = useState<AnimeItem>();
 
     useEffect(() => {
         const getAnidata = async () => {
-            const ani: { data: AnimeItem } = await invoke('jikan_api', {
-                urlParams: `anime/${searchParams.get('id')}/full`,
+            const animeId = Number(searchParams.get('id'))
+            const animeData: AnimeItem = await invoke('anime_full', {
+                id: animeId,
             });
-            setAnidata(ani.data);
+            console.log(animeData)
+            setAnime(animeData);
         };
 
         getAnidata();
@@ -28,7 +30,7 @@ export default function HomeAnime() {
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-3 h-fit pb-4 overflow-hidden">
-            {!anidata ? (
+            {!anime ? (
                 <div>No anime</div>
             ) : (
                 <Card>
@@ -36,18 +38,18 @@ export default function HomeAnime() {
                         <div className="flex gap-4">
                             <img
                                 src={
-                                    anidata.images.webp.large_image_url ||
-                                    anidata.images.jpg.large_image_url
+                                    anime.images.webp.large_image_url ||
+                                    anime.images.jpg.large_image_url
                                 }
-                                alt={anidata.title}
+                                alt={anime.title}
                                 className="aspec-9/16 max-w-[300px] rounded-2xl"
                             />
                             <div className="flex flex-col">
                                 <Label className="py-1 text-4xl">
-                                    {anidata.title}
+                                    {anime.title}
                                 </Label>
                                 <div className="flex flex-wrap gap-1 mt-2">
-                                    {anidata.genres.map((genre, index) => (
+                                    {anime.genres?.map((genre, index) => (
                                         <Badge
                                             key={index}
                                             className="bg-muted/70 text-accent-foreground"
@@ -60,37 +62,37 @@ export default function HomeAnime() {
                                     <p className="font-semibold">
                                         Mal ID:{' '}
                                         <span className="font-normal">
-                                            {anidata.mal_id}
+                                            {anime.mal_id}
                                         </span>
                                     </p>
                                     <p className="font-semibold">
                                         Year:{' '}
                                         <span className="font-normal">
-                                            {anidata.aired.prop.from.year}
+                                            {anime.aired.prop.from?.year || "??"}
                                         </span>
                                     </p>
                                     <p className="font-semibold">
                                         Status:{' '}
                                         <span className="font-normal">
-                                            {anidata.status}
+                                            {anime.status}
                                         </span>
                                     </p>
                                 </div>
                                 <p className="font-semibold">
-                                    ~{anidata.duration} per episode
+                                    ~{anime.duration} per episode
                                 </p>
-                                {anidata.episodes && (
+                                {anime.episodes && (
                                     <p className="font-semibold">
-                                        {anidata.episodes} episodes
+                                        {anime.episodes} episodes
                                     </p>
                                 )}
                                 <ScrollArea className="max-h-[120px] mt-2 bg-linear-to-t from-black/40 to-transparent p-1 rounded-md">
-                                    <p>{anidata.synopsis}</p>
+                                    <p>{anime.synopsis}</p>
                                 </ScrollArea>
                                 <div className="mt-2">
                                     <p>Producers</p>
                                     <div className="flex gap-1 w-full mt-2">
-                                        {anidata.producers.map(
+                                        {anime.producers?.map(
                                             (genre, index) => (
                                                 <Badge
                                                     key={index}
@@ -105,7 +107,7 @@ export default function HomeAnime() {
                                 <div className="mt-2">
                                     <p>Studios</p>
                                     <div className="flex gap-1 w-full mt-2">
-                                        {anidata.studios.map((genre, index) => (
+                                        {anime.studios?.map((genre, index) => (
                                             <Badge
                                                 key={index}
                                                 className="bg-muted/70 text-accent-foreground"
