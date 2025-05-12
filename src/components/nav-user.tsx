@@ -1,11 +1,6 @@
 'use client';
 
-import {
-    BadgeCheck,
-    LogOut,
-    Settings,
-    Sparkles,
-} from 'lucide-react';
+import { BadgeCheck, LogOut, Settings, Sparkles } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -21,6 +16,7 @@ import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { Link } from 'react-router';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { invoke } from '@tauri-apps/api/core';
 
 export function NavUser({
     user,
@@ -37,9 +33,10 @@ export function NavUser({
         <DropdownMenu>
             <div
                 className={cn(
-                    "flex gap-2 items-center w-full overflow-hidden",
+                    'flex gap-2 items-center w-full overflow-hidden',
                     open ? `flex-row` : `flex-col-reverse`
-                )}>
+                )}
+            >
                 <DropdownMenuTrigger className="grow">
                     <SidebarMenuButton
                         size="lg"
@@ -55,8 +52,10 @@ export function NavUser({
                         <div className="flex flex-1 text-left text-sm leading-tight">
                             <span
                                 className={cn(
-                                    "truncate font-medium transition-all duration-300 ease-in-out",
-                                open ? `opacity-100` : `opacity-0`)}>
+                                    'truncate font-medium transition-all duration-300 ease-in-out',
+                                    open ? `opacity-100` : `opacity-0`
+                                )}
+                            >
                                 {' '}
                                 {user.name}
                             </span>
@@ -66,7 +65,7 @@ export function NavUser({
                 <Link
                     to="/settings/desktop"
                     className={cn(
-                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-500 items-center flex justify-center rounded-full',
+                        'size-8 hover:bg-sidebar-accent hover:rotate-100 transition-all duration-500 items-center flex justify-center rounded-full'
                     )}
                 >
                     <Settings className="size-5" />
@@ -103,14 +102,25 @@ export function NavUser({
                         <Link
                             to="#"
                             onClick={() => {
-                                toast.info("Thanks!", {
-                                    description: "We are glad you want to help, but this is not available yet.",
+                                toast.info('Thanks!', {
+                                    description:
+                                        'But this is not available yet, join the Discord for updates!',
                                     duration: 5000,
                                     closeButton: true,
-                            }) }}
-                            className="flex gap-2 w-full">
-                        <Sparkles />
-                        Upgrade to Pro
+                                    action: {
+                                        label: 'Join Discord',
+                                        onClick: () => {
+                                            invoke('open_url', {
+                                                url: 'https://discord.gg/Nv8UXpB36y',
+                                            });
+                                        },
+                                    },
+                                });
+                            }}
+                            className="flex gap-2 w-full"
+                        >
+                            <Sparkles />
+                            Upgrade to Pro
                         </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -120,12 +130,26 @@ export function NavUser({
                         <Link
                             to="#"
                             onClick={() => {
-                                toast.info("Everyone wants a cool profle right?", {
-                                    description: "This is not available yet, make sure you stay tunned for next updates!",
-                                    duration: 5000,
-                                    closeButton: true,
-                            }) }}
-                            className="flex gap-2 w-full">
+                                toast.info(
+                                    'Everyone wants a cool profle right?',
+                                    {
+                                        description:
+                                            'But this is not available yet, join the Discord for updates!',
+                                        duration: 5000,
+                                        closeButton: true,
+                                        action: {
+                                            label: 'Join Discord',
+                                            onClick: () => {
+                                                invoke('open_url', {
+                                                    url: 'https://discord.gg/Nv8UXpB36y',
+                                                });
+                                            },
+                                        },
+                                    }
+                                );
+                            }}
+                            className="flex gap-2 w-full"
+                        >
                             <BadgeCheck />
                             Account
                         </Link>
@@ -140,8 +164,8 @@ export function NavUser({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                     <Link to="/login" className="flex gap-2 w-full">
-                    <LogOut />
-                    Log out
+                        <LogOut />
+                        Log out
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>

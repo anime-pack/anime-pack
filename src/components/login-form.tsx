@@ -14,6 +14,7 @@ import { Link } from 'react-router';
 import DiscordLogo from '@/assets/DiscordLogo';
 import GoogleLogo from '@/assets/GoogleLogo';
 import { toast } from 'sonner';
+import { invoke } from '@tauri-apps/api/core';
 
 export function LoginForm({
     className,
@@ -35,11 +36,19 @@ export function LoginForm({
                                 <Link
                                     to="/login"
                                     onClick={() => {
-                                        toast.warning('Wait a second there!', {
+                                        toast.info('Wait a second there!', {
                                             description:
-                                                'The feature to login with Discord is still in development.',
+                                                'The feature is not available yet, join the Discord for updates!',
                                             duration: 5000,
                                             closeButton: true,
+                                            action: {
+                                                label: 'Join Discord',
+                                                onClick: () => {
+                                                    invoke('open_url', {
+                                                        url: 'https://discord.gg/Nv8UXpB36y',
+                                                    });
+                                                },
+                                            },
                                         });
                                     }}
                                     className="bg-zinc-500/50 rounded-md"
@@ -55,11 +64,19 @@ export function LoginForm({
                                 <Link
                                     to="/login"
                                     onClick={() => {
-                                        toast.warning('Wait a second there!', {
+                                        toast.info('Wait a second there!', {
                                             description:
-                                                'The feature to login with Google is still in development.',
+                                                'The feature is not available yet, join the Discord for updates!',
                                             duration: 5000,
                                             closeButton: true,
+                                            action: {
+                                                label: 'Join Discord',
+                                                onClick: () => {
+                                                    invoke('open_url', {
+                                                        url: 'https://discord.gg/Nv8UXpB36y',
+                                                    });
+                                                },
+                                            },
                                         });
                                     }}
                                     className="bg-zinc-500/50 rounded-md"

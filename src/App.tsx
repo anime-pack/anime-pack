@@ -80,9 +80,10 @@ function App() {
     <ThemeProvider>
       <RouterProvider router={router} />
       <Toaster
-        position="bottom-center"
+        position="bottom-right"
         theme={theme}
         richColors={true}
+        visibleToasts={5}
         className="toaster group"
         style={
           {
