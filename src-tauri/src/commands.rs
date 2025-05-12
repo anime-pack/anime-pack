@@ -1,5 +1,5 @@
 use crate::types::*;
-use jikan_moe;
+use jikan_moe::{anime::SearchParams, common::structs::anime::{Anime, AnimeExtended}};
 use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
 
@@ -18,48 +18,41 @@ pub fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
 }
 
 #[tauri::command]
-pub async fn jikan_api(
+pub async fn search_animes(
     app: tauri::AppHandle,
-    url_params: &str,
-) -> Result<serde_json::Value, String> {
-    // Mudança no tipo de retorno
+    term: &str,
+) -> Result<Vec<Anime>, String> {
     let app_state = app.state::<AppData>();
-    let reqwest_client = app_state.reqwest_client.clone();
+    let jikan_client = app_state.jikan_client.clone();
 
-    let base_url = String::from("https://api.jikan.moe/v4/");
+    let params = SearchParams {
+        q: Some(term.to_string()),
+        unapproved: Some(false),
+        sfw: Some(true),
+        ..Default::default()
+    };
+    let anime_search = jikan_client
+    .get_anime_search(Some(params))
+    .await;
 
-    let jk_res = reqwest_client
-        .get(format!("{}{}", base_url, url_params))
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
-
-    match jk_res.status() {
-        reqwest::StatusCode::OK => {
-            println!("Status OK");
-            jk_res
-                .json::<serde_json::Value>()
-                .await
-                .map_err(|e| e.to_string())
-        }
-        _ => {
-            eprintln!("Status not OK");
-            Err("API request failed".to_string())
-        }
+    if anime_search.is_ok() {
+        Ok(anime_search.ok().expect("No json").data)
+    } else {
+        Err(String::from("Status not ok for top_animes"))
     }
 }
 
 //* This command must be studyed to apply its params and other functionalityes from jikan_rs
 #[tauri::command]
-pub async fn top_animes(app: tauri::AppHandle) -> Result<Vec<jikan_moe::top::Anime>, String> {
+pub async fn top_animes(app: tauri::AppHandle) -> Result<Vec<AnimeExtended>, String> {
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
     let top_anime = jikan_client
         .get_top_anime(
-            jikan_moe::top::AnimeType::None,
-            jikan_moe::top::Filter::None,
-            jikan_moe::top::Rating::None,
+            None,
+            None,
+            None,
             None,
             None,
             None,

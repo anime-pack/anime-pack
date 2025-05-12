@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AnimeData } from '@/types/types';
+import { AnimeItem } from '@/types/types';
 import { invoke } from '@tauri-apps/api/core';
 import { Funnel } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -19,13 +19,13 @@ import { Link, useSearchParams } from 'react-router';
 
 export default function HomeSearch() {
     const [searchParams] = useSearchParams();
-    const [animes, setAnimes] = useState<AnimeData>();
+    const [animes, setAnimes] = useState<AnimeItem[]>();
 
     useEffect(() => {
         const getSearch = async () => {
             setAnimes(
-                await invoke('jikan_api', {
-                    urlParams: `anime?q=${searchParams.get("query")}`,
+                await invoke('search_animes', {
+                    term: searchParams.get("query"),
                 })
             );
         };
@@ -91,7 +91,7 @@ export default function HomeSearch() {
             </div>
             <hr className="py-2" />
             <div className="grid grid-cols-[repeat(auto-fill,minmax(176px,1fr))] gap-4 w-full px-4 mb-5">
-                {animes?.data.map((ani, index) => (
+                {animes?.map((ani, index) => (
                     <Link
                         key={index}
                         title={ani.title}
