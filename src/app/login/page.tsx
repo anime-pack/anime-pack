@@ -93,7 +93,7 @@ export default function LoginPage() {
                         loginBgs[Math.floor(Math.random() * loginBgs.length)]
                         // loginBgs[loginBgs.length - 1]
                     }")`,
-                }}
+                }}  // TODO: add low brightness to bg img
                 className="flex h-full flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10 bg-no-repeat bg-cover bg-center"
             >
                 <div className="flex w-full h-full max-w-sm justify-center flex-col gap-6">

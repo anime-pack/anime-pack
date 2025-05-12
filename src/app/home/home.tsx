@@ -118,7 +118,7 @@ export default function Home() {
             <div className="space-y-8">
                 <section>
                     <h2 className="text-2xl font-semibold mb-4 px-4">
-                        Em Exibição
+                        In Display
                     </h2>
                     <div className="relative">
                         <ScrollArea className="w-full">

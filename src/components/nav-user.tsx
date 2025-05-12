@@ -2,7 +2,6 @@
 
 import {
     BadgeCheck,
-    CreditCard,
     LogOut,
     Settings,
     Sparkles,
@@ -21,6 +20,7 @@ import {
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { Link } from 'react-router';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export function NavUser({
     user,
@@ -100,7 +100,15 @@ export function NavUser({
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <Link to="#" className="flex gap-2 w-full">
+                        <Link
+                            to="#"
+                            onClick={() => {
+                                toast.info("Thanks!", {
+                                    description: "We are glad you want to help, but this is not available yet.",
+                                    duration: 5000,
+                                    closeButton: true,
+                            }) }}
+                            className="flex gap-2 w-full">
                         <Sparkles />
                         Upgrade to Pro
                         </Link>
@@ -109,17 +117,25 @@ export function NavUser({
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <Link to="#" className="flex gap-2 w-full">
+                        <Link
+                            to="#"
+                            onClick={() => {
+                                toast.info("Everyone wants a cool profle right?", {
+                                    description: "This is not available yet, make sure you stay tunned for next updates!",
+                                    duration: 5000,
+                                    closeButton: true,
+                            }) }}
+                            className="flex gap-2 w-full">
                             <BadgeCheck />
                             Account
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    {/* <DropdownMenuItem>
                         <Link to="#" className="flex gap-2 w-full">
                         <CreditCard />
                         Billing
                         </Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
