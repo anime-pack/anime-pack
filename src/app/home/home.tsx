@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label.tsx';
 import { Link } from 'react-router';
 import { Badge } from '@/components/ui/badge.tsx';
 import { AnimeItem } from '@/types/anime.js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { TopAnimeParams } from '@/types/invoke';
@@ -17,20 +17,18 @@ import { TopAnimeParams } from '@/types/invoke';
 export default function Home() {
     const [animes, setAnimes] = useState<AnimeItem[]>();
 
-    useEffect(() => {
-        const getAnimesAiring = async () => {
-            const params = {
-                filter: "airing",
-                sfw: true,
-            } satisfies TopAnimeParams;
+    const getAnimesAiring = async () => {
+        const params = {
+            filter: "airing",
+            sfw: true,
+        } satisfies Partial<TopAnimeParams>;
 
-            setAnimes(
-                await invoke('top_animes', { params })
-            );
-        };
+        setAnimes(
+            await invoke('top_animes', { params })
+        );
+    };
 
-        getAnimesAiring();
-    });
+    getAnimesAiring();
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-3 h-fit pb-4">

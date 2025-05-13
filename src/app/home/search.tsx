@@ -12,26 +12,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AnimeItem } from '@/types/anime';
+import { SearchAnimeParams } from '@/types/invoke';
 import { invoke } from '@tauri-apps/api/core';
 import { Funnel } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 
 export default function HomeSearch() {
     const [searchParams] = useSearchParams();
     const [animes, setAnimes] = useState<AnimeItem[]>();
 
-    useEffect(() => {
-        const getSearch = async () => {
-            setAnimes(
-                await invoke('search_animes', {
-                    term: searchParams.get('query'),
-                })
-            );
-        };
+    const getSearch = async () => {
+        const params = {
+            q: searchParams.get('query')!,
+            sfw: true,
+        } satisfies Partial<SearchAnimeParams>;
 
-        getSearch();
-    }, [searchParams]);
+        setAnimes(
+            await invoke('search_animes', { params })
+        );
+    };
+
+    getSearch();
 
     return (
         <div className="flex flex-1 flex-col p-4 pt-3 h-full pb-4 overflow-hidden overflow-y-auto">

@@ -151,3 +151,42 @@ export enum AnimeRating {
     "mild nudity" = "r",
     "hentai" = "rx",
 }
+
+export enum AnimeStatus {
+    "airing",
+    "complete",
+    "upcoming",
+}
+
+export enum AnimeOrder {
+    "mal_id",
+    "title",
+    "start_date",
+    "end_date",
+    "episodes",
+    "score",
+    "scored_by",
+    "rank",
+    "popularity",
+    "members",
+    "favourites",
+}
+
+/**
+ * THIS TYPE IS NOT `any`!!
+ * 
+ * It is in fact an recursive type, which follows this pattern:
+ * ```ts
+ * `${number}` | `${number},${number}` | `${number},${number},${number}...`
+ * ```
+ * This means it can have as many numbers as you'd like.
+ * 
+ * It's purpose is due the query param for the genres accepting an single string like `1,32,542,4,52`, so you can make an array with the genres id's the do an `.join(',')` on them.
+ * 
+ * @example
+ * ```ts
+ * const genres = [1, 32, 542, 4, 52];
+ * const param: AnimeGenresParam = genres.join(','); // "1,32,542,4,52"
+ * ```
+ */
+export type AnimeGenresParam = `${number}` | `${number},${AnimeGenresParam}`
