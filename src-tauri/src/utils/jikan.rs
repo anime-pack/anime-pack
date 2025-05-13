@@ -1,4 +1,6 @@
-use jikan_moe::common::enums::anime::{AnimeFilter, AnimeRating, AnimeType};
+use jikan_moe::common::enums::anime::{
+    AnimeFilter, AnimeOrder, AnimeRating, AnimeStatus, AnimeType,
+};
 
 pub fn str_to_anime_type(s: &str) -> Option<AnimeType> {
     match s.to_lowercase().as_str() {
@@ -30,6 +32,32 @@ pub fn str_to_anime_rating(s: &str) -> Option<AnimeRating> {
         "r17" => Some(AnimeRating::R17),
         "r" => Some(AnimeRating::R),
         "rx" => Some(AnimeRating::Rx),
+        _ => None,
+    }
+}
+
+pub fn str_to_anime_status(s: &str) -> Option<AnimeStatus> {
+    match s.to_lowercase().as_str() {
+        "airing" => Some(AnimeStatus::Airing),
+        "complete" => Some(AnimeStatus::Complete),
+        "upcoming" => Some(AnimeStatus::Upcoming),
+        _ => None,
+    }
+}
+
+pub fn str_to_anime_orderby(s: &str) -> Option<AnimeOrder> {
+    match s.to_lowercase().as_str() {
+        "mal_id" => Some(AnimeOrder::MalId),
+        "title" => Some(AnimeOrder::Title),
+        "start_date" => Some(AnimeOrder::StartDate),
+        "end_date" => Some(AnimeOrder::EndDate),
+        "episodes" => Some(AnimeOrder::Episodes),
+        "score" => Some(AnimeOrder::Score),
+        "scored_by" => Some(AnimeOrder::ScoredBy),
+        "rank" => Some(AnimeOrder::Rank),
+        "popularity" => Some(AnimeOrder::Popularity),
+        "members" => Some(AnimeOrder::Members),
+        "favourites" => Some(AnimeOrder::Favourites),
         _ => None,
     }
 }
