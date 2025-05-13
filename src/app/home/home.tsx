@@ -8,18 +8,24 @@ import Autoplay from 'embla-carousel-autoplay';
 import { Label } from '@/components/ui/label.tsx';
 import { Link } from 'react-router';
 import { Badge } from '@/components/ui/badge.tsx';
-import { AnimeItem } from '@/types/types.js';
+import { AnimeItem } from '@/types/anime.js';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { TopAnimeParams } from '@/types/invoke';
 
 export default function Home() {
     const [animes, setAnimes] = useState<AnimeItem[]>();
 
     useEffect(() => {
         const getAnimesAiring = async () => {
+            const params = {
+                filter: "airing",
+                sfw: true,
+            } satisfies TopAnimeParams;
+
             setAnimes(
-                await invoke('top_animes')
+                await invoke('top_animes', { params })
             );
         };
 
@@ -53,7 +59,9 @@ export default function Home() {
                                         className="h-full p-0 group bg-no-repeat bg-cover bg-center border-0"
                                         style={{
                                             backgroundImage: `url("${
-                                                ani.images.webp.large_image_url || ani.images.jpg.large_image_url
+                                                ani.images.webp
+                                                    .large_image_url ||
+                                                ani.images.jpg.large_image_url
                                             }")`,
                                         }}
                                     >
@@ -135,7 +143,15 @@ export default function Home() {
                                         <div
                                             className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-105"
                                             style={{
-                                                backgroundImage: `url("${anime.images.webp.large_image_url || anime.images.jpg.large_image_url || anime.images.webp.image_url || anime.images.jpg.image_url}")`,
+                                                backgroundImage: `url("${
+                                                    anime.images.webp
+                                                        .large_image_url ||
+                                                    anime.images.jpg
+                                                        .large_image_url ||
+                                                    anime.images.webp
+                                                        .image_url ||
+                                                    anime.images.jpg.image_url
+                                                }")`,
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent">

@@ -2,12 +2,12 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { AnimeItem } from '@/types/types';
+import { AnimeItem } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 import {
     // useParams,
-    useSearchParams
+    useSearchParams,
 } from 'react-router';
 
 export default function HomeAnime() {
@@ -17,11 +17,11 @@ export default function HomeAnime() {
 
     useEffect(() => {
         const getAnidata = async () => {
-            const animeId = Number(searchParams.get('id'))
+            const animeId = Number(searchParams.get('id'));
             const animeData: AnimeItem = await invoke('anime_full', {
                 id: animeId,
             });
-            console.log(animeData)
+            console.log(animeData);
             setAnime(animeData);
         };
 
@@ -34,7 +34,9 @@ export default function HomeAnime() {
                 <div>No anime</div>
             ) : (
                 <Card>
-                    <CardContent>   {/* //TODO: adjust this bad boi responsivity on small windows */}
+                    <CardContent>
+                        {' '}
+                        {/* //TODO: adjust this bad boi responsivity on small windows */}
                         <div className="flex gap-4">
                             <img
                                 src={
@@ -68,7 +70,8 @@ export default function HomeAnime() {
                                     <p className="font-semibold">
                                         Year:{' '}
                                         <span className="font-normal">
-                                            {anime.aired.prop.from?.year || "??"}
+                                            {anime.aired.prop.from?.year ||
+                                                '??'}
                                         </span>
                                     </p>
                                     <p className="font-semibold">

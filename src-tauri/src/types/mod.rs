@@ -1,2 +1,2 @@
-pub mod types;
-pub use types::*;
+pub mod structs;
+pub use structs::*;

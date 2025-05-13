@@ -1,24 +1,9 @@
-use crate::types::*;
-use jikan_moe::{
-    anime::SearchParams,
-    common::structs::anime::{Anime, AnimeExtended},
-};
+use jikan_moe::{anime::SearchParams, common::structs::anime::{Anime, AnimeExtended}};
+use serde::{Deserialize, Serialize};
 use tauri::Manager;
-use tauri_plugin_opener::OpenerExt;
 
-#[tauri::command]
-pub fn window_mmc(app: tauri::AppHandle, window_label: &str, action: &str) {
-    let window = app.get_webview_window(window_label).unwrap();
-    if action == "minimize" {
-        window.minimize().unwrap();
-    } else if action == "maximize" {
-        window.maximize().unwrap();
-    } else if action == "unmaximize" {
-        window.unmaximize().unwrap();
-    } else if action == "close" {
-        window.close().unwrap();
-    }
-}
+use crate::{types::AppData, utils::{str_to_anime_filter, str_to_anime_rating, str_to_anime_type}};
+
 
 #[tauri::command]
 pub async fn search_animes(app: tauri::AppHandle, term: &str) -> Result<Vec<Anime>, String> {
@@ -40,13 +25,45 @@ pub async fn search_animes(app: tauri::AppHandle, term: &str) -> Result<Vec<Anim
 }
 
 //* This command must be studyed to apply its params and other functionalityes from jikan_rs
+#[derive(Deserialize, Serialize)]
+pub struct TopAnimesParams<'tap> {
+    type_: Option<&'tap str>,
+    filter: Option<&'tap str>,
+    rating: Option<&'tap str>,
+    sfw: Option<bool>,
+    page: Option<u32>,
+    limit: Option<u32>,
+}
+
 #[tauri::command]
-pub async fn top_animes(app: tauri::AppHandle) -> Result<Vec<AnimeExtended>, String> {
+pub async fn top_animes(
+    app: tauri::AppHandle,
+    params: Option<TopAnimesParams<'_>>,
+) -> Result<Vec<AnimeExtended>, String> {
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
     jikan_client
-        .get_top_anime(None, None, None, None, None, None)
+        .get_top_anime(
+            params
+                .as_ref()
+                .map(|p| p.type_)
+                .flatten()
+                .and_then(str_to_anime_type),
+            params
+                .as_ref()
+                .map(|p| p.filter)
+                .flatten()
+                .and_then(str_to_anime_filter),
+            params
+                .as_ref()
+                .map(|p| p.rating)
+                .flatten()
+                .and_then(str_to_anime_rating),
+            params.as_ref().and_then(|p| p.sfw),
+            params.as_ref().and_then(|p| p.page),
+            params.as_ref().and_then(|p| p.limit),
+        )
         .await
         .map(|response| response.data)
         .map_err(|_| String::from("Status not ok for anime_full"))
@@ -62,24 +79,4 @@ pub async fn anime_full(app: tauri::AppHandle, id: i32) -> Result<AnimeExtended,
         .await
         .map(|response| response.data)
         .map_err(|_| String::from("Status not ok for anime_full"))
-}
-
-#[tauri::command]
-pub fn open_url(app_handle: tauri::AppHandle, url: &str) {
-    app_handle
-        .opener()
-        .open_url(url, None::<&str>)
-        .unwrap_or_else(|_| {
-            eprintln!("Failed to open URL: {}", url);
-        });
-}
-
-#[tauri::command]
-pub fn open_path(app_handle: tauri::AppHandle, path: &str) {
-    app_handle
-        .opener()
-        .open_path(path, None::<&str>)
-        .unwrap_or_else(|_| {
-            eprintln!("Failed to open Path: {}", path);
-        });
 }

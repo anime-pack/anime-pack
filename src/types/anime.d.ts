@@ -124,3 +124,30 @@ export interface AnimeData {
     pagination: Pagination;
     data: AnimeItem[];
 }
+
+export enum AnimeType {
+    "tv",
+    "movie",
+    "ova",
+    "ona",
+    "music",
+    "cm",
+    "pv",
+    "special",
+}
+
+export enum AnimeFilter {
+    "airing",
+    "upcoming",
+    "popularity",
+    "favorite",
+}
+
+export enum AnimeRating {
+    "all ages" = "g",
+    "children" = "pg",
+    "13+" = "pg13",
+    "17+ violence & profanity" = "r17",
+    "mild nudity" = "r",
+    "hentai" = "rx",
+}

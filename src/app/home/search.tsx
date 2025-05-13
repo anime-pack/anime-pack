@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AnimeItem } from '@/types/types';
+import { AnimeItem } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { Funnel } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -25,7 +25,7 @@ export default function HomeSearch() {
         const getSearch = async () => {
             setAnimes(
                 await invoke('search_animes', {
-                    term: searchParams.get("query"),
+                    term: searchParams.get('query'),
                 })
             );
         };
