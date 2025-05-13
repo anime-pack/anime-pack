@@ -1,7 +1,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Label } from '@/components/ui/label';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimeItem } from '@/types/anime';
 import { SearchAnimeParams } from '@/types/invoke';
 import { invoke } from '@tauri-apps/api/core';
@@ -54,7 +55,7 @@ export default function HomeAnime() {
             {!anime ? (
                 <div>No anime</div>
             ) : (
-                <Card>
+                <Card className="mb-4">
                     <CardContent>
                         {' '}
                         {/* //TODO: adjust this bad boi responsivity on small windows */}
@@ -153,69 +154,92 @@ export default function HomeAnime() {
                         You may also like
                     </h2>
                     <div className="relative">
-                        <ScrollArea className="w-full">
-                            <div className="flex gap-3.5 px-4 pb-4">
+                        <Carousel
+                            opts={{
+                                align: 'start',
+                                dragFree: true,
+                            }}
+                            className="w-full"
+                        >
+                            <CarouselContent className="hover:cursor-grab active:cursor-grabbing">
                                 {recommendations?.map((rec, index) => (
-                                    <Link
-                                        title={rec.title}
+                                    <CarouselItem
                                         key={index}
-                                        to={`/anime/${rec.title
-                                            .replace(/[:]/g, '')
-                                            .replace(/[\s]/g, '-')
-                                            .toLowerCase()}?id=${rec.mal_id}`}
-                                        className="flex-none w-[200px] group relative aspect-[3/4] overflow-hidden rounded-md"
+                                        className="basis-[200px] pl-4"
                                     >
-                                        <div
-                                            className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-105"
-                                            style={{
-                                                backgroundImage: `url("${
-                                                    rec.images.webp
-                                                        .large_image_url ||
-                                                    rec.images.jpg
-                                                        .large_image_url ||
-                                                    rec.images.webp
-                                                        .image_url ||
-                                                    rec.images.jpg.image_url
-                                                }")`,
-                                            }}
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent">
-                                            {/* Container para informações extras (aparece no hover) */}
-                                            <div className="absolute bottom-0 w-full px-3 pb-14 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <div className="flex flex-wrap gap-1 mb-2">
-                                                    {rec.genres?.slice(0, 2)
-                                                        .map((genre, idx) => (
-                                                            <Badge
-                                                                key={idx}
-                                                                variant="outline"
-                                                                className="bg-black/50 text-xs text-white/90 border-white/10"
-                                                            >
-                                                                {genre.name}
-                                                            </Badge>
-                                                        ))}
+                                        <Link
+                                            to={`/anime/${rec.title
+                                                .replace(/[:]/g, '')
+                                                .replace(/[\s]/g, '-')
+                                                .toLowerCase()}?id=${
+                                                rec.mal_id
+                                            }`}
+                                            className="block group relative aspect-[3/4] overflow-hidden rounded-md"
+                                        >
+                                            <div
+                                                className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-105"
+                                                style={{
+                                                    backgroundImage: `url("${
+                                                        rec.images.webp
+                                                            .large_image_url ||
+                                                        rec.images.jpg
+                                                            .large_image_url ||
+                                                        rec.images.webp
+                                                            .image_url ||
+                                                        rec.images.jpg
+                                                            .image_url
+                                                    }")`,
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent">
+                                                {/* Container para informações extras (aparece no hover) */}
+                                                <div className="absolute bottom-0 w-full px-3 pb-14 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                    <div className="flex flex-wrap gap-1 mb-2">
+                                                        {rec.genres?.slice(0, 2)
+                                                            .map(
+                                                                (
+                                                                    genre,
+                                                                    idx
+                                                                ) => (
+                                                                    <Badge
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        variant="outline"
+                                                                        className="bg-black/50 text-xs text-white/90 border-white/10"
+                                                                    >
+                                                                        {
+                                                                            genre.name
+                                                                        }
+                                                                    </Badge>
+                                                                )
+                                                            )}
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 text-xs text-white/70">
+                                                        <span>
+                                                            Ep:{' '}
+                                                            {rec.episodes ||
+                                                                '?'}
+                                                        </span>
+                                                        <span>•</span>
+                                                        <span>
+                                                            {rec.status}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-1.5 text-xs text-white/70">
-                                                    <span>
-                                                        Ep:{' '}
-                                                        {rec.episodes || '?'}
-                                                    </span>
-                                                    <span>•</span>
-                                                    <span>{rec.status}</span>
-                                                </div>
-                                            </div>
 
-                                            {/* Container do título (sempre visível) */}
-                                            <div className="absolute bottom-3 w-full px-3 transition-all duration-300 group-hover:translate-y-[-0.5rem]">
-                                                <h3 className="text-white font-medium text-sm line-clamp-1">
-                                                    {rec.title}
-                                                </h3>
+                                                {/* Container do título (sempre visível) */}
+                                                <div className="absolute bottom-3 w-full px-3 transition-all duration-300 group-hover:translate-y-[-0.5rem]">
+                                                    <h3 className="text-white font-medium text-sm line-clamp-2">
+                                                        {rec.title}
+                                                    </h3>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
+                                        </Link>
+                                    </CarouselItem>
                                 ))}
-                            </div>
-                            <ScrollBar orientation="horizontal" />
-                        </ScrollArea>
+                            </CarouselContent>
+                        </Carousel>
                     </div>
                 </section>
             </div>
