@@ -77,7 +77,7 @@ export default function Home() {
         };
 
         fetchData();
-    }, []); // Empty dependency array
+    }, []);
 
     const MainSkeleton = () => (
         <div className="flex gap-4 h-full w-full pl-4">
@@ -115,14 +115,14 @@ export default function Home() {
                     ]}
                     className="w-full max-h-[240px] min-h-[190px] h-auto ml-[20px]"
                 >
-                    <CarouselContent className="hover:cursor-grab active:cursor-grabbing snap-center snap-mandatory h-full w-full -ml-1">
+                    <CarouselContent className="hover:cursor-grab active:cursor-grabbing snap-center snap-mandatory h-full w-full max-h-[240px] -ml-1">
                         {!animes ? (
                             <MainSkeleton />
                         ) : (
                             animes?.map((ani, index) => (
                                 <CarouselItem
                                     key={index}
-                                    className="md:basis-1/1 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4 h-full aspect-video p-1"
+                                    className="md:basis-1/1 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4 h-full max-h-[240px] aspect-video p-1"
                                 >
                                     <div className="px-1 select-none w-full h-full">
                                         <Card
@@ -142,7 +142,6 @@ export default function Home() {
                                                     className="active:cursor-grabbing"
                                                 >
                                                     <div className="relative w-full h-full">
-                                                        {/* Container para gêneros e sinopse (aparece no hover) */}
                                                         <div className="absolute bottom-0 w-full px-4 pb-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                             <div className="flex flex-wrap gap-1 w-full max-w-[90%] mb-2">
                                                                 {ani.genres
@@ -172,8 +171,6 @@ export default function Home() {
                                                                 {ani.synopsis}
                                                             </p>
                                                         </div>
-
-                                                        {/* Container do título (sempre visível) */}
                                                         <div className="absolute bottom-3 w-full px-4 transition-all duration-300 group-hover:translate-y-[-0.5rem]">
                                                             <Label className="text-white text-base font-medium line-clamp-1">
                                                                 {ani.title}
@@ -359,7 +356,6 @@ export default function Home() {
                                                             </span>
                                                         </div>
                                                     </div>
-
                                                     <div className="absolute bottom-3 w-full px-3 transition-all duration-300 group-hover:translate-y-[-0.5rem]">
                                                         <h3 className="text-white font-medium text-sm line-clamp-2">
                                                             {anime.title}
