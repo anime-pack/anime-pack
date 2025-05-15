@@ -5,12 +5,12 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 
-export default function LibraryLiked() {
+export default function LibraryPacks() {
     return (
         <Card className="w-full h-fit">
             <CardHeader>
-                <CardTitle>Liked</CardTitle>
-                <CardDescription>Your liked content.</CardDescription>
+                <CardTitle>Packs</CardTitle>
+                <CardDescription>Your packs view</CardDescription>
             </CardHeader>
         </Card>
     );

@@ -9,14 +9,12 @@ import "./index.css";
 import LoginPage from "@/app/login/page";
 import Home from "./app/home/home";
 import Settings from "./app/settings/settings";
-import SettingsAppearence from "./app/settings/appearence";
-import SettingsDesktop from "./app/settings/desktop";
-import SettingsAbout from "./app/settings/about";
-import HomeLibrary from "./app/library/librabry";
+import HomeLibrary from "./app/library/library";
 import LibraryLiked from "./app/library/liked";
 import LibraryHistory from "./app/library/history";
 import HomeAnime from "./app/home/anime";
 import HomeSearch from "./app/home/search";
+import LibraryPacks from "./app/library/packs";
 
 const router = createBrowserRouter([
   {
@@ -36,26 +34,15 @@ const router = createBrowserRouter([
             path: "/library/history",
             element: <LibraryHistory />,
           },
+          {
+            path: "/library/packs",
+            element: <LibraryPacks />,
+          },
         ],
       },
       {
         path: "/settings",
         element: <Settings />,
-        children: [
-          { 
-            // index: true,
-            path: "/settings/appearence",
-            element: <SettingsAppearence />,
-          },
-          {
-            path: "/settings/desktop",
-            element: <SettingsDesktop />,
-          },
-          {
-            path: "/settings/about",
-            element: <SettingsAbout />,
-          }
-        ]
       },
       {
         path: "/anime/:name",
@@ -73,7 +60,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-function App() {
+function App() {  // TODO: refactor all frontend to VueJs
   const { theme } = useTheme()
 
   return (

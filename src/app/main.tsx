@@ -17,8 +17,7 @@ import Titlebar from '@/titlebar';
 import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import SearchBar from './searchBar';
-import { HotKeys } from "react-hotkeys"
-import { ScrollArea } from '@radix-ui/react-scroll-area';
+import { HotKeys } from 'react-hotkeys';
 
 export default function MainPage() {
     let location = useLocation();
@@ -74,30 +73,75 @@ export default function MainPage() {
                 handlers={searchHotkeyHandler}
                 className="flex min-h-svh w-full"
             >
-            <AppSidebar />
-            <SidebarInset className="h-screen overflow-hidden">
-                <Titlebar />
-                <header className="flex sticky h-13 shrink-0 items-center gap-2 justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                    <div className="flex items-center gap-2 px-4">
-                        <SidebarTrigger className="-ml-1" />
-                        <Separator
-                            orientation="vertical"
-                            className="mr-2 h-4"
-                        />
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                {breadcrumbs.map((crumb, index) => {
-                                    if (index === 0) {
+                <AppSidebar />
+                <SidebarInset className="h-screen overflow-hidden">
+                    <Titlebar />
+                    <header className="flex sticky h-13 shrink-0 items-center gap-2 justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                        <div className="flex items-center gap-2 px-4">
+                            <SidebarTrigger className="-ml-1" />
+                            <Separator
+                                orientation="vertical"
+                                className="mr-2 h-4"
+                            />
+                            <Breadcrumb>
+                                <BreadcrumbList>
+                                    {breadcrumbs.map((crumb, index) => {
+                                        if (index === 0) {
+                                            return (
+                                                <BreadcrumbItem key={crumb}>
+                                                    {!(
+                                                        breadcrumbs.length > 1
+                                                    ) ? (
+                                                        <BreadcrumbPage>
+                                                            {crumb
+                                                                .at(0)
+                                                                ?.toUpperCase() +
+                                                                crumb.slice(1)}
+                                                        </BreadcrumbPage>
+                                                    ) : (
+                                                        <BreadcrumbLink href="#">
+                                                            <Link
+                                                                to={
+                                                                    pathMap[
+                                                                        crumb
+                                                                    ] ||
+                                                                    `/${crumb}`
+                                                                }
+                                                            >
+                                                                {crumb
+                                                                    .at(0)
+                                                                    ?.toUpperCase() +
+                                                                    crumb.slice(
+                                                                        1
+                                                                    )}
+                                                            </Link>
+                                                        </BreadcrumbLink>
+                                                    )}
+                                                </BreadcrumbItem>
+                                            );
+                                        }
+                                        if (
+                                            index === breadcrumbs.length - 1 &&
+                                            breadcrumbs.length > 0
+                                        ) {
+                                            return (
+                                                <>
+                                                    <BreadcrumbSeparator className="hidden md:block" />
+                                                    <BreadcrumbItem>
+                                                        <BreadcrumbPage>
+                                                            {crumb
+                                                                .at(0)
+                                                                ?.toUpperCase() +
+                                                                crumb.slice(1)}
+                                                        </BreadcrumbPage>
+                                                    </BreadcrumbItem>
+                                                </>
+                                            );
+                                        }
                                         return (
-                                            <BreadcrumbItem key={crumb}>
-                                                {!(breadcrumbs.length > 1) ? (
-                                                    <BreadcrumbPage>
-                                                        {crumb
-                                                            .at(0)
-                                                            ?.toUpperCase() +
-                                                            crumb.slice(1)}
-                                                    </BreadcrumbPage>
-                                                ) : (
+                                            <>
+                                                <BreadcrumbSeparator className="hidden md:block" />
+                                                <BreadcrumbItem key={crumb}>
                                                     <BreadcrumbLink href="#">
                                                         <Link
                                                             to={
@@ -112,62 +156,22 @@ export default function MainPage() {
                                                                 crumb.slice(1)}
                                                         </Link>
                                                     </BreadcrumbLink>
-                                                )}
-                                            </BreadcrumbItem>
-                                        );
-                                    }
-                                    if (
-                                        index === breadcrumbs.length - 1 &&
-                                        breadcrumbs.length > 0
-                                    ) {
-                                        return (
-                                            <>
-                                                <BreadcrumbSeparator className="hidden md:block" />
-                                                <BreadcrumbItem>
-                                                    <BreadcrumbPage>
-                                                        {crumb
-                                                            .at(0)
-                                                            ?.toUpperCase() +
-                                                            crumb.slice(1)}
-                                                    </BreadcrumbPage>
                                                 </BreadcrumbItem>
                                             </>
                                         );
-                                    }
-                                    return (
-                                        <>
-                                            <BreadcrumbSeparator className="hidden md:block" />
-                                            <BreadcrumbItem key={crumb}>
-                                                <BreadcrumbLink href="#">
-                                                    <Link
-                                                        to={
-                                                            pathMap[crumb] ||
-                                                            `/${crumb}`
-                                                        }
-                                                    >
-                                                        {crumb
-                                                            .at(0)
-                                                            ?.toUpperCase() +
-                                                            crumb.slice(1)}
-                                                    </Link>
-                                                </BreadcrumbLink>
-                                            </BreadcrumbItem>
-                                        </>
-                                    );
-                                })}
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                                    })}
+                                </BreadcrumbList>
+                            </Breadcrumb>
                         </div>
-                    <SearchBar />   {/* //TODO: make searchbar focusable by the ctrl+k hotkey */}
-                </header>
-                <hr />
+                        <SearchBar />{' '}
+                        {/* //TODO: make searchbar focusable by the ctrl+k hotkey */}
+                    </header>
+                    <hr />
                     <div className="flex-1 w-full min-h-0 overflow-y-auto">
-                        <ScrollArea className="w-full h-fit">
-
-                    <Outlet />
-                        </ScrollArea>
-                </div>
-            </SidebarInset>
+                        {/* //! Adding ScrollArea here creates a massive overflow due the carousel component */}
+                        <Outlet />
+                    </div>
+                </SidebarInset>
             </HotKeys>
         </SidebarProvider>
     );
