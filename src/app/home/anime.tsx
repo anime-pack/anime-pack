@@ -11,15 +11,10 @@ import { AnimeItem } from '@/types/anime';
 import { SearchAnimeParams } from '@/types/invoke';
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
-import {
-    Link,
-    // useParams,
-    useSearchParams,
-} from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function HomeAnime() {
-    // const params = useParams();
+export default function Anime() {
     const [searchParams] = useSearchParams();
     let [anime, setAnime] = useState<AnimeItem>();
     const [recommendations, setRecommendation] = useState<AnimeItem[]>();
@@ -211,12 +206,7 @@ export default function HomeAnime() {
                                             className="basis-[200px] pl-4"
                                         >
                                             <Link
-                                                to={`/anime/${rec.title
-                                                    .replace(/[:]/g, '')
-                                                    .replace(/[\s]/g, '-')
-                                                    .toLowerCase()}?id=${
-                                                    rec.mal_id
-                                                }`}
+                                                to={`/anime?id=${rec.mal_id}`}
                                                 className="block group relative aspect-[3/4] overflow-hidden rounded-md"
                                             >
                                                 <div

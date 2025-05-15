@@ -83,10 +83,7 @@ export default function HomeSearch() {
                     <Link
                         key={index}
                         title={ani.title}
-                        to={`/anime/${ani.title
-                            .replace(/[:]/g, '')
-                            .replace(/[\s]/g, '-')
-                            .toLowerCase()}?id=${ani.mal_id}`}
+                        to={`/anime?id=${ani.mal_id}`}
                         className="relative pb-[150%] group"
                     >
                         <Card

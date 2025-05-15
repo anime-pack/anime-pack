@@ -138,12 +138,7 @@ export default function Home() {
                                         >
                                             <CardContent className="aspect-auto p-0 h-full w-full rounded-xl bg-gradient-to-t from-black via-black/40 to-transparent">
                                                 <Link
-                                                    to={`/anime/${ani.title
-                                                        .replace(/[:]/g, '')
-                                                        .replace(/[\s]/g, '-')
-                                                        .toLowerCase()}?id=${
-                                                        ani.mal_id
-                                                    }`}
+                                                    to={`/anime?id=${ani.mal_id}`}
                                                     className="active:cursor-grabbing"
                                                 >
                                                     <div className="relative w-full h-full">
@@ -221,12 +216,7 @@ export default function Home() {
                                             className="basis-[200px] pl-4"
                                         >
                                             <Link
-                                                to={`/anime/${anime.title   //TODO: add util for making anime slugs
-                                                    .replace(/[:]/g, '')
-                                                    .replace(/[\s]/g, '-')
-                                                    .toLowerCase()}?id=${
-                                                    anime.mal_id
-                                                }`}
+                                                to={`/anime?id=${anime.mal_id}`}
                                                 className="block group relative aspect-[3/4] overflow-hidden rounded-md"
                                             >
                                                 <div
@@ -315,12 +305,7 @@ export default function Home() {
                                             className="basis-[200px] pl-4"
                                         >
                                             <Link
-                                                to={`/anime/${anime.title
-                                                    .replace(/[:]/g, '')
-                                                    .replace(/[\s]/g, '-')
-                                                    .toLowerCase()}?id=${
-                                                    anime.mal_id
-                                                }`}
+                                                to={`/anime?id=${anime.mal_id}`}
                                                 className="block group relative aspect-[3/4] overflow-hidden rounded-md"
                                             >
                                                 <div
@@ -411,12 +396,7 @@ export default function Home() {
                                             className="basis-[200px] pl-4"
                                         >
                                             <Link
-                                                to={`/anime/${anime.title
-                                                    .replace(/[:]/g, '')
-                                                    .replace(/[\s]/g, '-')
-                                                    .toLowerCase()}?id=${
-                                                    anime.mal_id
-                                                }`}
+                                                to={`/anime?id=${anime.mal_id}`}
                                                 className="block group relative aspect-[3/4] overflow-hidden rounded-md"
                                             >
                                                 <div
