@@ -3,7 +3,6 @@ use crate::types::*;
 use discord::{disconnect_drpc, setup_drpc};
 use discordipc::Client;
 use jikan_moe::JikanClient;
-use reqwest::{self};
 use std::sync::Arc;
 use tauri::Manager;
 
@@ -19,7 +18,7 @@ pub fn run() {
         .setup(|app| {
             app.manage(AppData {
                 drpc_client: Arc::new(Client::new("1368098323558301759")),
-                reqwest_client: reqwest::Client::new(),
+                // reqwest_client: reqwest::Client::new(),
                 jikan_client: Arc::new(JikanClient::new()),
             });
             Ok(())
