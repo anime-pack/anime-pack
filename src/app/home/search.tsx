@@ -6,7 +6,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 
-export default function HomeSearch() {
+export default function Search() {
     const [searchParams] = useSearchParams();
     const [animes, setAnimes] = useState<AnimeItem[]>();
 

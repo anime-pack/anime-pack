@@ -10,7 +10,7 @@ import HomeLibrary from './app/library/library';
 import LibraryLiked from './app/library/liked';
 import LibraryHistory from './app/library/history';
 import Anime from './app/home/anime';
-import HomeSearch from './app/home/search';
+import Search from './app/home/search';
 import LibraryPacks from './app/library/packs';
 
 const router = createBrowserRouter([
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/search',
-                element: <HomeSearch />,
+                element: <Search />,
             },
         ],
     },
