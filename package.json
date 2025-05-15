@@ -1,7 +1,7 @@
 {
   "name": "anime-pack",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.0-dev",
   "type": "module",
   "author": {
     "name": "dark1zinn"
