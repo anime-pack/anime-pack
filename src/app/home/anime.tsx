@@ -101,10 +101,10 @@ export default function Anime() {
                                     anime.images.jpg.large_image_url
                                 }
                                 alt={anime.title}
-                                className="aspec-9/16 max-w-[300px] rounded-2xl"
+                                className="aspec-9/16 max-h-[425px] max-w-[300px] grow rounded-2xl"
                             />
-                            <div className="flex flex-col">
-                                <Label className="py-1 text-4xl">
+                            <div className="flex-1 flex-col">
+                                <Label className="py-1 h-[44px] md:text-2xl lg:text-4xl">
                                     {anime.title}
                                 </Label>
                                 <div className="flex flex-wrap gap-1 mt-2">
@@ -146,12 +146,12 @@ export default function Anime() {
                                         {anime.episodes} episodes
                                     </p>
                                 )}
-                                <ScrollArea className="max-h-[120px] mt-2 bg-linear-to-t from-black/40 to-transparent p-1 rounded-md">
+                                <ScrollArea className="max-h-[130px] mt-2 bg-linear-to-t from-black/40 to-transparent p-1 rounded-md overflow-y-auto">
                                     <p>{anime.synopsis}</p>
                                 </ScrollArea>
                                 <div className="mt-2">
                                     <p>Producers</p>
-                                    <div className="flex gap-1 w-full mt-2">
+                                    <div className="flex gap-1 flex-wrap w-full mt-2">
                                         {anime.producers?.map(
                                             (genre, index) => (
                                                 <Badge
@@ -166,7 +166,7 @@ export default function Anime() {
                                 </div>
                                 <div className="mt-2">
                                     <p>Studios</p>
-                                    <div className="flex gap-1 w-full mt-2">
+                                    <div className="flex flex-wrap gap-1 w-full mt-2">
                                         {anime.studios?.map((genre, index) => (
                                             <Badge
                                                 key={index}
