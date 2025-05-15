@@ -1,51 +1,85 @@
-// import { invoke } from "@tauri-apps/api/core";
-import { Toaster } from "sonner";
-import MainPage from "./app/main";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router";
-import { ThemeProvider, useTheme } from "@/components/theme-provider";
-import "./index.css";
-import LoginPage from "@/app/login/page";
-import SplashScreen from "@/app/splash-screen";
+import { Toaster } from 'sonner';
+import MainPage from './app/main';
+import { createBrowserRouter, RouterProvider } from 'react-router';
+import { ThemeProvider, useTheme } from '@/components/theme-provider';
+import './index.css';
+import LoginPage from '@/app/login/page';
+import Home from './app/home/home';
+import Settings from './app/settings/settings';
+import HomeLibrary from './app/library/library';
+import LibraryLiked from './app/library/liked';
+import LibraryHistory from './app/library/history';
+import Anime from './app/home/anime';
+import Search from './app/home/search';
+import LibraryPacks from './app/library/packs';
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <SplashScreen />,
-  },
-  {
-    path: "/main",
-    element: <MainPage />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  }
+    {
+        path: '/',
+        element: <MainPage />,
+        children: [
+            { index: true, element: <Home /> },
+            {
+                path: '/library',
+                element: <HomeLibrary />,
+                children: [
+                    {
+                        path: '/library/liked',
+                        element: <LibraryLiked />,
+                    },
+                    {
+                        path: '/library/history',
+                        element: <LibraryHistory />,
+                    },
+                    {
+                        path: '/library/packs',
+                        element: <LibraryPacks />,
+                    },
+                ],
+            },
+            {
+                path: '/settings',
+                element: <Settings />,
+            },
+            {
+                path: '/anime',
+                element: <Anime />,
+            },
+            {
+                path: '/search',
+                element: <Search />,
+            },
+        ],
+    },
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
 ]);
 
 function App() {
-  const { theme } = useTheme()
+    // TODO: refactor all frontend to VueJs
+    const { theme } = useTheme();
 
-  return (
-    <ThemeProvider>
-      <RouterProvider router={router} />
-      <Toaster
-        position="bottom-center"
-        theme={theme}
-        richColors={true}
-        className="toaster group"
-        style={
-          {
-            "--normal-bg": "var(--popover)",
-            "--normal-text": "var(--popover-foreground)",
-            "--normal-border": "var(--border)",
-          } as React.CSSProperties
-        }
-      />
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider>
+            <RouterProvider router={router} />
+            <Toaster
+                position="bottom-right"
+                theme={theme}
+                richColors={true}
+                visibleToasts={5}
+                className="toaster group"
+                style={
+                    {
+                        '--normal-bg': 'var(--popover)',
+                        '--normal-text': 'var(--popover-foreground)',
+                        '--normal-border': 'var(--border)',
+                    } as React.CSSProperties
+                }
+            />
+        </ThemeProvider>
+    );
 }
 
 export default App;

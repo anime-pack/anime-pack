@@ -1,12 +1,13 @@
 import * as React from "react"
 import {
   BookMarked,
+  Package,
   PackageOpen,
-  Settings2,
+  TvMinimalPlay,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
+// import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
@@ -43,27 +44,43 @@ const data = {
   ],
   navMain: [
     {
-      title: "My Library",
+      title: "Library",
       url: "#",
       icon: BookMarked,
-      isActive: false,
+      isActive: true,
       items: [
         {
           title: "Liked",
-          url: "#",
+          url: "/library/liked",
         },
         {
           title: "History",
-          url: "#",
+          url: "/library/history",
+        },
+        {
+          title: "Packs",
+          url: "/library/packs",
         },
       ],
+    },
+    {
+      title: "Content",
+      url: "#",
+      icon: TvMinimalPlay,
+      isActive: false,
+      items: [
+        {
+          title: "Home",
+          url: "/",
+        }
+      ]
     },
   ],
   projects: [
     {
-      name: "Settings",
+      name: "Pack",
       url: "#",
-      icon: Settings2,
+      icon: Package,
     },
   ],
 }
@@ -74,9 +91,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="overflow-hidden">
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* //TODO: fix its child style to uncomment <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
