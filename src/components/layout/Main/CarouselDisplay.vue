@@ -14,9 +14,12 @@ import { ChevronRight } from 'lucide-vue-next';
                 <ChevronRight class="size-4" />
             </Button>
         </div>
-        <Carousel>
+        <Carousel :opts="{
+            dragFree: true,
+            // skipSnaps: true,
+        }">
             <CarouselContent>
-                <CarouselItem v-for="(_, index) in 10" :key="index" class="basis-[200px]">
+                <CarouselItem v-for="(_, index) in 20" :key="index" class="basis-[200px]">
                     <Card class="relative aspect-[3/4] overflow-hidden">
                         <div class="absolute inset-0 bg-muted animate-pulse" />
                     </Card>

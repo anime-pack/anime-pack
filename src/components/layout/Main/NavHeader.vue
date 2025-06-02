@@ -19,7 +19,7 @@ const notificationStore = useNotificationStore();
 
 const navItems = [
     { name: 'Início', path: '/' },
-    { name: 'Animes', path: '/animes' },
+    { name: 'Animes', path: '/anime' },
     { name: 'Favoritos', path: '/library?tab=liked' },
     { name: 'Biblioteca', path: '/library' },
 ];

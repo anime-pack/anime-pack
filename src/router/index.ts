@@ -29,6 +29,11 @@ const router = createRouter({
                     name: 'Library',
                     component: LibraryView,
                 },
+                {
+                    path: 'anime',
+                    name: 'Anime',
+                    component: () => import('@/views/AnimeView.vue'),
+                },
             ],
         },
         {
