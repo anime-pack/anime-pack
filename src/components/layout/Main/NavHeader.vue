@@ -10,7 +10,7 @@ const router = useRouter();
 const navItems = [
     { name: 'Início', path: '/' },
     { name: 'Animes', path: '/animes' },
-    { name: 'Favoritos', path: '/favorites' },
+    { name: 'Favoritos', path: '/login' },
     { name: 'Biblioteca', path: '/library' },
 ];
 
@@ -26,6 +26,7 @@ const navItems = [
                         <Button @click="() => router.push(item.path)" variant="ghost" class="text-sm font-medium">
                             {{ item.name }}
                         </Button>
+
                     </li>
                 </ul>
             </div>

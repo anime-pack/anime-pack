@@ -4,6 +4,7 @@ import SettingsView from '@/views/SettingsView.vue';
 import HomeView from '@/views/HomeView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 import LibraryView from '@/views/LibraryView.vue';
+import LoginView from '@/views/LoginView.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,11 @@ const router = createRouter({
                     component: LibraryView,
                 },
             ],
+        },
+        {
+            path: '/login',
+            name: 'Login',
+            component: LoginView,
         },
         {
             path: '/:pathMatch(.*)*',

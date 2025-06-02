@@ -7,8 +7,8 @@ import 'vue-sonner/style.css';
 
 <template>
     <Toaster class="pointer-events-auto" />
-    <div class="flex flex-col h-screen">
+    <div class="flex flex-col h-screen overflow-hidden">
         <Titlebar />
-        <RouterView />
+        <RouterView class="flex-1 overflow-auto" />
     </div>
 </template>

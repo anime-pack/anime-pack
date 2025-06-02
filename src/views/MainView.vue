@@ -5,8 +5,8 @@ import { RouterView } from 'vue-router';
 
 <template>
     <div class="flex-1 overflow-hidden">
-        <NavHeader />
         <div class="h-full w-full overflow-y-auto overflow-x-hidden bg-background">
+            <NavHeader />
             <RouterView />
         </div>
     </div>
