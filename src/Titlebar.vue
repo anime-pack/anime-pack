@@ -9,7 +9,7 @@ const checkMaximized = async () => {
     const isMaximized = await currentWindow.isMaximized();
     return isMaximized;
 };
-const isMaximized = ref(checkMaximized());
+const isMaximized = ref<boolean>(checkMaximized());  // TODO: Resolve this promise return
 currentWindow.once('tauri://resize', async () => {
     isMaximized.value = await checkMaximized();
 });
@@ -30,7 +30,7 @@ const closeWindow = async () => {
     <div data-tauri-drag-region id="titlebar"
         class="widith-full top-0 z-10 flex h-7 gap-3 items-center bg-muted/50 justify-between">
         <span
-            class="hover:text-primary font-bold transition-colors slide-in-from-left duration-300 px-1.5 animate-in fade-in-5">
+            class="hover:text-primary font-bold transition-colors slide-in-from-left duration-300 pl-3 animate-in fade-in-5">
             <p>Anime Pack</p>
         </span>
         <div class="flex items-center h-full">
