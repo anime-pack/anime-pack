@@ -25,13 +25,13 @@ const navItems = [
 ];
 
 const handleLogout = () => {
-    // Implementar lógica de logout
     router.push('/login');
 };
 </script>
 
 <template>
-    <header class="h-[64px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header
+        class="sticky top-0 z-50 h-[64px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav class="flex h-full items-center justify-between px-4">
             <!-- Navegação Esquerda -->
             <div class="flex items-center gap-6">

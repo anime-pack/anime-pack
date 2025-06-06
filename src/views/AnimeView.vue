@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
     Select,
@@ -9,56 +9,89 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AnimeCard from '@/components/AnimeCard.vue';
-import type { Anime, AnimeFilter } from '@/types/anime';
+import { AnimeItem, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
+import { invoke } from '@tauri-apps/api/core';
+import { SearchAnimeParams } from '@/types/invoke';
 
-const filters = ref<AnimeFilter>({
+type Filter = {
+    search: string;
+    type: keyof typeof AnimeType | undefined;
+    status: (keyof typeof AnimeStatus | undefined);
+    genres: number[];
+    year: string | undefined;
+    rating: (keyof typeof AnimeRating | undefined);
+};
+
+const filterOpts = {
+    types: Object.keys(AnimeType) as unknown as (keyof typeof AnimeType),
+    status: Object.keys(AnimeStatus) as unknown as (keyof typeof AnimeStatus | undefined),
+    rating: Object.keys(AnimeRating) as unknown as (keyof typeof AnimeRating | undefined),
+    genres: [] as string[],
+};
+
+const animes = ref<AnimeItem[]>([]);
+const isLoading = ref(false);
+const error = ref<string | null>(null);
+
+const filters = reactive<Filter>({
     search: '',
-    type: [],
-    status: [],
+    type: undefined,
+    status: undefined,
     genres: [],
-    year: null,
-    rating: null,
+    year: undefined,
+    rating: undefined,
 });
 
-// Mock data
-const animes = ref<Anime[]>([
-    {
-        id: '1',
-        title: 'Attack on Titan',
-        cover: 'https://example.com/attack-on-titan.jpg',
-        rating: 9.5,
-        year: 2013,
-        type: 'TV',
-        status: 'completed',
-        genres: ['Action', 'Drama', 'Fantasy'],
-    },
-    {
-        id: '2',
-        title: 'My Hero Academia',
-        cover: 'https://example.com/my-hero-academia.jpg',
-        rating: 8.0,
-        year: 2016,
-        type: 'TV',
-        status: 'airing',
-        genres: ['Action', 'Adventure', 'Comedy'],
-    },
-]);
+async function fetchAnimes() {
+    isLoading.value = true;
+    error.value = null;
 
-const types = ['TV', 'Movie', 'OVA'];
-const status = ['airing', 'completed', 'upcoming'];
-const genres = ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy'];
+    try {
+        const params = {
+            q: filters.search || undefined,
+            type_: filters.type ? filters.type : undefined,
+            status: filters.status && filters.status.length > 0 ? filters.status : undefined,
+            genres: filters.genres.length > 0 ? filters.genres : undefined,
+            start_date: filters.year || undefined,
+            rating: filters.rating || undefined,
+        } satisfies Partial<SearchAnimeParams>;
+
+        const response = await invoke<AnimeItem>('search_animes', { params });
+
+        console.log('Fetched animes:', response);
+        if (!response || !Array.isArray(response)) {
+            throw new Error('Invalid response format');
+        }
+
+        animes.value = response as AnimeItem[];
+    } catch (err) {
+        error.value = err instanceof Error ? err.message : 'Failed to fetch animes';
+        console.error('Error fetching animes:', err);
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+// Atualizar busca quando filtros mudarem
+watch(
+    filters,
+    () => fetchAnimes(),
+    { deep: true }
+);
+
+onMounted(() => fetchAnimes());
 </script>
 
 <template>
     <div class="flex flex-col gap-6 p-6">
         <!-- Filters -->
         <section class="flex flex-wrap items-center gap-4 rounded-lg border bg-card p-4">
-            <Select v-model="filters.type">
+            <Select v-model="filterOpts">
                 <SelectTrigger class="w-[180px]">
                     <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem v-for="type in types" :key="type" :value="type">
+                    <SelectItem v-for="type in filterOpts.types" :key="type" :value="type">
                         {{ type }}
                     </SelectItem>
                 </SelectContent>
@@ -69,31 +102,45 @@ const genres = ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy'];
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem v-for="status in status" :key="status" :value="status">
+                    <SelectItem v-for="status in filterOpts.status" :key="status" :value="status">
                         {{ status }}
                     </SelectItem>
                 </SelectContent>
             </Select>
 
-            <Select v-model="filters.genres">
+            <Select v-if="filterOpts.genres" v-model="filterOpts.genres">
                 <SelectTrigger class="w-[180px]">
                     <SelectValue placeholder="Gêneros" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem v-for="genre in genres" :key="genre" :value="genre">
+                    <SelectItem v-for="genre in filterOpts.genres" :key="genre" :value="genre">
                         {{ genre }}
                     </SelectItem>
                 </SelectContent>
             </Select>
 
-            <Button variant="secondary" @click="() => filters = { ...filters, type: [], status: [], genres: [] }">
+            <Button variant="secondary" @click="() => filters = { ...filters, type: undefined, status: undefined, genres: [] }">
                 Limpar Filtros
             </Button>
         </section>
 
+        <!-- Loading & Error states -->
+        <div v-if="isLoading" class="flex justify-center p-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+
+        <div v-else-if="error" class="flex justify-center p-12">
+            <p class="text-destructive">{{ error }}</p>
+        </div>
+
+        <!-- Empty state -->
+        <div v-else-if="animes.length === 0" class="flex justify-center p-12">
+            <p class="text-muted-foreground">Nenhum anime encontrado</p>
+        </div>
+
         <!-- Animes grid -->
-        <section class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            <AnimeCard v-for="anime in animes" :key="anime.id" :anime="anime" />
+        <section v-else class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <AnimeCard clickable v-for="anime in animes" :key="anime.mal_id" :anime="anime" />
         </section>
     </div>
 </template>

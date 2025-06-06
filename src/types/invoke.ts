@@ -1,4 +1,11 @@
-import { AnimeFilter, AnimeGenresParam, AnimeOrder, AnimeRating, AnimeStatus, AnimeType } from './anime';
+import {
+    AnimeFilter,
+    AnimeGenresParam,
+    AnimeOrder,
+    AnimeRating,
+    AnimeStatus,
+    AnimeType,
+} from './anime';
 import { Sort, Char } from './common';
 
 export interface TopAnimeParams {

@@ -1,10 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainView from '@/views/MainView.vue';
-import SettingsView from '@/views/SettingsView.vue';
 import HomeView from '@/views/HomeView.vue';
-import NotFoundView from '@/views/NotFoundView.vue';
-import LibraryView from '@/views/LibraryView.vue';
-import LoginView from '@/views/LoginView.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,29 +18,34 @@ const router = createRouter({
                 {
                     path: 'settings',
                     name: 'Settings',
-                    component: SettingsView,
+                    component: () => import('@/views/SettingsView.vue'),
                 },
                 {
                     path: 'library',
                     name: 'Library',
-                    component: LibraryView,
+                    component: () => import('@/views/LibraryView.vue'),
                 },
                 {
                     path: 'anime',
                     name: 'Anime',
                     component: () => import('@/views/AnimeView.vue'),
                 },
+                {
+                    path: 'anime/:id',
+                    name: 'AnimePage',
+                    component: () => import('@/views/AnimePageView.vue'),
+                },
             ],
         },
         {
             path: '/login',
             name: 'Login',
-            component: LoginView,
+            component: () => import('@/views/LoginView.vue'),
         },
         {
             path: '/:pathMatch(.*)*',
             name: 'not-found',
-            component: NotFoundView,
+            component: () => import('@/views/NotFoundView.vue'),
         },
     ],
 });

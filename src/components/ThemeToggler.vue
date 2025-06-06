@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Moon, Sun } from 'lucide-vue-next'
 
 // Pass { disableTransition: false } to enable transitions
-const mode = useColorMode()
+const mode = useColorMode({ disableTransition: false })
 </script>
 
 <template>

@@ -2,8 +2,11 @@
 import { ref } from 'vue';
 import { Minus, Expand, Minimize, X } from 'lucide-vue-next';
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { useColorMode } from '@vueuse/core';
 
 const currentWindow = getCurrentWindow();
+
+useColorMode({ disableTransition: false })
 
 const checkMaximized = async () => {
     const isMaximized = await currentWindow.isMaximized();
