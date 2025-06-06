@@ -4,10 +4,10 @@ import { RouterView } from 'vue-router';
 </script>
 
 <template>
-    <div class="flex-1 overflow-hidden">
-        <div class="h-full w-full overflow-y-auto overflow-x-hidden bg-background">
+    <div class="flex h-screen">
+        <div class="flex h-full w-full flex-col bg-background">
             <NavHeader />
-            <div class="relative">
+            <div class="flex-1 overflow-y-auto">
                 <RouterView />
             </div>
         </div>

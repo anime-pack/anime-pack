@@ -1,25 +1,38 @@
 <script setup lang="ts">
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ref } from 'vue';
+import { Monitor, Palette, Info } from 'lucide-vue-next';
 import { DesktopSection, AppearanceSection, AboutSection } from '@/components/layout/Settings';
+import { cn } from '@/lib/utils';
+
+const sections = [
+    { id: 'desktop', label: 'Desktop', icon: Monitor, component: DesktopSection },
+    { id: 'appearance', label: 'Aparência', icon: Palette, component: AppearanceSection },
+    { id: 'about', label: 'Sobre', icon: Info, component: AboutSection },
+];
+
+const currentSection = ref('desktop');
 </script>
 
 <template>
-    <div className="flex flex-1 justify-center px-4 pt-4">
-        <Tabs defaultValue="desktop" className="w-full align-top">
-            <TabsList className="grid w-full grid-cols-3 gap-0.5 mb-3">
-                <TabsTrigger value="desktop">Desktop</TabsTrigger>
-                <TabsTrigger value="appearence">Appearence</TabsTrigger>
-                <TabsTrigger value="about">About</TabsTrigger>
-            </TabsList>
-            <TabsContent value="desktop">
-                <DesktopSection />
-            </TabsContent>
-            <TabsContent value="appearence">
-                <AppearanceSection />
-            </TabsContent>
-            <TabsContent value="about">
-                <AboutSection />
-            </TabsContent>
-        </Tabs>
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside class="w-64 border-r bg-card px-4 py-6">
+            <nav class="space-y-1">
+                <button v-for="section in sections" :key="section.id" @click="currentSection = section.id"
+                    class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent"
+                    :class="cn({
+                        'bg-accent': currentSection === section.id,
+                        'text-muted-foreground': currentSection !== section.id
+                    })">
+                    <component :is="section.icon" class="size-4" />
+                    {{ section.label }}
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 px-8 py-6">
+            <component :is="sections.find(s => s.id === currentSection)?.component" />
+        </main>
     </div>
 </template>
