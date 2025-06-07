@@ -7,8 +7,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 
-// TODO: make player functional
-
 interface Props {
     src: string;
     poster?: string;
@@ -36,6 +34,7 @@ const showControls = ref(true);
 const isVideoReady = ref(false);
 const progressHoverWidth = ref(0);
 const isControlsVisible = ref(true);
+const isInteracting = ref(false);
 let hideControlsTimer: ReturnType<typeof setTimeout>;
 
 // Controles de reprodução
@@ -114,11 +113,13 @@ const handleProgressHover = (e: MouseEvent) => {
 
 const handleMouseMove = () => {
     isControlsVisible.value = true;
+    isInteracting.value = true;
     clearTimeout(hideControlsTimer);
 
     if (isPlaying.value) {
         hideControlsTimer = setTimeout(() => {
             isControlsVisible.value = false;
+            isInteracting.value = false;
         }, 3000);
     }
 };
@@ -182,12 +183,12 @@ const handleKeyPress = (e: KeyboardEvent) => {
 </script>
 
 <template>
-    <div ref="containerRef" class="relative aspect-video bg-black group" @mousemove="handleMouseMove"
+    <div ref="containerRef" class="relative aspect-video bg-black" @mousemove="handleMouseMove"
         @mouseleave="isControlsVisible = false">
 
         <!-- Video Element -->
-        <video ref="videoRef" class="h-full w-full" :src="src" :poster="poster" :autoplay="autoplay"
-            @click="togglePlay">
+        <video ref="videoRef" class="h-full w-full" @click.stop="togglePlay" :src="src" :poster="poster"
+            :autoplay="autoplay" preload="auto">
             Your browser does not support HTML5 video.
         </video>
 
@@ -198,20 +199,25 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
         <!-- Controles Overlay -->
         <div class="absolute inset-0 transition-opacity duration-300"
-            :class="{ 'opacity-0': !isControlsVisible && isPlaying }">
-            <!-- Área de clique para play/pause -->
-            <div class="absolute inset-0 z-10" @dblclick="toggleFullscreen" />
+            :class="{ 'opacity-0 pointer-events-none': !isControlsVisible && isPlaying }">
 
-            <!-- Barra de Controles -->
-            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 p-4 space-y-2">
+            <!-- Play/Pause Overlay -->
+            <div class="absolute inset-0 flex items-center justify-center" @click.stop="togglePlay">
+                <Button v-show="!isInteracting" variant="ghost" size="lg"
+                    class="text-white opacity-0 transition-opacity group-hover:opacity-100">
+                    <Play v-if="!isPlaying" class="size-12" />
+                    <Pause v-else class="size-12" />
+                </Button>
+            </div>
+
+            <!-- Bottom Controls -->
+            <div class="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 p-4 space-y-2">
                 <!-- Progress Bar -->
                 <div ref="progressRef"
-                    class="group relative h-1 hover:h-2 w-full bg-white/30 cursor-pointer rounded-full transition-all"
-                    @mousemove="handleProgressHover" @mouseleave="progressHoverWidth = 0" @click="seek">
-                    <!-- Progress Track -->
+                    class="group/progress relative h-1 hover:h-2 w-full bg-white/30 cursor-pointer rounded-full transition-all"
+                    @click.stop="seek" @mousemove.stop="handleProgressHover" @mouseleave="progressHoverWidth = 0">
                     <div class="absolute inset-0 rounded-full bg-white/10 transition-all"
                         :style="{ width: `${progressHoverWidth}%` }" />
-                    <!-- Progress Fill -->
                     <div class="absolute h-full bg-primary rounded-full transition-all"
                         :style="{ width: `${(currentTime / duration) * 100}%` }" />
                 </div>
@@ -220,7 +226,8 @@ const handleKeyPress = (e: KeyboardEvent) => {
                 <div class="flex items-center justify-between gap-4">
                     <!-- Left Controls -->
                     <div class="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" class="text-white hover:bg-white/20" @click="togglePlay">
+                        <Button variant="ghost" size="icon" class="text-white hover:bg-white/20"
+                            @click.stop="togglePlay">
                             <Play v-if="!isPlaying" class="size-5" />
                             <Pause v-else class="size-5" />
                         </Button>
@@ -228,7 +235,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
                         <!-- Volume Control -->
                         <div class="group relative flex items-center">
                             <Button variant="ghost" size="icon" class="text-white hover:bg-white/20"
-                                @click="toggleMute">
+                                @click.stop="toggleMute">
                                 <Volume2 v-if="!isMuted && volume > 0" class="size-5" />
                                 <VolumeX v-else class="size-5" />
                             </Button>
@@ -245,13 +252,11 @@ const handleKeyPress = (e: KeyboardEvent) => {
                     </div>
 
                     <!-- Right Controls -->
-                    <div class="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" class="text-white hover:bg-white/20"
-                            @click="toggleFullscreen">
-                            <Maximize v-if="!isFullscreen" class="size-5" />
-                            <Minimize v-else class="size-5" />
-                        </Button>
-                    </div>
+                    <Button variant="ghost" size="icon" class="text-white hover:bg-white/20"
+                        @click.stop="toggleFullscreen">
+                        <Maximize v-if="!isFullscreen" class="size-5" />
+                        <Minimize v-else class="size-5" />
+                    </Button>
                 </div>
             </div>
         </div>
