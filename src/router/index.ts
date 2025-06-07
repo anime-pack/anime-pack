@@ -35,6 +35,11 @@ const router = createRouter({
                     name: 'AnimePage',
                     component: () => import('@/views/AnimePageView.vue'),
                 },
+                {
+                    path: 'watch/:id',
+                    name: 'Player',
+                    component: () => import('@/views/PlayerView.vue'),
+                },
             ],
         },
         {
