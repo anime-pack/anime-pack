@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Monitor, Moon, Sun, Palette } from 'lucide-vue-next';
 import ThemeToggler from '@/components/ThemeToggler.vue';
 import { Card, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
@@ -38,36 +35,7 @@ const applyAccentColor = (color: string) => {
                 <div class="flex flex-col gap-6">
                     <!-- Theme Selection -->
                     <div class="space-y-4">
-                        <div>
-                            <h3 class="text-lg font-medium">Tema</h3>
-                            <p class="text-sm text-muted-foreground">
-                                Escolha entre tema claro, escuro ou automático.
-                            </p>
-                        </div>
-
-                        <RadioGroup defaultValue="system" class="grid grid-cols-3 gap-4">
-                            <Label
-                                class="flex flex-col items-center gap-2 rounded-lg border-2 border-muted bg-popover p-4 
-                                hover:bg-accent hover:text-accent-foreground [&:has(:checked)]:border-primary cursor-pointer">
-                                <RadioGroupItem value="light" class="sr-only" />
-                                <Sun class="size-5" />
-                                <span class="text-sm">Claro</span>
-                            </Label>
-                            <Label
-                                class="flex flex-col items-center gap-2 rounded-lg border-2 border-muted bg-popover p-4 
-                                hover:bg-accent hover:text-accent-foreground [&:has(:checked)]:border-primary cursor-pointer">
-                                <RadioGroupItem value="dark" class="sr-only" />
-                                <Moon class="size-5" />
-                                <span class="text-sm">Escuro</span>
-                            </Label>
-                            <Label
-                                class="flex flex-col items-center gap-2 rounded-lg border-2 border-muted bg-popover p-4 
-                                hover:bg-accent hover:text-accent-foreground [&:has(:checked)]:border-primary cursor-pointer">
-                                <RadioGroupItem value="system" class="sr-only" />
-                                <Monitor class="size-5" />
-                                <span class="text-sm">Sistema</span>
-                            </Label>
-                        </RadioGroup>
+                        <ThemeToggler />
                     </div>
 
                     <Separator />
@@ -91,21 +59,6 @@ const applyAccentColor = (color: string) => {
                             </Button>
                         </div>
                     </div>
-                </div>
-            </CardContent>
-        </Card>
-
-        <!-- Font Settings -->
-        <Card>
-            <CardContent class="p-6">
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="text-lg font-medium">Fonte</h3>
-                        <p class="text-sm text-muted-foreground">
-                            Ajuste o tamanho da fonte do aplicativo.
-                        </p>
-                    </div>
-                    <!-- TODO: Adicionar controle de fonte -->
                 </div>
             </CardContent>
         </Card>

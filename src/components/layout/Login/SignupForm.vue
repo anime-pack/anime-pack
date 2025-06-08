@@ -6,14 +6,21 @@ import { Label } from '@/components/ui/label'
 import { Icon } from '@iconify/vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ref } from 'vue'
+import { toast } from 'vue-sonner'
 
 const acceptedTerms = ref(false)
 
 const handleSubmit = (e: Event) => {
-    if (!acceptedTerms.value) {
-        e.preventDefault()
+    e.preventDefault()
+
+    const form = e.target as HTMLFormElement
+    if (form.checkValidity()) {
+        if (!acceptedTerms.value) {
+            toast.warning('Por favor, aceite os termos de serviço para continuar')
+        }
         return
     }
+
     // TODO: handle form submission
 }
 </script>
