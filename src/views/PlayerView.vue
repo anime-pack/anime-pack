@@ -45,7 +45,7 @@ const handleTimeUpdate = (time: number) => {
 };
 
 const handleEnded = () => {
-    // TODO: Auto-play next episode
+    // TODO: Auto-play next episode and mark as watched
     // console.log('Video ended');
 };
 

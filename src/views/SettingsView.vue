@@ -28,7 +28,6 @@ const currentSection = ref(initialSection.value);
 const changeSection = (sectionId: string) => {
     currentSection.value = sectionId;
     router.push({ query: { tab: sectionId } });
-    console.log(route)
 };
 </script>
 
