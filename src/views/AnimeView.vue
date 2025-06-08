@@ -1,145 +1,203 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue';
-import { Button } from '@/components/ui/button';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import AnimeCard from '@/components/AnimeCard.vue';
-import { AnimeItem, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
-import { SearchAnimeParams } from '@/types/invoke';
+import type { AnimeItem } from '@/types/anime';
+import {
+    Calendar,
+    Star,
+    Clock,
+    Users,
+    Activity,
+    PlayCircle,
+    Heart
+} from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/components/ui/tabs';
 
-type Filter = {
-    search: string;
-    type: keyof typeof AnimeType | undefined;
-    status: (keyof typeof AnimeStatus | undefined);
-    genres: number[];
-    year: string | undefined;
-    rating: (keyof typeof AnimeRating | undefined);
-};
+const route = useRoute();
+const router = useRouter();
+const anime = ref<AnimeItem | null>(null);
+const isLoading = ref(true);
+const isLiked = ref(false);
 
-const filterOpts = {
-    types: Object.keys(AnimeType) as unknown as (keyof typeof AnimeType),
-    status: Object.keys(AnimeStatus) as unknown as (keyof typeof AnimeStatus | undefined),
-    rating: Object.keys(AnimeRating) as unknown as (keyof typeof AnimeRating | undefined),
-    genres: [] as string[],
-};
-
-const animes = ref<AnimeItem[]>([]);
-const isLoading = ref(false);
-const error = ref<string | null>(null);
-
-const filters = reactive<Filter>({
-    search: '',
-    type: undefined,
-    status: undefined,
-    genres: [],
-    year: undefined,
-    rating: undefined,
-});
-
-async function fetchAnimes() {
-    isLoading.value = true;
-    error.value = null;
-
+onMounted(async () => {
     try {
-        const params = {
-            q: filters.search || undefined,
-            type_: filters.type ? filters.type : undefined,
-            status: filters.status && filters.status.length > 0 ? filters.status : undefined,
-            genres: filters.genres.length > 0 ? filters.genres : undefined,
-            start_date: filters.year || undefined,
-            rating: filters.rating || undefined,
-        } satisfies Partial<SearchAnimeParams>;
-
-        const response = await invoke<AnimeItem>('search_animes', { params });
-
-        if (!response || !Array.isArray(response)) {
-            throw new Error('Invalid response format');
-        }
-
-        animes.value = response as AnimeItem[];
-    } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Failed to fetch animes';
-        console.error('Error fetching animes:', err);
+        const response = await invoke<AnimeItem>('anime_full', {
+            id: Number(route.params.id)
+        });
+        anime.value = response;
+    } catch (error) {
+        console.error('Error fetching anime:', error);
     } finally {
         isLoading.value = false;
     }
+});
+
+const toggleLike = () => {
+    isLiked.value = !isLiked.value;
+};
+const handleWatch = () => {
+    if (anime.value) router.push(`/watch/${anime.value.mal_id}`);
 }
-
-// Atualizar busca quando filtros mudarem
-watch(
-    filters,
-    () => fetchAnimes(),
-    { deep: true }
-);
-
-onMounted(() => fetchAnimes());
 </script>
 
 <template>
-    <div class="flex flex-col gap-6 p-6">
-        <!-- Filters -->
-        <section class="flex flex-wrap items-center gap-4 rounded-lg border bg-card p-4">
-            <Select v-model="filterOpts">
-                <SelectTrigger class="w-[180px]">
-                    <SelectValue placeholder="Tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem v-for="type in filterOpts.types" :key="type" :value="type">
-                        {{ type }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+    <div v-if="isLoading" class="flex h-full items-center justify-center">
+        <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+    </div>
 
-            <Select v-model="filters.status">
-                <SelectTrigger class="w-[180px]">
-                    <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem v-for="status in filterOpts.status" :key="status" :value="status">
-                        {{ status }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+    <div v-else-if="anime" class="flex flex-col">
+        <!-- Hero Section com Background -->
+        <section class="relative h-[60vh] w-full">
+            <!-- Background Image -->
+            <div class="absolute inset-0">
+                <img :src="anime.images.webp.large_image_url" :alt="anime.title"
+                    class="h-full w-full object-cover object-top" />
+                <!-- Gradientes atualizados -->
+                <div class="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent" />
+                <div class="absolute inset-0 bg-gradient-to-r from-background to-transparent" />
+                <div class="absolute inset-0 bg-gradient-to-b from-background/50 to-transparent" />
+            </div>
 
-            <Select v-if="filterOpts.genres" v-model="filterOpts.genres">
-                <SelectTrigger class="w-[180px]">
-                    <SelectValue placeholder="Gêneros" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem v-for="genre in filterOpts.genres" :key="genre" :value="genre">
-                        {{ genre }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+            <!-- Hero Content -->
+            <div class="relative h-full flex flex-col justify-end pb-12 px-6 sm:px-12">
+                <header class="flex flex-col gap-4 max-w-3xl translate-y-8">
+                    <!-- Title & Japanese Title -->
+                    <div class="flex items-center gap-4">
+                        <h1 class="text-4xl font-bold">{{ anime.title }}</h1>
+                        <span class="text-lg text-muted-foreground">({{ anime.title_japanese }})</span>
+                    </div>
 
-            <Button variant="secondary" @click="() => filters = { ...filters, type: undefined, status: undefined, genres: [] }">
-                Limpar Filtros
-            </Button>
+                    <!-- Quick Info -->
+                    <div class="flex flex-wrap gap-4 text-sm">
+                        <div class="flex items-center gap-2">
+                            <Star class="size-4 text-primary" />
+                            <span>{{ anime.score }} ({{ anime.scored_by }} votos)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <Calendar class="size-4" />
+                            <span>{{ anime.year || anime.aired.prop.from.year || 'unavailable' }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <Clock class="size-4" />
+                            <span>{{ anime.duration }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <Users class="size-4" />
+                            <span>{{ anime.members }} membros</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <Activity class="size-4" />
+                            <span>{{ anime.status }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-4">
+                        <Button size="lg" class="gap-2" @click="handleWatch">
+                            <PlayCircle class="size-5" />
+                            Watch
+                        </Button>
+                        <Button size="lg" variant="outline" class="gap-2" @click="toggleLike">
+                            <Heart class="size-5 transition-colors duration-300"
+                                :class="{ 'fill-destructive text-destructive': isLiked }" />
+                        </Button>
+                    </div>
+                </header>
+            </div>
         </section>
 
-        <!-- Loading & Error states -->
-        <div v-if="isLoading" class="flex justify-center p-12">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <!-- Main Content -->
+        <main class="relative flex-1 bg-background p-6">
+            <!-- Content Tabs -->
+            <Tabs defaultValue="info" class="w-full">
+                <TabsList>
+                    <TabsTrigger value="info">Informações</TabsTrigger>
+                    <!-- <TabsTrigger value="episodes">Episódios</TabsTrigger>  // TODO: work on this when having eps/temps info and etc -->
+                </TabsList>
 
-        <div v-else-if="error" class="flex justify-center p-12">
-            <p class="text-destructive">{{ error }}</p>
-        </div>
+                <TabsContent value="info" class="mt-6">
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <!-- Synopsis -->
+                        <div class="flex flex-col gap-2">
+                            <h2 class="text-xl font-semibold">Sinopse</h2>
+                            <p class="text-muted-foreground">{{ anime.synopsis }}</p>
+                        </div>
 
-        <!-- Empty state -->
-        <div v-else-if="animes.length === 0" class="flex justify-center p-12">
-            <p class="text-muted-foreground">Nenhum anime encontrado</p>
-        </div>
+                        <!-- Details -->
+                        <div class="flex flex-col gap-4">
+                            <h2 class="text-xl font-semibold">Detalhes</h2>
+                            <dl class="grid gap-2">
+                                <div class="grid grid-cols-2">
+                                    <dt class="font-medium">Tipo</dt>
+                                    <dd class="text-muted-foreground">{{ anime.type }}</dd>
+                                </div>
+                                <div class="grid grid-cols-2">
+                                    <dt class="font-medium">Gêneros</dt>
+                                    <dd class="text-muted-foreground">
+                                        {{anime.genres?.map(g => g.name).join(', ')}}
+                                    </dd>
+                                </div>
+                                <div class="grid grid-cols-2">
+                                    <dt class="font-medium">Estúdios</dt>
+                                    <dd class="text-muted-foreground">
+                                        {{anime.studios?.map(s => s.name).join(', ')}}
+                                    </dd>
+                                </div>
+                                <div class="grid grid-cols-2">
+                                    <dt class="font-medium">Fonte</dt>
+                                    <dd class="text-muted-foreground">{{ anime.source }}</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </TabsContent>
 
-        <!-- Animes grid -->
-        <section v-else class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            <AnimeCard clickable v-for="anime in animes" :key="anime.mal_id" :anime="anime" />
-        </section>
+                <TabsContent value="episodes" class="mt-6">
+                    <ScrollArea className="h-[500px] rounded-md border p-4">
+                        <Accordion type="single" collapsible>
+                            <!-- // TODO: work on the seasons apisodes etc -->
+                            <AccordionItem v-for="season in anime.seasons" :key="season.year"
+                                :value="season.year.toString()">
+                                <AccordionTrigger>
+                                    Temporada {{ season.year }}
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <div class="grid gap-2">
+                                        <div v-for="episode in season.episodes" :key="episode.mal_id"
+                                            class="flex items-center justify-between rounded-lg border p-3 hover:bg-muted">
+                                            <div>
+                                                <span class="font-medium">Episódio {{ episode.number }}</span>
+                                                <p class="text-sm text-muted-foreground">{{ episode.title }}</p>
+                                            </div>
+                                            <Button variant="ghost" size="sm">
+                                                <PlayCircle class="size-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </ScrollArea>
+                </TabsContent>
+            </Tabs>
+        </main>
+    </div>
+
+    <div v-else class="flex h-full items-center justify-center">
+        <p class="text-muted-foreground">Anime não encontrado</p>
     </div>
 </template>

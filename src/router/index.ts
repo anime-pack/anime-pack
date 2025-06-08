@@ -26,14 +26,14 @@ const router = createRouter({
                     component: () => import('@/views/LibraryView.vue'),
                 },
                 {
-                    path: 'anime',
-                    name: 'Anime',
-                    component: () => import('@/views/AnimeView.vue'),
+                    path: 'search',
+                    name: 'Search',
+                    component: () => import('@/views/SearchView.vue'),
                 },
                 {
                     path: 'anime/:id',
                     name: 'AnimePage',
-                    component: () => import('@/views/AnimePageView.vue'),
+                    component: () => import('@/views/AnimeView.vue'),
                 },
                 {
                     path: 'watch/:id',

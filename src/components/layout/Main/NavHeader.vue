@@ -11,18 +11,22 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import SearchBar from '@/components/SearchBar.vue';
-import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notifications';
 
 const router = useRouter();
 const notificationStore = useNotificationStore();
+const route = useRoute();
 
 const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'Animes', path: '/anime' },
+    { name: 'Animes', path: '/search' },
     { name: 'Favorites', path: '/library?tab=favorites' },
     { name: 'Library', path: '/library' },
 ];
+
+const isSearchRoute = computed(() => route.path === '/search');
 
 const handleLogout = () => {
     // TODO: handle logout logic to clear user session etc
@@ -48,7 +52,7 @@ const handleLogout = () => {
 
             <!-- Navegação Direita -->
             <div class="flex items-center gap-2">
-                <SearchBar />
+                <SearchBar v-if="!isSearchRoute" />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" class="relative">
