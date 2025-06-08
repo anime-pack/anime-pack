@@ -18,13 +18,14 @@ const router = useRouter();
 const notificationStore = useNotificationStore();
 
 const navItems = [
-    { name: 'Início', path: '/' },
+    { name: 'Home', path: '/' },
     { name: 'Animes', path: '/anime' },
-    { name: 'Favoritos', path: '/library?tab=liked' },
-    { name: 'Biblioteca', path: '/library' },
+    { name: 'Favorites', path: '/library?tab=liked' },
+    { name: 'Library', path: '/library' },
 ];
 
 const handleLogout = () => {
+    // TODO: handle logout logic to clear user session etc
     router.push('/login');
 };
 </script>
@@ -60,11 +61,11 @@ const handleLogout = () => {
 
                     <DropdownMenuContent align="end" class="w-80">
                         <DropdownMenuLabel class="flex items-center justify-between">
-                            <span>Notificações</span>
+                            <span>Notifications</span>
                             <Button v-if="notificationStore.notifications.length" variant="ghost" size="sm"
                                 @click="notificationStore.clearAll">
                                 <Trash2 class="mr-2 size-4" />
-                                Limpar
+                                Clean
                             </Button>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
@@ -72,7 +73,7 @@ const handleLogout = () => {
                         <div class="max-h-[300px] overflow-y-auto">
                             <div v-if="!notificationStore.notifications.length"
                                 class="p-4 text-center text-muted-foreground">
-                                Nenhuma notificação
+                                No new notifications
                             </div>
 
                             <DropdownMenuItem v-for="notification in notificationStore.notifications"
@@ -105,20 +106,20 @@ const handleLogout = () => {
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end" class="w-56">
-                        <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem @click="() => router.push('/profile')">
                             <UserCircle class="mr-2 size-4" />
-                            <span>Perfil</span>
+                            <span>Profile</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem @click="() => router.push('/settings')">
                             <Settings class="mr-2 size-4" />
-                            <span>Configurações</span>
+                            <span>Settings</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem @click="handleLogout">
                             <LogOut class="mr-2 size-4" />
-                            <span>Sair</span>
+                            <span>Log out</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

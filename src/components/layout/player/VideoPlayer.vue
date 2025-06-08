@@ -185,8 +185,8 @@ const handleKeyPress = (e: KeyboardEvent) => {
 </script>
 
 <template>
-    <div ref="containerRef" class="relative aspect-video bg-black" @mousemove="handleMouseMove"
-        @mouseleave="isControlsVisible = false">
+    <div ref="containerRef" class="relative bg-black max-h-[90vh] min-w-full [aspect-ratio:16/9]"
+        @mousemove="handleMouseMove" @mouseleave="isControlsVisible = false">
 
         <!-- Video Element -->
         <video ref="videoRef" class="h-full w-full" @click.stop="togglePlay" :src="src" :poster="poster"
