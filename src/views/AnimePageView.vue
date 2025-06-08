@@ -121,12 +121,12 @@ const handleWatch = () => {
         </section>
 
         <!-- Main Content -->
-        <main class="relative z-10 flex-1 bg-background p-6">
+        <main class="relative flex-1 bg-background p-6">
             <!-- Content Tabs -->
             <Tabs defaultValue="info" class="w-full">
                 <TabsList>
                     <TabsTrigger value="info">Informações</TabsTrigger>
-                    <!-- <TabsTrigger value="episodes">Episódios</TabsTrigger> -->
+                    <!-- <TabsTrigger value="episodes">Episódios</TabsTrigger>  // TODO: work on this when having eps/temps info and etc -->
                 </TabsList>
 
                 <TabsContent value="info" class="mt-6">

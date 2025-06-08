@@ -58,7 +58,6 @@ async function fetchAnimes() {
 
         const response = await invoke<AnimeItem>('search_animes', { params });
 
-        console.log('Fetched animes:', response);
         if (!response || !Array.isArray(response)) {
             throw new Error('Invalid response format');
         }
