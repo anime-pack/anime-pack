@@ -13,7 +13,7 @@ const route = useRoute();
 const router = useRouter();
 const isLoading = ref(true);
 const anime = ref<AnimeItem | null>(null);
-const currentEpisode = ref(Number(route.params.episode) || 1);
+const currentEpisode = ref(Number(route.query.ep) || 1);
 
 const videoSrc = "https://cdn.discordapp.com/attachments/1324069439531909150/1380741471056957531/y2mate.is_-_L_I_F_E-OzFd-6BaiSQ-720p-1709513983.mp4?ex=6844fb33&is=6843a9b3&hm=970125e71f89c731e1dac436e37e1d9873eb988f5a141b70b512eef0573736d9&"; // TODO: Implementar source real
 
@@ -32,7 +32,7 @@ onMounted(async () => {
 
 const navigateToEpisode = (episode: number) => {
     currentEpisode.value = episode;
-    router.push(`/watch/${route.params.id}/${episode}`);
+    router.push(`/watch/${route.params.id}?ep=${episode}`);
 };
 
 const exitPlayer = () => {
@@ -54,7 +54,7 @@ const episodes = Array.from({ length: 12 }, (_, i) => ({
     number: i + 1,
     title: `Episode ${i + 1}`,
     duration: '24:00',
-    thumbnail: anime.value?.images.webp.image_url || ''
+    thumbnail: anime.value?.images.webp.image_url || 'https://placehold.co/600x400.png'
 }));
 </script>
 
@@ -83,11 +83,11 @@ const episodes = Array.from({ length: 12 }, (_, i) => ({
                     <!-- Header Bar -->
                     <div class="absolute top-0 inset-x-0 p-4 flex justify-between items-center">
                         <h2 class="text-white font-medium">
-                            {{ anime?.title }} - Episódio {{ currentEpisode }}
+                            {{ anime?.title }} - Episode {{ currentEpisode }}
                         </h2>
-                        <Button variant="ghost" size="icon" class="text-white" @click="exitPlayer">
+                        <!-- <Button variant="ghost" size="icon" class="text-white" @click="exitPlayer">
                             <X class="size-6" />
-                        </Button>
+                        </Button> -->
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@ const episodes = Array.from({ length: 12 }, (_, i) => ({
         <div class="flex-1 overflow-y-auto">
             <div class="mx-auto max-w-screen-xl px-4 py-6">
                 <!-- Episode Info -->
-                <div v-if="anime" class="max-w-3xl mb-8">
+                <div v-if="anime" class="max-w-5xl mb-8">
                     <h1 class="text-2xl font-bold mb-2">{{ anime.title }}</h1>
                     <p class="text-muted-foreground">
                         {{ anime.synopsis }}
@@ -127,7 +127,7 @@ const episodes = Array.from({ length: 12 }, (_, i) => ({
                                 <!-- Info -->
                                 <div class="flex flex-col items-start gap-1 text-left">
                                     <span class="text-xs text-muted-foreground">
-                                        Episódio {{ episode.number }}
+                                        Episode {{ episode.number }}
                                     </span>
                                     <h4 class="font-medium">{{ episode.title }}</h4>
                                 </div>
