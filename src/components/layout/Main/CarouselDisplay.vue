@@ -64,7 +64,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <section class="px-6">
+    <section class="px-6 select-none">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-semibold">{{ title || "Animes" }}</h2>
             <Button v-if="moreHref" :to="moreHref" variant="ghost" class="gap-2">

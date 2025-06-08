@@ -63,7 +63,7 @@ const navigateToAnime = (w?: boolean) => {
 </script>
 
 <template>
-    <section class="relative h-[45vh] w-full">
+    <section class="relative h-[45vh] w-full select-none">
         <!-- Loading State -->
         <div v-if="isLoading" class="absolute inset-0 bg-muted animate-pulse" />
 
@@ -85,7 +85,7 @@ const navigateToAnime = (w?: boolean) => {
                     enter-from-class="opacity-0 translate-y-5" enter-to-class="opacity-100 translate-y-0"
                     leave-active-class="transition-all duration-500 ease-in"
                     leave-from-class="opacity-100 -translate-y-0" leave-to-class="opacity-0 -translate-y-5">
-                    <h1 :key="`title-${currentAnime.mal_id}`" class="text-4xl font-bold sm:text-6xl max-w-7xl">
+                    <h1 :key="`title-${currentAnime.mal_id}`" class="text-4xl font-bold sm:text-6xl max-w-7xl mb-2">
                         {{ currentAnime.title }}
                     </h1>
                     <p :key="`desc-${currentAnime.mal_id}`" class="text-muted-foreground max-w-3xl line-clamp-3">
