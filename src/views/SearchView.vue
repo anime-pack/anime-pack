@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,6 +47,8 @@ const filters = reactive<Filter>({
     rating: undefined,
 });
 
+const searchBarRef = ref();
+
 async function fetchAnimes() {
     isLoading.value = true;
     error.value = null;
@@ -83,7 +85,21 @@ watch(
     { deep: true }
 );
 
-onMounted(() => fetchAnimes());
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyPress);
+    fetchAnimes();
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleKeyPress);
+});
+
+const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchBarRef.value?.focus();
+    }
+};
 
 const handleSearch = (query: string) => {
     filters.search = query;
@@ -95,7 +111,7 @@ const handleSearch = (query: string) => {
     <div class="flex flex-col gap-6 p-6">
         <!-- Search -->
         <div class="w-full max-w-3xl">
-            <SearchBar :defaultValue="filters.search" @submit="handleSearch" />
+            <SearchBar ref="searchBarRef" :defaultValue="filters.search" @submit="handleSearch" cleaner />
         </div>
 
         <!-- Filters -->

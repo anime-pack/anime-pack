@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import SearchBar from '@/components/SearchBar.vue';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notifications';
 
@@ -28,14 +28,52 @@ const navItems = [
 
 const isSearchRoute = computed(() => route.path === '/search');
 const isSearchExpanded = ref(false);
+const searchBarRef = ref();
 
 const toggleSearch = () => {
+    if (isSearchExpanded.value && searchBarRef.value) {
+        searchBarRef.value.clearSearch();
+    } else {
+        // Aguarda a expansão ser concluída antes de focar
+        setTimeout(() => {
+            searchBarRef.value?.focus();
+        }, 200);
+    }
     isSearchExpanded.value = !isSearchExpanded.value;
+};
+
+const handleSearch = (query: string) => {
+    router.push({ path: '/search', query: { q: query || undefined } });
 };
 
 const handleLogout = () => {
     // TODO: handle logout logic to clear user session etc
     router.push('/login');
+};
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeyPress);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleKeyPress);
+});
+
+const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (!isSearchRoute.value) {
+            if (!isSearchExpanded.value) {
+                isSearchExpanded.value = true;
+                // Aguarda a expansão terminar
+                setTimeout(() => {
+                    searchBarRef.value?.focus();
+                }, 200);
+            } else {
+                searchBarRef.value?.focus();
+            }
+        }
+    }
 };
 </script>
 
@@ -58,9 +96,9 @@ const handleLogout = () => {
             <!-- Navegação Direita -->
             <div class="flex items-center gap-2">
                 <div class="relative flex items-center">
-                    <div class="overflow-hidden transition-all duration-200" :class="isSearchExpanded ? 'w-120 mr-2' : 'w-0'
-                        ">
-                        <SearchBar v-if="!isSearchRoute" />
+                    <div class="overflow-hidden transition-all duration-200"
+                        :class="isSearchExpanded ? 'w-120 mr-2' : 'w-0'">
+                        <SearchBar ref="searchBarRef" v-if="!isSearchRoute" @submit="handleSearch" />
                     </div>
                     <Button v-if="!isSearchRoute" variant="ghost" size="icon" @click="toggleSearch">
                         <Search v-if="!isSearchExpanded" class="size-5" />
