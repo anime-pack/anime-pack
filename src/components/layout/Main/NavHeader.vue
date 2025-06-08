@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Bell, Settings, User, LogOut, UserCircle, Trash2, Check } from 'lucide-vue-next';
+import { Bell, Settings, User, LogOut, UserCircle, Trash2, Check, Search, X } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import SearchBar from '@/components/SearchBar.vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notifications';
 
@@ -27,6 +27,11 @@ const navItems = [
 ];
 
 const isSearchRoute = computed(() => route.path === '/search');
+const isSearchExpanded = ref(false);
+
+const toggleSearch = () => {
+    isSearchExpanded.value = !isSearchExpanded.value;
+};
 
 const handleLogout = () => {
     // TODO: handle logout logic to clear user session etc
@@ -52,7 +57,16 @@ const handleLogout = () => {
 
             <!-- Navegação Direita -->
             <div class="flex items-center gap-2">
-                <SearchBar v-if="!isSearchRoute" />
+                <div class="relative flex items-center">
+                    <div class="overflow-hidden transition-all duration-200" :class="isSearchExpanded ? 'w-120 mr-2' : 'w-0'
+                        ">
+                        <SearchBar v-if="!isSearchRoute" />
+                    </div>
+                    <Button v-if="!isSearchRoute" variant="ghost" size="icon" @click="toggleSearch">
+                        <Search v-if="!isSearchExpanded" class="size-5" />
+                        <X v-else class="size-5" />
+                    </Button>
+                </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" class="relative">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';
 import {
     Select,
@@ -12,6 +13,7 @@ import AnimeCard from '@/components/AnimeCard.vue';
 import { AnimeItem, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { SearchAnimeParams } from '@/types/invoke';
+import SearchBar from '@/components/SearchBar.vue';
 
 type Filter = {
     search: string;
@@ -33,8 +35,11 @@ const animes = ref<AnimeItem[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
+const route = useRoute();
+const router = useRouter();
+
 const filters = reactive<Filter>({
-    search: '',
+    search: (route.query.q as string) || '',
     type: undefined,
     status: undefined,
     genres: [],
@@ -79,10 +84,20 @@ watch(
 );
 
 onMounted(() => fetchAnimes());
+
+const handleSearch = (query: string) => {
+    filters.search = query;
+    router.push({ query: { ...route.query, q: query || undefined } });
+};
 </script>
 
 <template>
     <div class="flex flex-col gap-6 p-6">
+        <!-- Search -->
+        <div class="w-full max-w-3xl">
+            <SearchBar :defaultValue="filters.search" @submit="handleSearch" />
+        </div>
+
         <!-- Filters -->
         <section class="flex flex-wrap items-center gap-4 rounded-lg border bg-card p-4">
             <Select v-model="filterOpts">
@@ -118,7 +133,8 @@ onMounted(() => fetchAnimes());
                 </SelectContent>
             </Select>
 
-            <Button variant="secondary" @click="() => filters = { ...filters, type: undefined, status: undefined, genres: [] }">
+            <Button variant="secondary"
+                @click="() => filters = { ...filters, type: undefined, status: undefined, genres: [] }">
                 Limpar Filtros
             </Button>
         </section>
