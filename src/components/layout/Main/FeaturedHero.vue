@@ -69,7 +69,7 @@ const navigateToAnime = (w?: boolean) => {
 
         <!-- Content State -->
         <template v-else-if="currentAnime">
-            <TransitionGroup name="fade" class="transition-all duration-1000">
+            <TransitionGroup tag="div" name="fade">
                 <div v-for="(anime, index) in featuredAnimes" :key="anime.mal_id" v-show="index === currentIndex"
                     class="absolute inset-0 bg-no-repeat bg-cover bg-center transition-opacity duration-1000"
                     :style="{ backgroundImage: `url(${anime.images.webp.large_image_url})` }"
@@ -81,7 +81,7 @@ const navigateToAnime = (w?: boolean) => {
             </TransitionGroup>
 
             <div class="relative z-10 flex h-full flex-col justify-end gap-4 p-6 sm:p-8">
-                <TransitionGroup enter-active-class="transition-all duration-500 ease-out"
+                <TransitionGroup tag="div" enter-active-class="transition-all duration-500 ease-out"
                     enter-from-class="opacity-0 translate-y-5" enter-to-class="opacity-100 translate-y-0"
                     leave-active-class="transition-all duration-500 ease-in"
                     leave-from-class="opacity-100 -translate-y-0" leave-to-class="opacity-0 -translate-y-5">
