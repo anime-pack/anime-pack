@@ -77,7 +77,7 @@ const navigateToAnime = (w?: boolean) => {
                     <div class="absolute inset-0 bg-gradient-to-r from-background/95 to-background/20" />
                     <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
                     <div class="absolute inset-0 bg-gradient-to-b from-background/50 to-transparent" />
-        </div>
+                </div>
             </TransitionGroup>
 
             <div class="relative z-10 flex h-full flex-col justify-end gap-4 p-6 sm:p-8">
@@ -93,17 +93,17 @@ const navigateToAnime = (w?: boolean) => {
                     </p>
                 </TransitionGroup>
 
-            <div class="flex gap-4">
-                    <Button size="lg" class="gap-2" @click="navigateToAnime">
-                    <PlayCircle class="size-5" />
+                <div class="flex gap-4">
+                    <Button size="lg" class="gap-2" @click="navigateToAnime(true)">
+                        <PlayCircle class="size-5" />
                         Watch
-                </Button>
-                    <Button size="lg" variant="outline" class="gap-2" @click="navigateToAnime(true)">
+                    </Button>
+                    <Button size="lg" variant="outline" class="gap-2" @click="navigateToAnime(false)">
                         <Info class="size-5 " />
                         More Info
-                </Button>
+                    </Button>
+                </div>
             </div>
-        </div>
         </template>
 
         <!-- Empty State -->

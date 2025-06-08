@@ -41,12 +41,12 @@ const exitPlayer = () => {
 
 const handleTimeUpdate = (time: number) => {
     // TODO: Save progress
-    console.log('Current time:', time);
+    // console.log('Current time:', time);
 };
 
 const handleEnded = () => {
     // TODO: Auto-play next episode
-    console.log('Video ended');
+    // console.log('Video ended');
 };
 
 // Mock data for episodes (TODO: implement real data)

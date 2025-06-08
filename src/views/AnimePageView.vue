@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
 import type { AnimeItem } from '@/types/anime';
 import {
@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/tabs';
 
 const route = useRoute();
+const router = useRouter();
 const anime = ref<AnimeItem | null>(null);
 const isLoading = ref(true);
 const isLiked = ref(false);
@@ -48,6 +49,9 @@ onMounted(async () => {
 const toggleLike = () => {
     isLiked.value = !isLiked.value;
 };
+const handleWatch = () => {
+    if (anime.value) router.push(`/watch/${anime.value.mal_id}`);
+}
 </script>
 
 <template>
@@ -103,9 +107,9 @@ const toggleLike = () => {
 
                     <!-- Actions -->
                     <div class="flex gap-4">
-                        <Button size="lg" class="gap-2">
+                        <Button size="lg" class="gap-2" @click="handleWatch">
                             <PlayCircle class="size-5" />
-                            Assistir
+                            Watch
                         </Button>
                         <Button size="lg" variant="outline" class="gap-2" @click="toggleLike">
                             <Heart class="size-5 transition-colors duration-300"

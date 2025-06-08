@@ -7,6 +7,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 
+// TODO: adjust player layout and styles so it looks better and ocupies less space, and add more settings and functionalities
+
 interface Props {
     src: string;
     poster?: string;

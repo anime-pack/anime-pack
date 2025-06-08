@@ -1,48 +1,94 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core';
 import { Icon } from '@iconify/vue';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Heart } from 'lucide-vue-next';
+
+const version = '0.1.0'; // TODO: get from package.json
+const socialLinks = [
+    { name: 'GitHub', icon: 'fa6-brands:github', url: 'https://github.com/anime-pack/anime-pack' },
+    { name: 'Discord', icon: 'fa6-brands:discord', url: 'https://discord.gg/Nv8UXpB36y' }
+];
+
+const openUrl = (url: string) => invoke<void>('open_url', { url });
 </script>
 
 <template>
-    <Card>
-        <CardHeader>
-            <CardTitle>About</CardTitle>
-            <CardDescription>
-                Learn about the app and some legal advice.
-            </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2 p-3">
-            <div>
-                <Label>What is this app?</Label>
-                <p className='mt-1 pl-2.5 max-w-[60%]'>
-                    Anime Pack is an MyAnimeList client for your desktop,
-                    that will provide functionalities integrating with your MAL api,
-                    such as liking, creating 'playlists', sharing and a lot more on future updates,
-                    join the Discord server and stay tunned for future releases!
-                </p>
-            </div>
-            <div className="space-y-1 pt-2">
-                <Label>Socials</Label>
-                <div className="flex gap-2 pl-2.5 mt-2">
-                    <Badge @click="() => {
-                        invoke('open_url', {
-                            url: 'https://github.com/anime-pack/anime-pack',
-                        });
-                    }" className="hover:cursor-pointer">
-                        <Icon icon="fa6-brands:github" class="size-7" />
-                    </Badge>
-                    <Badge @click="() => {
-                        invoke('open_url', {
-                            url: 'https://discord.gg/Nv8UXpB36y',
-                        });
-                    }" className="hover:cursor-pointer">
-                        <Icon icon="fa6-brands:discord" class="size-7" />
-                    </Badge>
+    <div class="space-y-6">
+        <!-- App Info -->
+        <Card>
+            <CardContent class="pt-6">
+                <div class="flex items-start justify-between">
+                    <div class="space-y-1">
+                        <h2 class="text-2xl font-bold tracking-tight">Anime Pack</h2>
+                        <p class="text-sm text-muted-foreground">Version {{ version }}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <Badge v-for="link in socialLinks" :key="link.name" variant="secondary"
+                            class="cursor-pointer hover:bg-muted-foreground/20" @click="() => openUrl(link.url)">
+                            <Icon :icon="link.icon" class="size-5" />
+                        </Badge>
+                    </div>
                 </div>
-            </div>
-        </CardContent>
-    </Card>
+
+                <Separator class="my-6" />
+
+                <!-- App Description -->
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="font-semibold mb-2">O que é o Anime Pack?</h3>
+                        <p class="text-sm text-muted-foreground leading-relaxed">
+                            Anime Pack é um cliente desktop para MyAnimeList que oferece uma experiência
+                            integrada e moderna para gerenciar sua lista de animes. Com recursos como
+                            playlists personalizadas, compartilhamento social e muito mais.
+                        </p>
+                    </div>
+
+                    <!-- Features -->
+                    <div>
+                        <h3 class="font-semibold mb-2">Recursos</h3>
+                        <ul class="grid gap-2 text-sm text-muted-foreground">
+                            <li class="flex items-center gap-2">
+                                <Icon icon="lucide:check" class="size-4 text-primary" />
+                                Integração com MyAnimeList
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <Icon icon="lucide:check" class="size-4 text-primary" />
+                                Player de vídeo personalizado
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <Icon icon="lucide:check" class="size-4 text-primary" />
+                                Sistema de playlists
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <Icon icon="lucide:check" class="size-4 text-primary" />
+                                Temas personalizáveis
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+
+        <!-- Legal & Credits -->
+        <Card>
+            <CardContent class="pt-6 space-y-4">
+                <h3 class="font-semibold">Informações Legais</h3>
+                <div class="text-sm text-muted-foreground space-y-2">
+                    <p>© 2024 Anime Pack. Todos os direitos reservados.</p>
+                    <p>
+                        Desenvolvido com
+                        <Heart class="size-4 inline-block fill-destructive text-destructive" />
+                        por
+                        <a href="#" class="text-primary hover:underline"
+                            @click="() => openUrl('https://github.com/anime-pack')">
+                            Anime Pack Team
+                        </a>
+                    </p>
+                </div>
+            </CardContent>
+        </Card>
+    </div>
 </template>
