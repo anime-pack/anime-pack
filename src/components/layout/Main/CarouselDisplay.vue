@@ -13,13 +13,6 @@ import { onMounted, ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import AnimeCard from '@/components/AnimeCard.vue';
 
-
-// const props = withDefaults(defineProps<Props>(), {
-//     title: 'Animes',
-//     animes: () => [],
-//     params: undefined,
-// });
-
 const props = defineProps<{
     title?: string;
     animes?: AnimeItem[];
@@ -68,7 +61,7 @@ onMounted(async () => {
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-semibold">{{ title || "Animes" }}</h2>
             <Button v-if="moreHref" :to="moreHref" variant="ghost" class="gap-2">
-                Ver Mais
+                View More
                 <ChevronRight class="size-4" />
             </Button>
         </div>
@@ -93,7 +86,7 @@ onMounted(async () => {
                 <!-- Empty State -->
                 <CarouselItem v-else class="basis-full">
                     <div class="flex justify-center p-8 text-muted-foreground">
-                        Nenhum anime encontrado
+                        No animes found
                     </div>
                 </CarouselItem>
             </CarouselContent>

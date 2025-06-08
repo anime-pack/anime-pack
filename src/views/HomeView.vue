@@ -53,6 +53,5 @@ const animesToWatch = ref([
         <CarouselDisplay title="Season Animes" />
         <CarouselDisplay />
         <CarouselDisplay />
-        <CarouselDisplay />
     </div>
 </template>
