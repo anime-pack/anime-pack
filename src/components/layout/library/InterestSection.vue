@@ -58,7 +58,7 @@ const removeFromWatchlist = (animeId: number) => {
         </div>
 
         <div v-if="watchlist.length === 0" class="flex flex-col items-center justify-center py-12 space-y-4">
-            <div class="text-4xl">📋</div>
+            <List class="size-12 text-muted-foreground" />
             <h3 class="text-lg font-medium">Your interest list is empty</h3>
             <p class="text-sm text-muted-foreground">
                 Add animes that you want to watch in the future

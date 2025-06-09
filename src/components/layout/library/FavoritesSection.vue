@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { SortDesc, Search } from 'lucide-vue-next';
+import { SortDesc, Search, Heart } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import AnimeCard from '@/components/AnimeCard.vue';
 import {
@@ -52,7 +52,7 @@ const handleSearch = (query: string) => {
         </div>
 
         <div v-if="favorites.length === 0" class="flex flex-col items-center justify-center py-12 space-y-4">
-            <div class="text-4xl">❤️</div>
+            <Heart class="size-12 text-muted-foreground" />
             <h3 class="text-lg font-medium">No favorite animes yet</h3>
             <p class="text-sm text-muted-foreground">
                 Your favorite animes will appear here

@@ -62,7 +62,7 @@ const getRatingColor = (rating: number) => {
         </div>
 
         <div v-if="ratedAnimes.length === 0" class="flex flex-col items-center justify-center py-12 space-y-4">
-            <div class="text-4xl">⭐</div>
+            <Star class="size-12 text-muted-foreground" />
             <h3 class="text-lg font-medium">No rated animes yet</h3>
             <p class="text-sm text-muted-foreground">
                 Your ratings will appear here

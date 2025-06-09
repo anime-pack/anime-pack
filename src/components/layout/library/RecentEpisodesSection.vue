@@ -73,7 +73,7 @@ const continueEpisode = (animeId: number, episode: number) => {
         </div>
 
         <div v-if="episodes.length === 0" class="flex flex-col items-center justify-center py-12 space-y-4">
-            <div class="text-4xl">▶️</div>
+            <Play class="size-12 text-muted-foreground" />
             <h3 class="text-lg font-medium">No episodes watched yet</h3>
             <p class="text-sm text-muted-foreground">
                 Your watched episodes will appear here

@@ -74,7 +74,7 @@ const clearHistory = () => {
         </div>
 
         <div v-if="searchHistory.length === 0" class="flex flex-col items-center justify-center py-12 space-y-4">
-            <div class="text-4xl">🔍</div>
+            <Search class="size-12 text-muted-foreground" />
             <h3 class="text-lg font-medium">Empty search history</h3>
             <p class="text-sm text-muted-foreground">
                 Your recent searches will appear here
