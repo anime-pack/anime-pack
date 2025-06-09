@@ -123,7 +123,7 @@ defineExpose({
             </form>
         </PopoverTrigger>
 
-        <!-- // TODO: make width match form input width -->
+        <!-- // TODO: make width match form input width, remove v-same-width if possible and look on another alternative for this popover element -->
         <PopoverContent v-if="filteredSuggestions.length > 0" v-same-width="formRef" side="bottom" align="start"
             sticky="always" class="p-0 w-full max-w-[var(--radix-popover-trigger-width)]">
             <ul class="space-y-1 p-1">
