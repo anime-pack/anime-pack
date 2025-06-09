@@ -5,6 +5,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useLibraryStore } from '@/stores/library';
 import type { AnimeItem } from '@/types/anime';
 import {
+    ArrowLeft,
     Calendar,
     Star,
     Clock,
@@ -103,6 +104,10 @@ const handleWatch = () => {
 </script>
 
 <template>
+    <Button variant="ghost" class="absolute left-6 top-6 z-50" @click="router.back()">
+        <ArrowLeft class="size-5" />
+    </Button>
+
     <div v-if="isLoading" class="flex h-full items-center justify-center">
         <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
     </div>
