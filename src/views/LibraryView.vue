@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Heart, History, Play, Star, List, Search as SearchIcon, Eye, ChevronRight } from 'lucide-vue-next';
+import { Heart, History, Star, List, Search as SearchIcon, Eye, ChevronRight } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
-import { InterestSection, RatingsSection, FavoritesSection, SearchHistorySection, RecentAnimesSection, RecentEpisodesSection } from '@/components/layout/library';
+import { InterestSection, RatingsSection, FavoritesSection, SearchHistorySection, RecentAnimesSection } from '@/components/layout/library';
 
 const route = useRoute();
 const router = useRouter();
@@ -13,7 +13,6 @@ const sections = [
     { id: 'watchlist', label: 'Interest List', icon: List, component: InterestSection },
     {
         id: 'activity', label: 'Activity', icon: History, children: [
-            { id: 'recent-episodes', label: 'Recent Episodes', icon: Play, component: RecentEpisodesSection },
             { id: 'recent-animes', label: 'Recently Viewed', icon: Eye, component: RecentAnimesSection },
             { id: 'search-history', label: 'Search History', icon: SearchIcon, component: SearchHistorySection },
         ]
@@ -79,18 +78,6 @@ const changeSection = (sectionId: string, section?: typeof sections[0]) => {
         currentSection.value = sectionId;
         router.push({ query: { tab: sectionId } });
     }
-};
-
-const isActivitySelected = computed(() => {
-    const activitySection = sections.find(s => s.id === 'activity');
-    return activitySection?.children?.some(child => child.id === currentSection.value);
-});
-
-const isActiveSection = (section: typeof sections[0]) => {
-    if (section.children) {
-        return section.children.some(child => child.id === currentSection.value);
-    }
-    return currentSection.value === section.id;
 };
 
 const getCurrentComponent = computed(() => {

@@ -14,9 +14,11 @@ import SearchBar from '@/components/SearchBar.vue';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notifications';
+import { useLibraryStore } from '@/stores/library';
 
 const router = useRouter();
 const notificationStore = useNotificationStore();
+const libraryStore = useLibraryStore();
 const route = useRoute();
 
 const navItems = [
@@ -43,6 +45,9 @@ const toggleSearch = () => {
 };
 
 const handleSearch = (query: string) => {
+    if (query) {
+        libraryStore.addSearchQuery(query);
+    }
     router.push({ path: '/search', query: { q: query || undefined } });
 };
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { SortDesc, Search, Heart } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import { SortDesc, Heart } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import AnimeCard from '@/components/AnimeCard.vue';
 import {
@@ -11,11 +11,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import SearchBar from '@/components/SearchBar.vue';
-import type { AnimeItem } from '@/types/anime';
+import { useLibraryStore } from '@/stores/library';
 
+const libraryStore = useLibraryStore();
 const sortBy = ref('recent');
 const search = ref('');
-const favorites = ref<AnimeItem[]>([]); // TODO: Implementar store para favoritos
 
 const sortOptions = [
     { value: 'recent', label: 'Most Recent' },
@@ -23,9 +23,36 @@ const sortOptions = [
     { value: 'title', label: 'Title' },
 ];
 
+const favorites = computed(() => {
+    let sorted = [...libraryStore.likedAnimes];
+
+    // Aplicar ordenação
+    switch (sortBy.value) {
+        case 'score':
+            sorted.sort((a, b) => (b.score || 0) - (a.score || 0));
+            break;
+        case 'title':
+            sorted.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+        case 'recent':
+        default:
+            // já está ordenado por mais recente no store
+            break;
+    }
+
+    // Aplicar filtro de busca
+    if (search.value) {
+        const searchLower = search.value.toLowerCase();
+        sorted = sorted.filter(anime =>
+            anime.title.toLowerCase().includes(searchLower)
+        );
+    }
+
+    return sorted;
+});
+
 const handleSearch = (query: string) => {
     search.value = query;
-    // TODO: Implementar filtro de busca
 };
 </script>
 

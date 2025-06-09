@@ -14,6 +14,7 @@ import { AnimeItem, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { SearchAnimeParams } from '@/types/invoke';
 import SearchBar from '@/components/SearchBar.vue';
+import { useLibraryStore } from '@/stores/library';
 
 type Filter = {
     search: string;
@@ -37,6 +38,7 @@ const error = ref<string | null>(null);
 
 const route = useRoute();
 const router = useRouter();
+const libraryStore = useLibraryStore();
 
 const filters = reactive<Filter>({
     search: (route.query.q as string) || '',
@@ -103,6 +105,9 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
 const handleSearch = (query: string) => {
     filters.search = query;
+    if (query) {
+        libraryStore.addSearchQuery(query);
+    }
     router.push({ query: { ...route.query, q: query || undefined } });
 };
 </script>

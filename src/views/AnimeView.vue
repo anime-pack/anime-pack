@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
+import { useLibraryStore } from '@/stores/library';
 import type { AnimeItem } from '@/types/anime';
 import {
     Calendar,
@@ -29,9 +30,13 @@ import {
 
 const route = useRoute();
 const router = useRouter();
+const libraryStore = useLibraryStore();
 const anime = ref<AnimeItem | null>(null);
 const isLoading = ref(true);
-const isLiked = ref(false);
+
+const isLiked = computed(() =>
+    anime.value ? libraryStore.isAnimeLiked(anime.value.mal_id) : false
+);
 
 onMounted(async () => {
     try {
@@ -39,6 +44,14 @@ onMounted(async () => {
             id: Number(route.params.id)
         });
         anime.value = response;
+
+        // Adicionar aos recentemente vistos com a nova estrutura
+        if (anime.value) {
+            libraryStore.addViewedAnime({
+                animeData: anime.value,
+                watch: null // Inicialmente sem episódio assistido
+            });
+        }
     } catch (error) {
         console.error('Error fetching anime:', error);
     } finally {
@@ -47,7 +60,9 @@ onMounted(async () => {
 });
 
 const toggleLike = () => {
-    isLiked.value = !isLiked.value;
+    if (anime.value) {
+        libraryStore.toggleLikeAnime(anime.value);
+    }
 };
 const handleWatch = () => {
     if (anime.value) router.push(`/watch/${anime.value.mal_id}`);

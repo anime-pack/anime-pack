@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { SortDesc, Clock, Eye, Calendar } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import { SortDesc, Clock, Eye, Calendar, PlayCircle, Info } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/SearchBar.vue';
 import {
@@ -10,17 +10,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import type { AnimeItem } from '@/types/anime';
+import { useRouter } from 'vue-router';
+import { useLibraryStore } from '@/stores/library';
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '@/components/ui/accordion';
 
-interface ViewedAnime extends AnimeItem {
-    lastViewed: Date;
-    viewCount: number;
-    lastEpisode?: number;
-}
-
+const router = useRouter();
+const libraryStore = useLibraryStore();
 const sortBy = ref('recent');
 const search = ref('');
-const recentAnimes = ref<ViewedAnime[]>([]); // TODO: Implementar store para animes vistos
 
 const sortOptions = [
     { value: 'recent', label: 'Most Recent' },
@@ -28,18 +30,51 @@ const sortOptions = [
     { value: 'title', label: 'Title' },
 ];
 
-const handleSearch = (query: string) => {
-    search.value = query;
-    // TODO: Implementar filtro de busca
-};
+const recentAnimes = computed(() => {
+    let animes = libraryStore.getRecentlyViewed.map(item => ({
+        ...item.animeData,
+        lastViewed: item.timestamp,
+        lastEpisode: item.watch?.number || null
+    }));
 
-const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString();
-};
+    // Aplicar filtro de busca
+    if (search.value) {
+        const query = search.value.toLowerCase();
+        animes = animes.filter(anime =>
+            anime.title.toLowerCase().includes(query)
+        );
+    }
+
+    // Aplicar ordenação
+    switch (sortBy.value) {
+        case 'title':
+            return animes.sort((a, b) => a.title.localeCompare(b.title));
+        case 'recent':
+        default:
+            return animes.sort((a, b) => b.lastViewed.getTime() - a.lastViewed.getTime());
+    }
+});
 
 const continueAnime = (animeId: number) => {
-    // TODO: Implementar navegação para o último episódio visto
-    console.log('Continuing anime:', animeId);
+    const anime = libraryStore.getRecentlyViewed.find(
+        item => item.animeData.mal_id === animeId
+    );
+
+    if (anime?.watch) {
+        router.push(`/watch/${animeId}?episode=${anime.watch.number}`);
+    } else {
+        router.push(`/watch/${animeId}`);
+    }
+};
+
+const goToAnimePage = (animeId: number) => {
+    router.push(`/anime/${animeId}`);
+};
+
+const formatDate = (date: Date) => new Date(date).toLocaleDateString();
+
+const handleSearch = (query: string) => {
+    search.value = query;
 };
 </script>
 
@@ -74,39 +109,79 @@ const continueAnime = (animeId: number) => {
             <Button @click="$router.push('/search')">Explore Animes</Button>
         </div>
 
-        <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div v-for="anime in recentAnimes" :key="anime.mal_id"
-                class="group relative flex items-start gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
-                <!-- Thumbnail -->
-                <img :src="anime.images.webp.large_image_url" :alt="anime.title"
-                    class="h-24 w-40 object-cover rounded-md flex-none" />
+        <div v-else>
+            <Accordion type="single" collapsible class="space-y-4">
+                <AccordionItem v-for="anime in recentAnimes" :key="anime.mal_id" :value="anime.mal_id.toString()"
+                    class="border rounded-lg overflow-hidden">
+                    <AccordionTrigger class="px-4 py-2 hover:no-underline">
+                        <div class="flex items-center gap-4 w-full">
+                            <img :src="anime.images.webp.small_image_url" :alt="anime.title"
+                                class="h-16 w-12 object-cover rounded" />
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-medium line-clamp-1">{{ anime.title }}</h3>
+                                <div class="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                                    <span class="flex items-center gap-1">
+                                        <Clock class="size-3" />
+                                        {{ formatDate(anime.lastViewed) }}
+                                    </span>
+                                    <span v-if="anime.lastEpisode" class="flex items-center gap-1">
+                                        <Calendar class="size-3" />
+                                        Ep. {{ anime.lastEpisode }}
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Quick Actions -->
+                            <div class="flex gap-2 ml-4">
+                                <Button variant="ghost" size="sm" @click.stop="goToAnimePage(anime.mal_id)">
+                                    <Info class="size-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm" @click.stop="continueAnime(anime.mal_id)">
+                                    <PlayCircle class="size-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    </AccordionTrigger>
 
-                <!-- Info -->
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-medium line-clamp-1">{{ anime.title }}</h3>
-                    <div class="mt-2 flex flex-col gap-1 text-xs text-muted-foreground">
-                        <span class="flex items-center gap-1">
-                            <Clock class="size-3" />
-                            Viewed on {{ formatDate(anime.lastViewed) }}
-                        </span>
-                        <span class="flex items-center gap-1">
-                            <Eye class="size-3" />
-                            {{ anime.viewCount }} views
-                        </span>
-                        <span v-if="anime.lastEpisode" class="flex items-center gap-1">
-                            <Calendar class="size-3" />
-                            Episode {{ anime.lastEpisode }}
-                        </span>
-                    </div>
-                </div>
+                    <AccordionContent class="px-4 pb-4">
+                        <div class="grid gap-6 pt-4 md:grid-cols-2">
+                            <!-- Sinopse -->
+                            <div class="space-y-2">
+                                <h4 class="font-medium">Sinopse</h4>
+                                <p class="text-sm text-muted-foreground line-clamp-4">
+                                    {{ anime.synopsis }}
+                                </p>
+                            </div>
 
-                <!-- Continue Button -->
-                <Button variant="ghost" size="sm"
-                    class="absolute right-4 bottom-4 opacity-0 transition-opacity group-hover:opacity-100"
-                    @click="continueAnime(anime.mal_id)">
-                    Continue
-                </Button>
-            </div>
+                            <!-- Detalhes -->
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="font-medium">Tipo: </span>
+                                        <span class="text-muted-foreground"> {{ anime.type }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium">Status: </span>
+                                        <span class="text-muted-foreground"> {{ anime.status }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium">Episódios: </span>
+                                        <span class="text-muted-foreground"> {{ anime.episodes || '?' }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium">Score: </span>
+                                        <span class="text-muted-foreground"> {{ anime.score }}</span>
+                                    </div>
+                                </div>
+
+                                <Button class="w-full" @click="continueAnime(anime.mal_id)">
+                                    <PlayCircle class="size-4 mr-2" />
+                                    {{ anime.lastEpisode ? 'Continue Watching' : 'Start Watching' }}
+                                </Button>
+                            </div>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
         </div>
     </div>
 </template>

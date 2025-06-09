@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { SortDesc, Search, Clock, X, ChevronRight } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import { useLibraryStore } from '@/stores/library';
+import { SortDesc, Search, Clock, X, ExternalLink } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/SearchBar.vue';
 import {
@@ -12,42 +13,50 @@ import {
 } from '@/components/ui/select';
 import { useRouter } from 'vue-router';
 
-interface SearchHistoryItem {
-    id: string;
-    query: string;
-    timestamp: Date;
-    resultsCount: number;
-}
-
 const router = useRouter();
+const libraryStore = useLibraryStore();
 const sortBy = ref('recent');
 const search = ref('');
-const searchHistory = ref<SearchHistoryItem[]>([]); // TODO: Implementar store para histórico
 
 const sortOptions = [
     { value: 'recent', label: 'Most Recent' },
-    { value: 'relevance', label: 'Most Results' },
     { value: 'query', label: 'Search Term' },
 ];
 
+const searchHistory = computed(() => {
+    let history = [...libraryStore.getRecentSearches];
+
+    if (search.value) {
+        const query = search.value.toLowerCase();
+        history = history.filter(item =>
+            item.query.toLowerCase().includes(query)
+        );
+    }
+
+    switch (sortBy.value) {
+        case 'query':
+            return history.sort((a, b) => a.query.localeCompare(b.query));
+        case 'recent':
+        default:
+            return history;
+    }
+});
+
 const handleSearch = (query: string) => {
     search.value = query;
-    // TODO: Implementar filtro de busca
 };
 
 const repeatSearch = (query: string) => {
-    // TODO: Implementar redirecionamento para busca
+    libraryStore.addSearchQuery(query);
     router.push({ path: '/search', query: { q: query } });
 };
 
-const removeFromHistory = (id: string) => {
-    // TODO: Implementar remoção do histórico
-    console.log('Removing from history:', id);
+const removeFromHistory = (query: string) => {
+    libraryStore.removeSearchQuery(query);
 };
 
 const clearHistory = () => {
-    // TODO: Implementar limpeza do histórico
-    searchHistory.value = [];
+    libraryStore.clearSearchHistory();
 };
 </script>
 
@@ -90,30 +99,28 @@ const clearHistory = () => {
             </div>
 
             <div class="grid grid-cols-1 gap-2">
-                <div v-for="item in searchHistory" :key="item.id"
+                <div v-for="item in searchHistory" :key="`${item.query}-${item.timestamp.getTime()}`"
                     class="group flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition-colors">
                     <div class="flex items-center gap-4">
                         <Search class="size-4 text-muted-foreground" />
                         <div>
-                            <p class="font-medium">{{ item.query }}</p>
+                            <p class="font-medium mb-1">{{ item.query }}</p>
                             <div class="flex items-center gap-4 text-xs text-muted-foreground">
                                 <span class="flex items-center gap-1">
                                     <Clock class="size-3" />
                                     {{ new Date(item.timestamp).toLocaleDateString() }}
                                 </span>
-                                <span>•</span>
-                                <span>{{ item.resultsCount }} resultados</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" @click="removeFromHistory(item.id)"
+                        <Button variant="ghost" size="icon" @click="removeFromHistory(item.query)"
                             class="h-8 w-8 text-muted-foreground hover:text-destructive">
                             <X class="size-4" />
                         </Button>
                         <Button variant="ghost" size="icon" @click="repeatSearch(item.query)" class="h-8 w-8">
-                            <ChevronRight class="size-4" />
+                            <ExternalLink class="size-4" />
                         </Button>
                     </div>
                 </div>
