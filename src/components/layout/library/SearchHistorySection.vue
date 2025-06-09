@@ -57,6 +57,7 @@ const removeFromHistory = (query: string) => {
 
 const clearHistory = () => {
     libraryStore.clearSearchHistory();
+    search.value = ''; // Limpar busca atual
 };
 </script>
 

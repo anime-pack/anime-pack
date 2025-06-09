@@ -59,6 +59,16 @@ export const useLibraryStore = defineStore('library', {
 
     actions: {
         addSearchQuery(query: string) {
+            // Remover busca duplicada se existir
+            const existingIndex = this.searchHistory.findIndex(
+                (item) => item.query.toLowerCase() === query.toLowerCase()
+            );
+
+            if (existingIndex !== -1) {
+                this.searchHistory.splice(existingIndex, 1);
+            }
+
+            // Adicionar nova busca
             this.searchHistory.push({
                 query,
                 timestamp: new Date(),
