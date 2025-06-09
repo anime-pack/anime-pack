@@ -28,6 +28,39 @@ import {
     TabsTrigger,
 } from '@/components/ui/tabs';
 
+interface Episode {
+    number: number;
+    title: string;
+    duration: number; // em segundos
+}
+
+interface Season {
+    number: number;
+    year: number;
+    episodes: Episode[];
+}
+
+const mockSeasons: Season[] = [
+    {
+        number: 1,
+        year: 2020,
+        episodes: Array.from({ length: 12 }, (_, i) => ({
+            number: i + 1,
+            title: `Episode ${i + 1}`,
+            duration: 1440 // 24 minutos
+        }))
+    },
+    {
+        number: 2,
+        year: 2021,
+        episodes: Array.from({ length: 13 }, (_, i) => ({
+            number: i + 1,
+            title: `Episode ${i + 1}`,
+            duration: 1440
+        }))
+    }
+];
+
 const route = useRoute();
 const router = useRouter();
 const libraryStore = useLibraryStore();
@@ -141,7 +174,7 @@ const handleWatch = () => {
             <Tabs defaultValue="info" class="w-full">
                 <TabsList>
                     <TabsTrigger value="info">Informações</TabsTrigger>
-                    <!-- <TabsTrigger value="episodes">Episódios</TabsTrigger>  // TODO: work on this when having eps/temps info and etc -->
+                    <TabsTrigger value="episodes">Episódios</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="info" class="mt-6">
@@ -184,21 +217,21 @@ const handleWatch = () => {
                 <TabsContent value="episodes" class="mt-6">
                     <ScrollArea className="h-[500px] rounded-md border p-4">
                         <Accordion type="single" collapsible>
-                            <!-- // TODO: work on the seasons apisodes etc -->
-                            <AccordionItem v-for="season in anime.seasons" :key="season.year"
-                                :value="season.year.toString()">
+                            <AccordionItem v-for="season in mockSeasons" :key="season.year"
+                                :value="season.number.toString()">
                                 <AccordionTrigger>
-                                    Temporada {{ season.year }}
+                                    Temporada {{ season.number }} ({{ season.year }})
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <div class="grid gap-2">
-                                        <div v-for="episode in season.episodes" :key="episode.mal_id"
+                                        <div v-for="episode in season.episodes" :key="episode.number"
                                             class="flex items-center justify-between rounded-lg border p-3 hover:bg-muted">
                                             <div>
                                                 <span class="font-medium">Episódio {{ episode.number }}</span>
                                                 <p class="text-sm text-muted-foreground">{{ episode.title }}</p>
                                             </div>
-                                            <Button variant="ghost" size="sm">
+                                            <Button variant="ghost" size="sm"
+                                                @click="router.push(`/watch/${anime?.mal_id}?episode=${episode.number}`)">
                                                 <PlayCircle class="size-4" />
                                             </Button>
                                         </div>

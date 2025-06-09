@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch, onBeforeUnmount } from 'vue';
+import { onMounted, reactive, ref, watch, onBeforeUnmount, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';
 import {
@@ -110,13 +110,18 @@ const handleSearch = (query: string) => {
     }
     router.push({ query: { ...route.query, q: query || undefined } });
 };
+
+const searchSuggestions = computed(() =>
+    libraryStore.getRecentSearches.map(item => item.query)
+);
 </script>
 
 <template>
     <div class="flex flex-col gap-6 p-6">
         <!-- Search -->
         <div class="w-full max-w-3xl">
-            <SearchBar ref="searchBarRef" :defaultValue="filters.search" @submit="handleSearch" cleaner />
+            <SearchBar ref="searchBarRef" :defaultValue="filters.search" :suggestions="searchSuggestions"
+                @submit="handleSearch" cleaner />
         </div>
 
         <!-- Filters -->

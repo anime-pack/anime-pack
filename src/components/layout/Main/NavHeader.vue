@@ -80,6 +80,10 @@ const handleKeyPress = (e: KeyboardEvent) => {
         }
     }
 };
+
+const searchSuggestions = computed(() =>
+    libraryStore.getRecentSearches.map(item => item.query)
+);
 </script>
 
 <template>
@@ -103,7 +107,8 @@ const handleKeyPress = (e: KeyboardEvent) => {
                 <div class="relative flex items-center">
                     <div class="overflow-hidden transition-all duration-200"
                         :class="isSearchExpanded ? 'w-120 mr-2' : 'w-0'">
-                        <SearchBar ref="searchBarRef" v-if="!isSearchRoute" @submit="handleSearch" />
+                        <SearchBar ref="searchBarRef" v-if="!isSearchRoute" @submit="handleSearch"
+                            :suggestions="searchSuggestions" />
                     </div>
                     <Button v-if="!isSearchRoute" variant="ghost" size="icon" @click="toggleSearch">
                         <Search v-if="!isSearchExpanded" class="size-5" />
