@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { X } from 'lucide-vue-next';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
+import { vSameWidth } from '@/directives/sameWidth';
 
 const searchValue = ref('');
 const inputRef = ref<HTMLInputElement | null>(null);
 const showSuggestions = ref(false);
 const selectedIndex = ref(-1);
 const isSubmitting = ref(false);
+const formRef = ref<HTMLFormElement | null>(null);
 
 const props = defineProps<{
     defaultValue?: string;
@@ -90,9 +97,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 };
 
 const handleBlur = () => {
-    setTimeout(() => {
-        showSuggestions.value = false;
-    }, 200);
+    showSuggestions.value = false;
 };
 
 defineExpose({
@@ -102,22 +107,26 @@ defineExpose({
 </script>
 
 <template>
-    <form @submit="handleSubmit" class="relative w-full">
-        <input ref="inputRef" v-model="searchValue" @keydown="handleKeydown" @blur="handleBlur"
-            class="h-9 w-full rounded-md border border-input bg-background px-3 pr-8 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            :placeholder="props.placeholder || 'Search... (Ctrl + K)'" />
+    <Popover v-model:open="showSuggestions">
+        <PopoverTrigger as-child>
+            <form ref="formRef" @submit="handleSubmit" class="relative w-full">
+                <input ref="inputRef" v-model="searchValue" @keydown="handleKeydown" @blur="handleBlur"
+                    class="h-9 w-full rounded-md border border-input bg-background px-3 pr-8 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    :placeholder="props.placeholder || 'Search... (Ctrl + K)'" />
 
-        <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2">
-            <button v-if="props.cleaner && searchValue" type="button" @click="clearSearch"
-                class="text-muted-foreground hover:text-destructive">
-                <X class="size-4" />
-            </button>
-        </div>
+                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2">
+                    <button v-if="props.cleaner && searchValue" type="button" @click="clearSearch"
+                        class="text-muted-foreground hover:text-destructive">
+                        <X class="size-4" />
+                    </button>
+                </div>
+            </form>
+        </PopoverTrigger>
 
-        <!-- Suggestions Overlay -->
-        <div v-if="showSuggestions && filteredSuggestions.length > 0"
-            class="absolute left-0 right-0 top-[calc(100%+4px)] z-50 rounded-md border bg-popover p-1 shadow-md">
-            <ul class="space-y-1">
+        <!-- // TODO: make width match form input width -->
+        <PopoverContent v-if="filteredSuggestions.length > 0" v-same-width="formRef" side="bottom" align="start"
+            sticky="always" class="p-0 w-full max-w-[var(--radix-popover-trigger-width)]">
+            <ul class="space-y-1 p-1">
                 <li v-for="(suggestion, index) in filteredSuggestions" :key="suggestion"
                     @mousedown="selectSuggestion(suggestion)"
                     class="cursor-pointer rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -125,6 +134,14 @@ defineExpose({
                     {{ suggestion }}
                 </li>
             </ul>
-        </div>
-    </form>
+        </PopoverContent>
+    </Popover>
 </template>
+
+<style scoped>
+:deep(.popover-content-width) {
+    width: var(--radix-popover-trigger-width);
+    min-width: var(--radix-popover-trigger-width);
+    max-width: none;
+}
+</style>
