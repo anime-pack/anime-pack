@@ -145,4 +145,6 @@ export const useLibraryStore = defineStore('library', {
             this.searchHistory = [];
         },
     },
+
+    persist: true,
 });
