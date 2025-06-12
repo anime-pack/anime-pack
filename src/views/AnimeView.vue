@@ -127,7 +127,7 @@ const handleWatch = () => {
 
             <!-- Hero Content -->
             <div class="relative h-full flex flex-col justify-end pb-12 px-6 sm:px-12">
-                <header class="flex flex-col gap-4 max-w-3xl translate-y-8">
+                <header class="flex flex-col gap-4 max-w-5xl translate-y-8">
                     <!-- Title & Japanese Title -->
                     <div class="flex items-center gap-4">
                         <h1 class="text-4xl font-bold">{{ anime.title }}</h1>
