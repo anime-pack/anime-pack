@@ -44,6 +44,8 @@ pub async fn search_animes(
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
+    let _permit = app_state.rate_limiter.acquire().await;
+
     jikan_client
         .get_anime_search(Some(SearchParams {
             q: params
@@ -114,6 +116,8 @@ pub async fn top_animes(
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
+    let _permit = app_state.rate_limiter.acquire().await;
+
     jikan_client
         .get_top_anime(
             params
@@ -144,6 +148,8 @@ pub async fn top_animes(
 pub async fn anime_full(app: tauri::AppHandle, id: i32) -> Result<AnimeExtended, String> {
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
+    
+    let _permit = app_state.rate_limiter.acquire().await;
 
     jikan_client
         .get_anime_full(id)

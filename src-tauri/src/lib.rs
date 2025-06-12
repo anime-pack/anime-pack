@@ -20,6 +20,7 @@ pub fn run() {
                 drpc_client: Arc::new(Client::new("1368098323558301759")),
                 // reqwest_client: reqwest::Client::new(),
                 jikan_client: Arc::new(JikanClient::new()),
+                rate_limiter: Arc::new(utils::RateLimiter::new(3, 1000)),
             });
             Ok(())
         })
