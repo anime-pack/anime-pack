@@ -88,7 +88,7 @@ const searchSuggestions = computed(() =>
 
 <template>
     <header
-        class="sticky top-0 z-50 h-[64px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        class="sticky select-none top-0 z-50 h-[64px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav class="flex h-full items-center justify-between px-4">
             <!-- Navegação Esquerda -->
             <div class="flex items-center gap-6">
