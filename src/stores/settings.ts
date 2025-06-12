@@ -6,20 +6,12 @@ interface Settings {
     autoplay: boolean;
 }
 
-const defaultSettings: Settings = {
-    theme: 'auto',
-    language: 'pt-BR',
-    autoplay: false,
-};
-
 export const useSettingsStore = defineStore('settings', {
-    state: (): Settings => {
-        const stored = localStorage.getItem('settings');
-        if (stored) {
-            return JSON.parse(stored);
-        }
-        return defaultSettings;
-    },
+    state: (): Settings => ({
+        theme: 'auto',
+        language: 'en-US',
+        autoplay: true,
+    }),
 
     actions: {
         setTheme(theme: Settings['theme']) {
@@ -41,10 +33,10 @@ export const useSettingsStore = defineStore('settings', {
             localStorage.setItem('settings', JSON.stringify(this.$state));
         },
 
-        resetSettings() {
-            this.$state = { ...defaultSettings };
-            this.saveSettings();
-        },
+        // resetSettings() {
+        //     this.$state = { ...defaultSettings };
+        //     this.saveSettings();
+        // },
     },
 
     getters: {
@@ -55,5 +47,10 @@ export const useSettingsStore = defineStore('settings', {
             }
             return this.theme === 'dark';
         },
+    },
+
+    persist: true,
+    tauri: {
+        sync: false,
     },
 });

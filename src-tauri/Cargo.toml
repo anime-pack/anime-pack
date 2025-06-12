@@ -26,4 +26,5 @@ discordipc = "0.1.1"
 tokio = "1.44.2"
 reqwest = {version = "0.12.15", features = ["default", "json"] }
 jikan_moe = "0.2.1"
+tauri-plugin-pinia = "3.7.0"
 

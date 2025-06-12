@@ -119,7 +119,7 @@ const searchSuggestions = computed(() =>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" class="relative">
                             <Bell class="size-5" />
-                            <div v-if="notificationStore.notifications.some(n => !n.read)"
+                            <div v-if="notificationStore.hasUnread"
                                 class="absolute right-0 top-0 h-2 w-2 rounded-full bg-destructive">
                             </div>
                         </Button>
@@ -128,7 +128,7 @@ const searchSuggestions = computed(() =>
                     <DropdownMenuContent align="end" class="w-80">
                         <DropdownMenuLabel class="flex items-center justify-between">
                             <span>Notifications</span>
-                            <Button v-if="notificationStore.notifications.length" variant="ghost" size="sm"
+                            <Button v-if="notificationStore.hasNotifications" variant="ghost" size="sm"
                                 @click="notificationStore.clearAll">
                                 <Trash2 class="mr-2 size-4" />
                                 Clean
@@ -137,12 +137,12 @@ const searchSuggestions = computed(() =>
                         <DropdownMenuSeparator />
 
                         <div class="max-h-[300px] overflow-y-auto">
-                            <div v-if="!notificationStore.notifications.length"
+                            <div v-if="!notificationStore.hasNotifications"
                                 class="p-4 text-center text-muted-foreground">
                                 No new notifications
                             </div>
 
-                            <DropdownMenuItem v-for="notification in notificationStore.notifications"
+                            <DropdownMenuItem v-for="notification in notificationStore.getNotifications"
                                 :key="notification.id" class="flex flex-col items-start gap-1 p-4"
                                 @click="notificationStore.markAsRead(notification.id)">
                                 <div class="flex w-full items-start justify-between gap-2">

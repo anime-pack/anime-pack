@@ -147,4 +147,7 @@ export const useLibraryStore = defineStore('library', {
     },
 
     persist: true,
+    tauri: {
+        sync: true,
+    },
 });

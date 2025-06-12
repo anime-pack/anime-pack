@@ -15,6 +15,9 @@ mod utils;
 pub fn run() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_pinia::Builder::new()
+            // .autosave(Duration::from_secs(40))
+            .build())
         .setup(|app| {
             app.manage(AppData {
                 drpc_client: Arc::new(Client::new("1368098323558301759")),
