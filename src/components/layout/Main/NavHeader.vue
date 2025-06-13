@@ -15,6 +15,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notifications';
 import { useLibraryStore } from '@/stores/library';
+import { toast } from 'vue-sonner';
 
 const router = useRouter();
 const notificationStore = useNotificationStore();
@@ -174,7 +175,7 @@ const searchSuggestions = computed(() =>
                     <DropdownMenuContent align="end" class="w-56">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem @click="() => router.push('/profile')">
+                        <DropdownMenuItem @click="() => toast.info('Hey there!', { description: 'This feature is not available yet, please join the Discord to be up with the news!' })">
                             <UserCircle class="mr-2 size-4" />
                             <span>Profile</span>
                         </DropdownMenuItem>

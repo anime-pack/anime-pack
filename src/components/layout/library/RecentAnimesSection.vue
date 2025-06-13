@@ -95,7 +95,7 @@ const handleSearch = (query: string) => {
                     </SelectContent>
                 </Select>
                 <div class="w-64">
-                    <SearchBar @submit="handleSearch" cleaner />
+                    <SearchBar @submit="handleSearch" placeholder="Find..." cleaner />
                 </div>
             </div>
         </div>

@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { SortDesc, List, Bookmark } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
-import AnimeCard from '@/components/AnimeCard.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import {
     Select,
@@ -52,7 +51,7 @@ const removeFromWatchlist = (animeId: number) => {
                     </SelectContent>
                 </Select>
                 <div class="w-64">
-                    <SearchBar @submit="handleSearch" cleaner />
+                    <SearchBar @submit="handleSearch" placeholder="Find..." cleaner />
                 </div>
             </div>
         </div>

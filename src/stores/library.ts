@@ -41,6 +41,12 @@ export const useLibraryStore = defineStore('library', {
     }),
 
     getters: {
+    /*
+        ! There is a problem where after pulling data from disk (tauri pinia plugin)
+        ? It is caused due the necessity to revive the Date strings into objects again, and the tauri pinia plugin, as far as i know,
+        ? does not offer a way to add a custom serialization/deserialization yet, i will be opening a issue on this.
+        * For now it is needed to implement a way here on the frontend side
+    */
         getRecentSearches: (state) =>
             state.searchHistory
                 .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())

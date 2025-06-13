@@ -43,8 +43,8 @@ async function getAnimes(searchParams: SearchAnimeParams | undefined): Promise<v
         if (response && Array.isArray(response)) {
             animes.value = response;
 
-            let log = {gen: displayGenre.value, response}
-            console.log(log);
+            // let log = {gen: displayGenre.value, response}
+            // console.log(log);
         } else {
             throw new Error('Invalid response format');
         }
