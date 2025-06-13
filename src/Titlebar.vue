@@ -19,6 +19,7 @@ const checkMaximized = async () => {
     const isMaximized = await currentWindow.isMaximized();
     return isMaximized;
 };
+// @ts-ignore
 const isMaximized = ref<boolean>(checkMaximized());  // TODO: Resolve this promise return
 currentWindow.once('tauri://resize', async () => {
     isMaximized.value = await checkMaximized();

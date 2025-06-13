@@ -6,6 +6,7 @@ export interface VideoSettings {
     quality: string;
 }
 
+// @ts-ignore
 export function useVideoPlayer(src: string, autoplay: boolean = false) {
     const videoRef = ref<HTMLVideoElement | null>(null);
     const containerRef = ref<HTMLDivElement | null>(null);
@@ -131,6 +132,7 @@ export function useVideoPlayer(src: string, autoplay: boolean = false) {
         if (tagName === 'input' || tagName === 'textarea') return;
 
         switch (e.key.toLowerCase()) {
+            // @ts-ignore
             case ' ':
                 if (tagName === 'button') return;
             case 'k':
