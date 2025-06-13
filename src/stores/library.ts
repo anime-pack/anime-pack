@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 
 interface EpisodeTime {
     currentTime: number;
@@ -15,7 +15,7 @@ interface EpisodeWatch {
 }
 
 interface AnimeHistoryItem {
-    animeData: AnimeItem;
+    animeData: AnimeItemFull;
     timestamp: Date;
     watch: EpisodeWatch | null;
 }
@@ -28,7 +28,7 @@ interface SearchHistoryItem {
 interface LibraryState {
     searchHistory: SearchHistoryItem[];
     recentlyViewed: AnimeHistoryItem[];
-    likedAnimes: AnimeItem[];
+    likedAnimes: AnimeItemFull[];
     ratedAnimes: Map<number, number>;
 }
 
@@ -51,7 +51,7 @@ export const useLibraryStore = defineStore('library', {
                 (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
             ),
 
-        isAnimeLiked: (state) => (anime: AnimeItem | number) => {
+        isAnimeLiked: (state) => (anime: AnimeItemFull | number) => {
             const animeId = typeof anime === 'number' ? anime : anime.mal_id;
             return state.likedAnimes.some((item) => item.mal_id === animeId);
         },
@@ -93,7 +93,7 @@ export const useLibraryStore = defineStore('library', {
             });
         },
 
-        toggleLikeAnime(anime: AnimeItem) {
+        toggleLikeAnime(anime: AnimeItemFull) {
             const index = this.likedAnimes.findIndex(
                 (item) => item.mal_id === anime.mal_id
             );

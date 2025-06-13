@@ -2,13 +2,13 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { Info, PlayCircle } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
-import { AnimeItem } from '@/types/anime';
+import { AnimeItemFull } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const isLoading = ref(true);
-const featuredAnimes = ref<AnimeItem[]>([]);
+const featuredAnimes = ref<AnimeItemFull[]>([]);
 const currentIndex = ref(0);
 const intervalId = ref<number>();
 
@@ -18,11 +18,7 @@ const currentAnime = computed(() =>
 
 onMounted(async () => {
     try {
-        const response = await invoke<AnimeItem[]>('search_animes', {
-            params: {
-                limit: 7,
-            }
-        });
+        const response = await invoke<AnimeItemFull[]>('season_now');
 
         if (response && Array.isArray(response)) {
             featuredAnimes.value = response;

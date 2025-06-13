@@ -3,7 +3,7 @@ import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
 import { useLibraryStore } from '@/stores/library';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 import {
     ArrowLeft,
     Calendar,
@@ -65,7 +65,7 @@ const mockSeasons: Season[] = [
 const route = useRoute();
 const router = useRouter();
 const libraryStore = useLibraryStore();
-const anime = ref<AnimeItem | null>(null);
+const anime = ref<AnimeItemFull | null>(null);
 const isLoading = ref(true);
 
 const isLiked = computed(() =>
@@ -74,7 +74,7 @@ const isLiked = computed(() =>
 
 onMounted(async () => {
     try {
-        const response = await invoke<AnimeItem>('anime_full', {
+        const response = await invoke<AnimeItemFull>('anime_full', {
             id: Number(route.params.id)
         });
         anime.value = response;

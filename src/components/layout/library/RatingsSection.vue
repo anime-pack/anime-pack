@@ -10,9 +10,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 
-interface RatedAnime extends AnimeItem {
+interface RatedAnime extends AnimeItemFull {
     userRating: number;
     ratedAt: Date;
 }

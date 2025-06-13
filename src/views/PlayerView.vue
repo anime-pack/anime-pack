@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { ArrowLeft } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { invoke } from '@tauri-apps/api/core';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 import { VideoPlayer } from '@/components/layout/player';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Clock } from 'lucide-vue-next';
@@ -13,7 +13,7 @@ import { useLibraryStore } from '@/stores/library';
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref(true);
-const anime = ref<AnimeItem | null>(null);
+const anime = ref<AnimeItemFull | null>(null);
 const currentEpisode = ref(Number(route.query.ep) || 1);
 
 const videoSrc = "https://cdn.discordapp.com/attachments/1324069439531909150/1380741471056957531/y2mate.is_-_L_I_F_E-OzFd-6BaiSQ-720p-1709513983.mp4?ex=6844fb33&is=6843a9b3&hm=970125e71f89c731e1dac436e37e1d9873eb988f5a141b70b512eef0573736d9&"; // TODO: Implementar source real
@@ -31,7 +31,7 @@ const currentWatchData = computed(() => {
 
 onMounted(async () => {
     try {
-        const response = await invoke<AnimeItem>('anime_full', {
+        const response = await invoke<AnimeItemFull>('anime_full', {
             id: Number(route.params.id)
         });
         anime.value = response;

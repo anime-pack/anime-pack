@@ -10,7 +10,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AnimeCard from '@/components/AnimeCard.vue';
-import { AnimeItem, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
+import { AnimeItemFull, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { SearchAnimeParams } from '@/types/invoke';
 import SearchBar from '@/components/SearchBar.vue';
@@ -32,7 +32,7 @@ const filterOpts = {
     genres: [] as string[],
 };
 
-const animes = ref<AnimeItem[]>([]);
+const animes = ref<AnimeItemFull[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
@@ -65,13 +65,24 @@ async function fetchAnimes() {
             rating: filters.rating || undefined,
         } satisfies Partial<SearchAnimeParams>;
 
-        const response = await invoke<AnimeItem>('search_animes', { params });
+        let response: AnimeItemFull[];
+        // Remove undefined keys from params
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([_, v]) => v !== undefined)
+        );
+
+        if (Object.keys(filteredParams).length > 0) {
+            response = await invoke<AnimeItemFull[]>('search_animes', { params: filteredParams });
+        } else {
+            response = await invoke<AnimeItemFull[]>('season_now', { limiter: 20 });
+        };
+
 
         if (!response || !Array.isArray(response)) {
             throw new Error('Invalid response format');
         }
 
-        animes.value = response as AnimeItem[];
+        animes.value = response as AnimeItemFull[];
     } catch (err) {
         error.value = err instanceof Error ? err.message : 'Failed to fetch animes';
         console.error('Error fetching animes:', err);

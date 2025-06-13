@@ -28,7 +28,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            open_url, open_path, search_animes, top_animes, anime_full
+            open_url, open_path, search_animes, top_animes, anime_full, season_now
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -11,11 +11,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 
 const sortBy = ref('added');
 const search = ref('');
-const watchlist = ref<AnimeItem[]>([]); // TODO: Implementar store para watchlist
+const watchlist = ref<AnimeItemFull[]>([]); // TODO: Implementar store para watchlist
 
 const sortOptions = [
     { value: 'added', label: 'Recently Added' },
