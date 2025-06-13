@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useVideoPlayer } from '@/composables/useVideoPlayer';
 import {
     Play, Pause, Volume2, VolumeX,
-    Maximize, Minimize, Settings, Loader2
+    Maximize, Minimize, Settings, Loader2,
+    SkipForward,
+    SkipBack
 } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
-// TODO: adjust player layout and styles so it looks better and ocupies less space, and add more settings and functionalities
+// TODO: Refactor entire player logic with https://www.youtube.com/watch?v=ZeNyjnneq_w and get rid of @/composables/useVideoPlayer if possible or needed
 
 interface Props {
     src: string;
@@ -21,167 +30,32 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['timeUpdate', 'ended', 'error', 'loaded']);
 
-// Estados do player
-const videoRef = ref<HTMLVideoElement | null>(null);
-const containerRef = ref<HTMLDivElement | null>(null);
-const progressRef = ref<HTMLDivElement>();
-const isPlaying = ref(false);
-const isFullscreen = ref(false);
-const currentTime = ref(0);
-const duration = ref(0);
-const volume = ref(1);
-const isMuted = ref(false);
-const isLoading = ref(true);
-const showControls = ref(true);
-const isVideoReady = ref(false);
-const progressHoverWidth = ref(0);
-const isControlsVisible = ref(true);
-const isInteracting = ref(false);
-let hideControlsTimer: ReturnType<typeof setTimeout>;
+const {
+    videoRef,
+    containerRef,
+    progressRef,
+    isPlaying,
+    isFullscreen,
+    currentTime,
+    duration,
+    volume,
+    isMuted, isLoading,
+    progressHoverWidth,
+    isControlsVisible,
+    isInteracting,
+    videoSettings,
+    togglePlay,
+    seek,
+    toggleMute,
+    setVolume,
+    toggleFullscreen,
+    formatTime,
+    handleProgressHover,
+    handleMouseMove,
+    updateSetting,
+} = useVideoPlayer(props.src, props.autoplay);
 
-// Controles de reprodução
-const togglePlay = async () => {
-    if (!videoRef.value) return;
-
-    try {
-        if (isPlaying.value) {
-            await videoRef.value.pause();
-        } else {
-            await videoRef.value.play();
-        }
-        isPlaying.value = !isPlaying.value;
-    } catch (error) {
-        console.error('Playback error:', error);
-    }
-};
-
-// Controles de progresso
-const seek = (event: MouseEvent) => {
-    if (!progressRef.value || !duration.value || !videoRef.value) return;
-
-    const rect = progressRef.value.getBoundingClientRect();
-    const percent = (event.clientX - rect.left) / rect.width;
-    videoRef.value.currentTime = percent * duration.value;
-    currentTime.value = videoRef.value.currentTime;
-};
-
-const updateProgress = () => {
-    if (!videoRef.value) return;
-    currentTime.value = videoRef.value.currentTime;
-    duration.value = videoRef.value.duration;
-    emit('timeUpdate', currentTime.value);
-};
-
-// Controles de volume
-const toggleMute = () => {
-    if (!videoRef.value) return;
-    isMuted.value = !isMuted.value;
-    videoRef.value.muted = isMuted.value;
-};
-
-const setVolume = (value: number) => {
-    if (!videoRef.value) return;
-    volume.value = value;
-    videoRef.value.volume = value;
-};
-
-// Controles de tela cheia
-const toggleFullscreen = async () => {
-    if (!containerRef.value) return;
-
-    if (!document.fullscreenElement) {
-        await containerRef.value.requestFullscreen();
-        isFullscreen.value = true;
-    } else {
-        await document.exitFullscreen();
-        isFullscreen.value = false;
-    }
-};
-
-// Formatar tempo
-const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
-
-// Event handlers
-const handleProgressHover = (e: MouseEvent) => {
-    if (!progressRef.value) return;
-    const rect = progressRef.value.getBoundingClientRect();
-    const position = (e.clientX - rect.left) / rect.width;
-    progressHoverWidth.value = position * 100;
-};
-
-const handleMouseMove = () => {
-    isControlsVisible.value = true;
-    isInteracting.value = true;
-    clearTimeout(hideControlsTimer);
-
-    if (isPlaying.value) {
-        hideControlsTimer = setTimeout(() => {
-            isControlsVisible.value = false;
-            isInteracting.value = false;
-        }, 3000);
-    }
-};
-
-onMounted(() => {
-    if (!videoRef.value) return;
-
-    const video = videoRef.value;
-    video.addEventListener('loadedmetadata', () => {
-        isLoading.value = false;
-        duration.value = video.duration;
-        emit('loaded');
-    });
-    video.addEventListener('timeupdate', updateProgress);
-    video.addEventListener('ended', () => emit('ended'));
-    video.addEventListener('error', (e) => emit('error', e));
-    video.addEventListener('play', () => isPlaying.value = true);
-    video.addEventListener('pause', () => isPlaying.value = false);
-
-    // Eventos de teclado
-    window.addEventListener('keydown', handleKeyPress);
-
-    // Forçar carregamento do vídeo
-    video.load();
-});
-
-// Cleanup
-onBeforeUnmount(() => {
-    clearTimeout(hideControlsTimer);
-    window.removeEventListener('keydown', handleKeyPress);
-});
-
-// Keyboard shortcuts
-const handleKeyPress = (e: KeyboardEvent) => {
-    if (!videoRef.value) return;
-
-    switch (e.key.toLowerCase()) {
-        case ' ':
-        case 'k':
-            e.preventDefault();
-            togglePlay();
-            break;
-        case 'f':
-            e.preventDefault();
-            toggleFullscreen();
-            break;
-        case 'm':
-            e.preventDefault();
-            toggleMute();
-            break;
-        case 'arrowleft':
-            e.preventDefault();
-            videoRef.value.currentTime -= 5;
-            break;
-        case 'arrowright':
-            e.preventDefault();
-            videoRef.value.currentTime += 5;
-            break;
-    }
-};
+const qualities = ['1080p', '720p', '480p', '360p'];
 </script>
 
 <template>
@@ -190,8 +64,9 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
         <!-- Video Element -->
         <video ref="videoRef" class="h-full w-full" @click.stop="togglePlay" :src="src" :poster="poster"
-            :autoplay="autoplay" preload="auto">
-            Your browser does not support HTML5 video.
+            :autoplay="autoplay" preload="auto" @ended="emit('ended')" @error="(e) => emit('error', e)"
+            @loadedmetadata="emit('loaded')" @timeupdate="emit('timeUpdate', currentTime)">
+            Ocorreu um erro inesperado, por favor reporte ao suporte.
         </video>
 
         <!-- Loading Indicator -->
@@ -254,11 +129,62 @@ const handleKeyPress = (e: KeyboardEvent) => {
                     </div>
 
                     <!-- Right Controls -->
-                    <Button variant="ghost" size="icon" class="text-white hover:bg-white/20"
-                        @click.stop="toggleFullscreen">
-                        <Maximize v-if="!isFullscreen" class="size-5" />
-                        <Minimize v-else class="size-5" />
-                    </Button>
+                    <!-- // TODO: add chrome cast and theater mode -->
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <Button variant="ghost" size="icon" class="text-white hover:bg-white/20">
+                                <SkipBack class="size-5" />
+                            </Button>
+
+                            <Button variant="ghost" size="icon" class="text-white hover:bg-white/20">
+                                <SkipForward class="size-5" />
+                            </Button>
+                        </div>
+
+                        <Popover @mouseover="isInteracting = true" @mouseleave="isInteracting = false">
+                            <PopoverTrigger>
+                                <Button variant="ghost" size="icon" class="text-white hover:bg-white/20">
+                                    <Settings class="size-5" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent class="w-64 p-3" side="top">
+                                <div class="space-y-4">
+                                    <h4 class="font-medium mb-2">Configurações</h4>
+
+                                    <!-- Qualidade -->
+                                    <div class="space-y-2">
+                                        <Label>Qualidade</Label>
+                                        <select v-model="videoSettings.quality"
+                                            class="w-full h-8 rounded-md border bg-background px-3 text-sm">
+                                            <option v-for="quality in qualities" :key="quality" :value="quality">
+                                                {{ quality }}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Loop -->
+                                    <div class="flex items-center justify-between">
+                                        <Label>Loop</Label>
+                                        <Switch :checked="videoSettings.loop"
+                                            @update:checked="updateSetting('loop', $event)" />
+                                    </div>
+
+                                    <!-- Autoplay -->
+                                    <div class="flex items-center justify-between">
+                                        <Label>Autoplay</Label>
+                                        <Switch :checked="videoSettings.autoplay"
+                                            @update:checked="updateSetting('autoplay', $event)" />
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+
+                        <Button variant="ghost" size="icon" class="text-white hover:bg-white/20"
+                            @click.stop="toggleFullscreen">
+                            <Maximize v-if="!isFullscreen" class="size-5" />
+                            <Minimize v-else class="size-5" />
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

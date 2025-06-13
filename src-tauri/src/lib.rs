@@ -15,16 +15,20 @@ mod utils;
 pub fn run() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_pinia::Builder::new()
+            // .autosave(Duration::from_secs(40))
+            .build())
         .setup(|app| {
             app.manage(AppData {
                 drpc_client: Arc::new(Client::new("1368098323558301759")),
                 // reqwest_client: reqwest::Client::new(),
                 jikan_client: Arc::new(JikanClient::new()),
+                rate_limiter: Arc::new(utils::RateLimiter::new(3, 1000)),
             });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            open_url, open_path, window_mmc, search_animes, top_animes, anime_full
+            open_url, open_path, search_animes, top_animes, anime_full, season_now
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

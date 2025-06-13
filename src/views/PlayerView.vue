@@ -1,28 +1,48 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ChevronLeft, ChevronRight, X } from 'lucide-vue-next';
+import { ArrowLeft } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { invoke } from '@tauri-apps/api/core';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 import { VideoPlayer } from '@/components/layout/player';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Clock } from 'lucide-vue-next';
+import { useLibraryStore } from '@/stores/library';
 
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref(true);
-const anime = ref<AnimeItem | null>(null);
+const anime = ref<AnimeItemFull | null>(null);
 const currentEpisode = ref(Number(route.query.ep) || 1);
 
 const videoSrc = "https://cdn.discordapp.com/attachments/1324069439531909150/1380741471056957531/y2mate.is_-_L_I_F_E-OzFd-6BaiSQ-720p-1709513983.mp4?ex=6844fb33&is=6843a9b3&hm=970125e71f89c731e1dac436e37e1d9873eb988f5a141b70b512eef0573736d9&"; // TODO: Implementar source real
 
+const libraryStore = useLibraryStore();
+
+// Remover desestruturação incorreta
+const currentWatchData = computed(() => {
+    if (!anime.value) return null;
+    const animeHistory = libraryStore.getRecentlyViewed.find(
+        item => item.animeData.mal_id === anime.value?.mal_id
+    );
+    return animeHistory?.watch;
+});
+
 onMounted(async () => {
     try {
-        const response = await invoke<AnimeItem>('anime_full', {
+        const response = await invoke<AnimeItemFull>('anime_full', {
             id: Number(route.params.id)
         });
         anime.value = response;
+
+        // Adicione após carregar o anime
+        if (anime.value) {
+            libraryStore.addViewedAnime({
+                animeData: anime.value,
+                watch: currentWatchData.value ?? null
+            });
+        }
     } catch (error) {
         console.error('Error fetching anime:', error);
     } finally {
@@ -36,17 +56,26 @@ const navigateToEpisode = (episode: number) => {
 };
 
 const exitPlayer = () => {
-    router.push(`/anime/${route.params.id}`);
+    router.back();
 };
 
 const handleTimeUpdate = (time: number) => {
-    // TODO: Save progress
-    // console.log('Current time:', time);
+    if (!anime.value) return;
+
+    libraryStore.updateWatchedEpisode(anime.value.mal_id, currentEpisode.value, {
+        currentTime: time,
+        duration: 1440, // TODO: Pegar duração real do vídeo
+        nextEpisode: currentEpisode.value < episodes.length ? currentEpisode.value + 1 : undefined
+    });
 };
 
 const handleEnded = () => {
-    // TODO: Auto-play next episode and mark as watched
-    // console.log('Video ended');
+    if (!anime.value) return;
+
+    const nextEpisode = currentEpisode.value + 1;
+    if (nextEpisode <= episodes.length) {
+        navigateToEpisode(nextEpisode);
+    }
 };
 
 // Mock data for episodes (TODO: implement real data)
@@ -65,29 +94,22 @@ const episodes = Array.from({ length: 12 }, (_, i) => ({
             <div class="mx-auto max-w-screen-2xl">
                 <div class="relative">
                     <!-- Video Player -->
-                    <VideoPlayer :src="videoSrc" @timeUpdate="handleTimeUpdate" @ended="handleEnded" />
-
-                    <!-- Navigation Controls -->
-                    <!-- <div
-                        class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-between px-4 pointer-events-none">
-                        <Button variant="ghost" size="icon" class="text-white pointer-events-auto"
-                            @click="navigateToEpisode(currentEpisode - 1)" :disabled="currentEpisode <= 1">
-                            <ChevronLeft class="size-8" />
-                        </Button>
-                        <Button variant="ghost" size="icon" class="text-white pointer-events-auto"
-                            @click="navigateToEpisode(currentEpisode + 1)">
-                            <ChevronRight class="size-8" />
-                        </Button>
-                    </div> -->
+                    <VideoPlayer :src="videoSrc" :initial-time="currentWatchData?.time.currentTime"
+                        @timeUpdate="handleTimeUpdate" @ended="handleEnded" />
 
                     <!-- Header Bar -->
-                    <div class="absolute top-0 inset-x-0 p-4 flex justify-between items-center">
-                        <h2 class="text-white font-medium">
-                            {{ anime?.title }} - Episode {{ currentEpisode }}
-                        </h2>
-                        <!-- <Button variant="ghost" size="icon" class="text-white" @click="exitPlayer">
-                            <X class="size-6" />
-                        </Button> -->
+                    <div class="absolute top-0 left-0 p-4">
+                        <div class="group relative inline-flex items-center">
+                            <Button variant="ghost" size="icon"
+                                class="text-white absolute -left-12 opacity-0 transition-all duration-300 ease-out group-hover:left-0 group-hover:opacity-100"
+                                @click="exitPlayer">
+                                <ArrowLeft class="size-5" />
+                            </Button>
+                            <h2
+                                class="text-white font-medium group-hover:translate-x-12 transition-transform duration-300 ease-out whitespace-nowrap">
+                                {{ anime?.title }} - Episode {{ currentEpisode }}
+                            </h2>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,28 +161,3 @@ const episodes = Array.from({ length: 12 }, (_, i) => ({
         </div>
     </div>
 </template>
-
-<style>
-.video-js {
-    width: 100%;
-    height: 100%;
-}
-
-.vjs-theme-fantasy {
-    --vjs-theme-fantasy--primary: hsl(var(--primary));
-    --vjs-theme-fantasy--secondary: hsl(var(--secondary));
-}
-
-.video-js .vjs-control-bar {
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-}
-
-.video-js .vjs-progress-holder {
-    height: 0.5em;
-}
-
-.video-js .vjs-play-progress {
-    background-color: var(--vjs-theme-fantasy--primary);
-}
-</style>

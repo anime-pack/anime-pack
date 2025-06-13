@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Star } from 'lucide-vue-next';
-import type { AnimeItem } from '@/types/anime';
+import type { AnimeItemFull } from '@/types/anime';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const props = defineProps<{
-    anime: AnimeItem;
+    anime: AnimeItemFull;
     clickable?: boolean;
 }>();
 

@@ -50,7 +50,7 @@ const animesToWatch = ref([
     <div class="space-y-8 pb-12">
         <ContinueWatching v-if="toWatch" :animes="animesToWatch" />
 
-        <CarouselDisplay title="Season Animes" />
+        <CarouselDisplay />
         <CarouselDisplay />
         <CarouselDisplay />
     </div>

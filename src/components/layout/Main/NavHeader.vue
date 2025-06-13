@@ -14,9 +14,12 @@ import SearchBar from '@/components/SearchBar.vue';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notifications';
+import { useLibraryStore } from '@/stores/library';
+import { toast } from 'vue-sonner';
 
 const router = useRouter();
 const notificationStore = useNotificationStore();
+const libraryStore = useLibraryStore();
 const route = useRoute();
 
 const navItems = [
@@ -43,6 +46,9 @@ const toggleSearch = () => {
 };
 
 const handleSearch = (query: string) => {
+    if (query) {
+        libraryStore.addSearchQuery(query);
+    }
     router.push({ path: '/search', query: { q: query || undefined } });
 };
 
@@ -75,11 +81,15 @@ const handleKeyPress = (e: KeyboardEvent) => {
         }
     }
 };
+
+const searchSuggestions = computed(() =>
+    libraryStore.getRecentSearches.map(item => item.query)
+);
 </script>
 
 <template>
     <header
-        class="sticky top-0 z-50 h-[64px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        class="sticky select-none top-0 z-50 h-[64px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav class="flex h-full items-center justify-between px-4">
             <!-- Navegação Esquerda -->
             <div class="flex items-center gap-6">
@@ -98,7 +108,8 @@ const handleKeyPress = (e: KeyboardEvent) => {
                 <div class="relative flex items-center">
                     <div class="overflow-hidden transition-all duration-200"
                         :class="isSearchExpanded ? 'w-120 mr-2' : 'w-0'">
-                        <SearchBar ref="searchBarRef" v-if="!isSearchRoute" @submit="handleSearch" />
+                        <SearchBar ref="searchBarRef" v-if="!isSearchRoute" @submit="handleSearch"
+                            :suggestions="searchSuggestions" />
                     </div>
                     <Button v-if="!isSearchRoute" variant="ghost" size="icon" @click="toggleSearch">
                         <Search v-if="!isSearchExpanded" class="size-5" />
@@ -109,7 +120,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" class="relative">
                             <Bell class="size-5" />
-                            <div v-if="notificationStore.notifications.some(n => !n.read)"
+                            <div v-if="notificationStore.hasUnread"
                                 class="absolute right-0 top-0 h-2 w-2 rounded-full bg-destructive">
                             </div>
                         </Button>
@@ -118,7 +129,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
                     <DropdownMenuContent align="end" class="w-80">
                         <DropdownMenuLabel class="flex items-center justify-between">
                             <span>Notifications</span>
-                            <Button v-if="notificationStore.notifications.length" variant="ghost" size="sm"
+                            <Button v-if="notificationStore.hasNotifications" variant="ghost" size="sm"
                                 @click="notificationStore.clearAll">
                                 <Trash2 class="mr-2 size-4" />
                                 Clean
@@ -127,12 +138,12 @@ const handleKeyPress = (e: KeyboardEvent) => {
                         <DropdownMenuSeparator />
 
                         <div class="max-h-[300px] overflow-y-auto">
-                            <div v-if="!notificationStore.notifications.length"
+                            <div v-if="!notificationStore.hasNotifications"
                                 class="p-4 text-center text-muted-foreground">
                                 No new notifications
                             </div>
 
-                            <DropdownMenuItem v-for="notification in notificationStore.notifications"
+                            <DropdownMenuItem v-for="notification in notificationStore.getNotifications"
                                 :key="notification.id" class="flex flex-col items-start gap-1 p-4"
                                 @click="notificationStore.markAsRead(notification.id)">
                                 <div class="flex w-full items-start justify-between gap-2">
@@ -164,7 +175,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
                     <DropdownMenuContent align="end" class="w-56">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem @click="() => router.push('/profile')">
+                        <DropdownMenuItem @click="() => toast.info('Hey there!', { description: 'This feature is not available yet, please join the Discord to be up with the news!' })">
                             <UserCircle class="mr-2 size-4" />
                             <span>Profile</span>
                         </DropdownMenuItem>

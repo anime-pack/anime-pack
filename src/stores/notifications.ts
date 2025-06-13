@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 export interface Notification {
     id: string;
@@ -9,28 +8,63 @@ export interface Notification {
     read: boolean;
 }
 
-export const useNotificationStore = defineStore('notifications', () => {
-    const notifications = ref<Notification[]>([]);
+export interface InboxState {
+    ping: true;
+    notifications: Notification[];
+}
 
-    function addNotification(
-        notification: Omit<Notification, 'id' | 'timestamp' | 'read'>
-    ) {
-        notifications.value.unshift({
-            ...notification,
-            id: crypto.randomUUID(),
-            timestamp: new Date(),
-            read: false,
-        });
-    }
+export const useNotificationStore = defineStore('notifications', {
+    state: (): InboxState => ({
+        ping: true,
+        notifications: [],
+    }),
 
-    function markAsRead(id: string) {
-        const notification = notifications.value.find((n) => n.id === id);
-        if (notification) notification.read = true;
-    }
+    actions: {
+        save() { this.$tauri.save() },
 
-    function clearAll() {
-        notifications.value = [];
-    }
+        addNotification(
+            notification: Omit<Notification, 'id' | 'timestamp' | 'read'>
+        ) {
+            this.notifications.unshift({
+                ...notification,
+                id: crypto.randomUUID(),
+                timestamp: new Date(),
+                read: false,
+            });
+        },
 
-    return { notifications, addNotification, markAsRead, clearAll };
+        markAsRead(id: string) {
+            const notification = this.notifications.find((n) => n.id === id);
+            if (notification) notification.read = true;
+        },
+
+        clearAll() {
+            this.notifications = [];
+        },
+    },
+
+    getters: {
+        unreadCount(): number {
+            return this.notifications.filter((n) => !n.read).length;
+        },
+
+        getNotifications(): Notification[] {
+            return this.notifications.sort(
+                (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+            );
+        },
+
+        hasUnread(): boolean {
+            return this.unreadCount > 0;
+        },
+
+        hasNotifications(): boolean {
+            return this.notifications.length > 0;
+        },
+    },
+
+    persist: true,
+    tauri: {
+        sync: true,
+    },
 });

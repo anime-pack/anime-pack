@@ -1,6 +1,6 @@
 use jikan_moe::{
     anime::SearchParams,
-    common::structs::anime::{Anime, AnimeExtended},
+    common::structs::anime::AnimeExtended, seasons::SeasonQueryParams,
 };
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
@@ -40,9 +40,11 @@ pub struct SearchAnimeParams<'sap> {
 pub async fn search_animes(
     app: tauri::AppHandle,
     params: Option<SearchAnimeParams<'_>>,
-) -> Result<Vec<Anime>, String> {
+) -> Result<Vec<AnimeExtended>, String> {
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
+
+    let _permit = app_state.rate_limiter.acquire().await;
 
     jikan_client
         .get_anime_search(Some(SearchParams {
@@ -114,6 +116,8 @@ pub async fn top_animes(
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
+    let _permit = app_state.rate_limiter.acquire().await;
+
     jikan_client
         .get_top_anime(
             params
@@ -145,9 +149,34 @@ pub async fn anime_full(app: tauri::AppHandle, id: i32) -> Result<AnimeExtended,
     let app_state = app.state::<AppData>();
     let jikan_client = app_state.jikan_client.clone();
 
+    let _permit = app_state.rate_limiter.acquire().await;
+
     jikan_client
         .get_anime_full(id)
         .await
         .map(|response| response.data)
         .map_err(|_| String::from("Status not ok for anime_full"))
+}
+
+#[tauri::command]
+pub async fn season_now(app: tauri::AppHandle, limiter: Option<u32>) -> Result<Vec<AnimeExtended>, String> {
+    let app_state = app.state::<AppData>();
+    let jikan_client = app_state.jikan_client.clone();
+
+    let _permit = app_state.rate_limiter.acquire().await;
+
+    let limit = limiter.unwrap_or(10);
+
+    jikan_client
+        .get_season_now(Some(SeasonQueryParams {
+            sfw: Some(true),
+            limit: Some(limit),
+            unapproved: Some(false),
+            continuing: Some(true),
+            filter: None,
+            page: None,
+        }))
+        .await
+        .map(|response| response.data)
+        .map_err(|_| String::from("Status not ok for season_now"))
 }

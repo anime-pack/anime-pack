@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch, onBeforeUnmount } from 'vue';
+import { onMounted, reactive, ref, watch, onBeforeUnmount, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,10 +10,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AnimeCard from '@/components/AnimeCard.vue';
-import { AnimeItem, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
+import { AnimeItemFull, AnimeRating, AnimeStatus, AnimeType } from '@/types/anime';
 import { invoke } from '@tauri-apps/api/core';
 import { SearchAnimeParams } from '@/types/invoke';
 import SearchBar from '@/components/SearchBar.vue';
+import { useLibraryStore } from '@/stores/library';
 
 type Filter = {
     search: string;
@@ -31,12 +32,13 @@ const filterOpts = {
     genres: [] as string[],
 };
 
-const animes = ref<AnimeItem[]>([]);
+const animes = ref<AnimeItemFull[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
 const route = useRoute();
 const router = useRouter();
+const libraryStore = useLibraryStore();
 
 const filters = reactive<Filter>({
     search: (route.query.q as string) || '',
@@ -63,13 +65,24 @@ async function fetchAnimes() {
             rating: filters.rating || undefined,
         } satisfies Partial<SearchAnimeParams>;
 
-        const response = await invoke<AnimeItem>('search_animes', { params });
+        let response: AnimeItemFull[];
+        // Remove undefined keys from params
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([_, v]) => v !== undefined)
+        );
+
+        if (Object.keys(filteredParams).length > 0) {
+            response = await invoke<AnimeItemFull[]>('search_animes', { params: filteredParams });
+        } else {
+            response = await invoke<AnimeItemFull[]>('season_now', { limiter: 20 });
+        };
+
 
         if (!response || !Array.isArray(response)) {
             throw new Error('Invalid response format');
         }
 
-        animes.value = response as AnimeItem[];
+        animes.value = response as AnimeItemFull[];
     } catch (err) {
         error.value = err instanceof Error ? err.message : 'Failed to fetch animes';
         console.error('Error fetching animes:', err);
@@ -103,15 +116,23 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
 const handleSearch = (query: string) => {
     filters.search = query;
+    if (query) {
+        libraryStore.addSearchQuery(query);
+    }
     router.push({ query: { ...route.query, q: query || undefined } });
 };
+
+const searchSuggestions = computed(() =>
+    libraryStore.getRecentSearches.map(item => item.query)
+);
 </script>
 
 <template>
     <div class="flex flex-col gap-6 p-6">
         <!-- Search -->
         <div class="w-full max-w-3xl">
-            <SearchBar ref="searchBarRef" :defaultValue="filters.search" @submit="handleSearch" cleaner />
+            <SearchBar ref="searchBarRef" :defaultValue="filters.search" :suggestions="searchSuggestions"
+                @submit="handleSearch" cleaner />
         </div>
 
         <!-- Filters -->

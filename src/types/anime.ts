@@ -49,6 +49,37 @@ export interface AnimeItem {
     mal_id: number;
     url: string;
     images: Images;
+    title: string;
+    start_year: number;
+    title_english: string;
+    title_japanese: string;
+    episodes: Number;
+    status: string;
+    score: number;
+    synopsis: string;
+    aired: {
+        from: string;
+        to: string | null;
+        prop: {
+            from: {
+                day: number;
+                month: number;
+                year: number;
+            };
+            to: {
+                day: number | null;
+                month: number | null;
+                year: number | null;
+            };
+        };
+        string: string;
+    };
+}
+
+export interface AnimeItemFull {
+    mal_id: number;
+    url: string;
+    images: Images;
     trailer: Trailer;
     approved: boolean;
     titles: Title[];
@@ -122,72 +153,72 @@ export interface AnimeItem {
 
 export interface AnimeData {
     pagination: Pagination;
-    data: AnimeItem[];
+    data: AnimeItem | AnimeItemFull[];
 }
 
 export enum AnimeType {
-    "tv",
-    "movie",
-    "ova",
-    "ona",
-    "music",
-    "cm",
-    "pv",
-    "special",
+    'tv',
+    'movie',
+    'ova',
+    'ona',
+    'music',
+    'cm',
+    'pv',
+    'special',
 }
 
 export enum AnimeFilter {
-    "airing",
-    "upcoming",
-    "popularity",
-    "favorite",
+    'airing',
+    'upcoming',
+    'popularity',
+    'favorite',
 }
 
 export enum AnimeRating {
-    "all ages" = "g",
-    "children" = "pg",
-    "13+" = "pg13",
-    "17+ violence & profanity" = "r17",
-    "mild nudity" = "r",
-    "hentai" = "rx",
+    'all ages' = 'g',
+    'children' = 'pg',
+    '13+' = 'pg13',
+    '17+ violence & profanity' = 'r17',
+    'mild nudity' = 'r',
+    'hentai' = 'rx',
 }
 
 export enum AnimeStatus {
-    "airing",
-    "complete",
-    "upcoming",
+    'airing',
+    'complete',
+    'upcoming',
 }
 
 export enum AnimeOrder {
-    "mal_id",
-    "title",
-    "start_date",
-    "end_date",
-    "episodes",
-    "score",
-    "scored_by",
-    "rank",
-    "popularity",
-    "members",
-    "favourites",
+    'mal_id',
+    'title',
+    'start_date',
+    'end_date',
+    'episodes',
+    'score',
+    'scored_by',
+    'rank',
+    'popularity',
+    'members',
+    'favourites',
 }
 
 /**
  * THIS TYPE IS NOT `any`!!
- * 
+ *
  * It is in fact an recursive type, which follows this pattern:
  * ```ts
  * `${number}` | `${number},${number}` | `${number},${number},${number}...`
  * ```
  * This means it can have as many numbers as you'd like.
- * 
+ *
  * It's purpose is due the query param for the genres accepting an single string like `1,32,542,4,52`, so you can make an array with the genres id's the do an `.join(',')` on them.
- * 
+ *
  * @example
  * ```ts
  * const genres = [1, 32, 542, 4, 52];
  * const param: AnimeGenresParam = genres.join(','); // "1,32,542,4,52"
  * ```
-*/
+ */
 // @ts-ignore
-export type AnimeGenresParam = `${number}` | `${number},${AnimeGenresParam}`
+export type AnimeGenresParam = `${number}` | `${number},${AnimeGenresParam}`;

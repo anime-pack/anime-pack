@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
-import type { AnimeItem } from '@/types/anime';
+import { useLibraryStore } from '@/stores/library';
+import type { AnimeItemFull } from '@/types/anime';
 import {
+    ArrowLeft,
     Calendar,
     Star,
     Clock,
@@ -27,18 +29,63 @@ import {
     TabsTrigger,
 } from '@/components/ui/tabs';
 
+interface Episode {
+    number: number;
+    title: string;
+    duration: number; // em segundos
+}
+
+interface Season {
+    number: number;
+    year: number;
+    episodes: Episode[];
+}
+
+const mockSeasons: Season[] = [
+    {
+        number: 1,
+        year: 2020,
+        episodes: Array.from({ length: 12 }, (_, i) => ({
+            number: i + 1,
+            title: `Episode ${i + 1}`,
+            duration: 1440 // 24 minutos
+        }))
+    },
+    {
+        number: 2,
+        year: 2021,
+        episodes: Array.from({ length: 13 }, (_, i) => ({
+            number: i + 1,
+            title: `Episode ${i + 1}`,
+            duration: 1440
+        }))
+    }
+];
+
 const route = useRoute();
 const router = useRouter();
-const anime = ref<AnimeItem | null>(null);
+const libraryStore = useLibraryStore();
+const anime = ref<AnimeItemFull | null>(null);
 const isLoading = ref(true);
-const isLiked = ref(false);
+
+const isLiked = computed(() =>
+    anime.value ? libraryStore.isAnimeLiked(anime.value.mal_id) : false
+);
 
 onMounted(async () => {
     try {
-        const response = await invoke<AnimeItem>('anime_full', {
+        const response = await invoke<AnimeItemFull>('anime_full', {
             id: Number(route.params.id)
         });
         anime.value = response;
+
+        // Adicionar aos recentemente vistos com a nova estrutura
+        if (anime.value) {
+            libraryStore.addViewedAnime({
+                animeData: anime.value,
+                watch: null // Inicialmente sem episódio assistido
+            });
+        }
     } catch (error) {
         console.error('Error fetching anime:', error);
     } finally {
@@ -47,7 +94,9 @@ onMounted(async () => {
 });
 
 const toggleLike = () => {
-    isLiked.value = !isLiked.value;
+    if (anime.value) {
+        libraryStore.toggleLikeAnime(anime.value);
+    }
 };
 const handleWatch = () => {
     if (anime.value) router.push(`/watch/${anime.value.mal_id}`);
@@ -55,6 +104,10 @@ const handleWatch = () => {
 </script>
 
 <template>
+    <Button variant="ghost" class="absolute left-6 top-6 z-50" @click="router.back()">
+        <ArrowLeft class="size-5" />
+    </Button>
+
     <div v-if="isLoading" class="flex h-full items-center justify-center">
         <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
     </div>
@@ -74,7 +127,7 @@ const handleWatch = () => {
 
             <!-- Hero Content -->
             <div class="relative h-full flex flex-col justify-end pb-12 px-6 sm:px-12">
-                <header class="flex flex-col gap-4 max-w-3xl translate-y-8">
+                <header class="flex flex-col gap-4 max-w-5xl translate-y-8">
                     <!-- Title & Japanese Title -->
                     <div class="flex items-center gap-4">
                         <h1 class="text-4xl font-bold">{{ anime.title }}</h1>
@@ -126,7 +179,7 @@ const handleWatch = () => {
             <Tabs defaultValue="info" class="w-full">
                 <TabsList>
                     <TabsTrigger value="info">Informações</TabsTrigger>
-                    <!-- <TabsTrigger value="episodes">Episódios</TabsTrigger>  // TODO: work on this when having eps/temps info and etc -->
+                    <TabsTrigger value="episodes">Episódios</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="info" class="mt-6">
@@ -169,21 +222,21 @@ const handleWatch = () => {
                 <TabsContent value="episodes" class="mt-6">
                     <ScrollArea className="h-[500px] rounded-md border p-4">
                         <Accordion type="single" collapsible>
-                            <!-- // TODO: work on the seasons apisodes etc -->
-                            <AccordionItem v-for="season in anime.seasons" :key="season.year"
-                                :value="season.year.toString()">
+                            <AccordionItem v-for="season in mockSeasons" :key="season.year"
+                                :value="season.number.toString()">
                                 <AccordionTrigger>
-                                    Temporada {{ season.year }}
+                                    Temporada {{ season.number }} ({{ season.year }})
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <div class="grid gap-2">
-                                        <div v-for="episode in season.episodes" :key="episode.mal_id"
+                                        <div v-for="episode in season.episodes" :key="episode.number"
                                             class="flex items-center justify-between rounded-lg border p-3 hover:bg-muted">
                                             <div>
                                                 <span class="font-medium">Episódio {{ episode.number }}</span>
                                                 <p class="text-sm text-muted-foreground">{{ episode.title }}</p>
                                             </div>
-                                            <Button variant="ghost" size="sm">
+                                            <Button variant="ghost" size="sm"
+                                                @click="router.push(`/watch/${anime?.mal_id}?episode=${episode.number}`)">
                                                 <PlayCircle class="size-4" />
                                             </Button>
                                         </div>

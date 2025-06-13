@@ -1,6 +1,6 @@
 [package]
 name = "anime-pack"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Tauri App"
 authors = ["dark1zinn"]
 edition = "2021"
@@ -26,4 +26,7 @@ discordipc = "0.1.1"
 tokio = "1.44.2"
 reqwest = {version = "0.12.15", features = ["default", "json"] }
 jikan_moe = "0.2.1"
+tauri-plugin-pinia = "3.7.0"
 
+[patch.crates-io]
+jikan_moe = { path = "C:/Users/edils/OneDrive/projetosVS/5-Testes/jikan-rs" }
