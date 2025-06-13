@@ -1,6 +1,6 @@
 [package]
 name = "anime-pack"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Tauri App"
 authors = ["dark1zinn"]
 edition = "2021"
